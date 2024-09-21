@@ -1,0 +1,13 @@
+/* Custom underline for active tab */
+.custom-active-tab {
+    border-bottom: 3px solid black !important; /* Bold underline for active tab */
+    color: black !important; /* Ensure the active tab text is black */
+    opacity: 1; /* Full opacity for active tab */
+}
+
+/* Custom style for inactive tabs to make them faded */
+.custom-inactive-tab {
+    color: black !important; /* Ensure inactive tabs still have black text */
+    opacity: 0.5; /* Make inactive tabs faded */
+    transition: opacity 0.3s ease; /* Smooth transition when switching */
+}
