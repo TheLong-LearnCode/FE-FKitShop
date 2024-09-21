@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SignUp.scss';  // Import your custom CSS
+import GoogleButton from '../GoogleButton';
+import SignUpForm from '../SignUp';
+import SignInForm from '../SignIn';
 
-function SignUp() {
+// import Validator from '../Validator';
+
+function SignInAndSignUp() {
     const [activeTab, setActiveTab] = useState('signin'); // State to track active tab
 
     const handleTabClick = (tab) => {
@@ -11,7 +16,6 @@ function SignUp() {
 
     return (
         <>
-
             {/* Thêm Header component dô đây nhe */}
 
             <div className="d-flex justify-content-center align-items-center vh-100">
@@ -41,46 +45,15 @@ function SignUp() {
                             </li>
                         </ul>
                     </div>
-                    
+
                     <div className="tab-content mt-3">
                         <div className={`tab-pane ${activeTab === 'signin' ? 'active' : ''}`} id="signin">
-                            <form>
-                                <div className="form-group">
-                                    <input type="email" className="form-control" placeholder="Email" />
-                                </div>
-                                <div className="form-group">
-                                    <input type="password" className="form-control" placeholder="Password" />
-                                </div>
-                                <button type="submit" className="btn btn-dark btn-block">Sign In</button>
-                            </form>
+                            <SignInForm />
                         </div>
 
                         <div className={`tab-pane ${activeTab === 'signup' ? 'active' : ''}`} id="signup">
-                            <form>
-                                <div className="form-group">
-                                    <input type="text" className="form-control" placeholder="Full name" />
-                                </div>
-                                <div className="form-group">
-                                    <input type="text" className="form-control" placeholder="Year of birth" />
-                                </div>
-                                <div className="form-group">
-                                    <input type="text" className="form-control" placeholder="Phone number" />
-                                </div>
-                                <div className="form-group">
-                                    <input type="email" className="form-control" placeholder="Email" />
-                                </div>
-                                <div className="form-group">
-                                    <input type="password" className="form-control" placeholder="Password" />
-                                </div>
-                                <button type="submit" className="btn btn-dark btn-block">Sign Up</button>
-                            </form>
-                            
-                            <div className="mt-3 text-center">
-                                <button className="btn btn-light btn-block">
-                                    <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google logo" />
-                                    Sign up with Google
-                                </button>
-                            </div>
+                            <SignUpForm />
+                            <GoogleButton />
                         </div>
                     </div>
                 </div>
@@ -91,4 +64,4 @@ function SignUp() {
     );
 }
 
-export default SignUp;
+export default SignInAndSignUp;

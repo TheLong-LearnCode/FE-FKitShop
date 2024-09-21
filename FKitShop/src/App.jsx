@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 
 //import 'bootstrap/dist/css/bootstrap.min.css';
-import SignUp from './component/SignInAndSignUp'
+import SignInAndSignUp from './component/SignInAndSignUp'
 import './App.css'
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-    <SignUp/>
+    <SignInAndSignUp/>
     </>
   )
 }
