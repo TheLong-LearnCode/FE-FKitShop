@@ -1,6 +1,7 @@
 import React from 'react'
 import './Header.css'
 import 'boxicons'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function Header() {
     return (
@@ -27,10 +28,17 @@ export default function Header() {
                                 <box-icon name='cart' color='#ffffff'></box-icon>
                                 <span>Cart (0)</span>
                             </a>
-                            <a href="#" className='nav-item'>
-                                <box-icon name='user' color='#ffffff'></box-icon>
-                                <span>Account</span>
-                            </a>
+                            <div className="dropdown">
+                                <a class="nav-link dropdown-toggle nav-item" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                                    <box-icon name='user' color='#ffffff'></box-icon>
+                                    <span>Account</span>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Sign In</a>
+                                    <a class="dropdown-item" href="#">Sign up</a>
+                                    <a class="dropdown-item" href="#">Wishlist</a>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
