@@ -25,12 +25,12 @@ nav {
     padding-top: 5px;
 }
 
-.nav-logo {
+.upper-nav-logo {
     padding-top: 10px;
     width: 150px;
 }
 
-.search-form {
+.upper-nav-search-form {
     display: flex;
     align-items: center;
     background-color: white;
@@ -41,7 +41,7 @@ nav {
     margin: 0 50px;
 }
 
-.search-form input {
+.upper-nav-search-form input {
     flex-grow: 1;
     border: none;
     padding: 10px 15px;
@@ -49,23 +49,23 @@ nav {
     outline: none;
 }
 
-.search-form button {
+.upper-nav-search-form button {
     background: none;
     border: none;
     padding: 10px 15px;
     cursor: pointer;
 }
 
-.search-form button:hover {
+.upper-nav-search-form button:hover {
     background-color: #f0f0f0;
 }
 
-.user-actions {
+.upper-nav-user-actions {
     display: flex;
     align-items: center;
 }
 
-.user-actions .nav-item {
+.upper-nav-user-actions .upper-nav-item {
     display: flex;
     align-items: center;
     color: #ffffff;
@@ -74,30 +74,44 @@ nav {
     font-size: 14px;
 }
 
-.user-actions .nav-item box-icon {
+.upper-nav-user-actions .upper-nav-item box-icon {
     margin-right: 5px;
 }
 
-.user-actions .nav-item span {
+.upper-nav-user-actions .upper-nav-item span {
     vertical-align: middle;
 }
 
-.nav-menu {
+.lower-nav-menu {
     display: flex;
     justify-content: center;
     background-color: var(--primary-color);
 }
 
-.nav-menu li {
+.lower-nav-menu li {
     margin: 0 15px;
+    transition: all 0.3s ease-out;
 }
 
-.nav-menu a {
+.lower-nav-menu a {
     color: #ffffff;
     font-size: 16px;
+    padding: 0 5px;
 }
 
-.nav-menu a:hover {
-    text-decoration: underline;
-    color: #f0f0f0;
+.lower-nav-menu li:hover {
+    background-color: #f0f0f0;
+    border-radius: 5px;
 }
+
+.lower-nav-menu li:hover a{
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.nav-menu-link.active{
+    color: var(--primary-color);
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
