@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 
 //import 'bootstrap/dist/css/bootstrap.min.css';
-import SignInAndSignUp from './component/SignInAndSignUp'
+import SignInAndSignUp from './page/SignInAndSignUp'
 import './App.css'
 
 function App() {

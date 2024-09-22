@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './SignUp.scss';  // Import your custom CSS
-import GoogleButton from '../GoogleButton';
-import SignUpForm from '../SignUp';
-import SignInForm from '../SignIn';
+import './index.scss';  // Import your custom CSS
+import GoogleButton from '../../component/GoogleButton';
+import SignUpForm from '../../component/SignUp';
+import SignInForm from '../../component/SignIn';
 
 // import Validator from '../Validator';
 
@@ -49,11 +49,12 @@ function SignInAndSignUp() {
                     <div className="tab-content mt-3">
                         <div className={`tab-pane ${activeTab === 'signin' ? 'active' : ''}`} id="signin">
                             <SignInForm />
+                            <GoogleButton prop="signin"/>
                         </div>
 
                         <div className={`tab-pane ${activeTab === 'signup' ? 'active' : ''}`} id="signup">
                             <SignUpForm />
-                            <GoogleButton />
+                            <GoogleButton prop="signup"/>
                         </div>
                     </div>
                 </div>
