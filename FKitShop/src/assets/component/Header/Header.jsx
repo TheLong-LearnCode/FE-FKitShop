@@ -12,7 +12,7 @@ export default function Header() {
     };
     return (
         <div>
-            <header>
+            <header className='sticky-header fixed-top'>
                 <nav>
                     <div className='upper-nav'>
                         <a href="#">

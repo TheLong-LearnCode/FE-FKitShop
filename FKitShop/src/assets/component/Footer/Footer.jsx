@@ -7,7 +7,7 @@ export default function Footer() {
     return (
         <>
             <footer>
-                <div className="container">
+                <div className="container-fluid">
                     <div className="row">
                         <div className="col-md-3 mt-3">
                             <img src="/img/Logo.png" alt="FPT Kit Shop Logo" className="footer-logo mb-3" />
@@ -38,14 +38,13 @@ export default function Footer() {
                     </div>
                     <hr className="bg-light" />
                     <div className="row ">
-                        <div className="col-md-7">
+                        <div className="col-md-12 text-center">
                             <h5 className="mb-3">Contact</h5>
                             <p>Address: Lot E2a-7, Road D1, D1 Street, Long Thanh My, Thu Duc City, Ho Chi Minh City 700000</p>
                             <p>Working hours: Monday - Saturday: 8:00 to 17:30</p>
                             <p>Email: abc@example.com</p>
                         </div>
-                        <div className="col-md-5 text-center">
-                            <h5 className="mb-3">Follow Us</h5>
+                        <div className="col-md-12 text-center">
                             <div className="social-icons">
                                 <a href="#" className="text-light mr-3"><box-icon name='facebook-circle' type='logo' color='#ffffff' ></box-icon></a>
                                 <a href="#" className="text-light mr-3"><box-icon name='instagram-alt' type='logo' color='#ffffff' ></box-icon></a>
