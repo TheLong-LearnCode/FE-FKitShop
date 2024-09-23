@@ -13,7 +13,6 @@ function SignInAndSignUp() {
     const handleTabClick = (tab) => {
         setActiveTab(tab); // Set the active tab when clicked
     };
-
     return (
         <>
             {/* Thêm Header component dô đây nhe */}

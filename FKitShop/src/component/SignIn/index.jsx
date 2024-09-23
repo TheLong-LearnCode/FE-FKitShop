@@ -1,4 +1,24 @@
+import Validator from "../Validator";
+import { useEffect } from "react";
+
 function SignIn() {
+
+    useEffect(() => {
+        // Initialize Validator for Sign In Form
+        Validator({
+            form: '#form-sign-in',
+            formGroupSelector: '.form-group',
+            errorSelector: '.form-message',
+            rules: [
+                Validator.isEmail('#form-sign-in #email'),
+                Validator.minLength('#form-sign-in #password', 6),
+            ],
+            onSubmit: function (data) {
+                console.log('Sign In Data:', data);
+            }
+        }, []);
+    });
+
     return (
         <>
             <form id="form-sign-in">
