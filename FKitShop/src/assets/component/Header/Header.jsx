@@ -25,7 +25,7 @@ export default function Header() {
                                 aria-label="Search"
                             />
                             <button type="submit">
-                                <box-icon name='search' color='#000000'></box-icon>
+                                <box-icon name='search' color='#000000' ></box-icon>
                             </button>
                         </form>
 
@@ -42,8 +42,8 @@ export default function Header() {
                                 </a>
                                 <div className="dropdown-menu">
                                     <a className="dropdown-item" href="#">Sign In</a>
-                                    <a className="dropdown-item" href="#">Sign up</a>
-                                    <a className="dropdown-item" href="#">Wishlist</a>
+                                    <a className="dropdown-item" href="#">Sign Up</a>
+                                    <a className="dropdown-item" href="#">Favorite List</a>
                                 </div>
                             </div>
                         </div>

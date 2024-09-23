@@ -1,6 +1,6 @@
 import './App.css'
-import Footer from './assets/components/Footer/Footer'
-import Header from './assets/components/Header/Header'
+import Footer from './assets/component/Footer/Footer'
+import Header from './assets/component/Header/Header'
 
 
 
