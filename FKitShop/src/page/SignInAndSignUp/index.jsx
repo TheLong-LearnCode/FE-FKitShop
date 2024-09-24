@@ -5,21 +5,17 @@ import GoogleButton from '../../component/GoogleButton';
 import SignUpForm from '../../component/SignUp';
 import SignInForm from '../../component/SignIn';
 
-// import Validator from '../Validator';
-
 function SignInAndSignUp() {
     const [activeTab, setActiveTab] = useState('signin'); // State to track active tab
 
     const handleTabClick = (tab) => {
         setActiveTab(tab); // Set the active tab when clicked
     };
+
     return (
         <>
-            {/* Thêm Header component dô đây nhe */}
-
             <div className="d-flex justify-content-center align-items-center vh-100">
                 <div className="card p-3" style={{ width: '370px' }}>
-
                     <div id="form-sign-in">
                         <ul className="nav nav-tabs d-flex justify-content-between w-100">
                             <li className="nav-item w-50 text-center">
@@ -27,7 +23,6 @@ function SignInAndSignUp() {
                                     className={`nav-link ${activeTab === 'signin' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
                                     href="#signin"
                                     onClick={() => handleTabClick('signin')}
-                                    data-toggle="tab"
                                 >
                                     Sign In
                                 </a>
@@ -37,7 +32,6 @@ function SignInAndSignUp() {
                                     className={`nav-link ${activeTab === 'signup' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
                                     href="#signup"
                                     onClick={() => handleTabClick('signup')}
-                                    data-toggle="tab"
                                 >
                                     Sign Up
                                 </a>
@@ -47,19 +41,17 @@ function SignInAndSignUp() {
 
                     <div className="tab-content mt-3">
                         <div className={`tab-pane ${activeTab === 'signin' ? 'active' : ''}`} id="signin">
-                            <SignInForm />
-                            <GoogleButton prop="signin"/>
+                            {activeTab === 'signin' && <SignInForm />}
+                            {activeTab === 'signin' && <GoogleButton prop="signin" />}
                         </div>
 
                         <div className={`tab-pane ${activeTab === 'signup' ? 'active' : ''}`} id="signup">
-                            <SignUpForm />
-                            <GoogleButton prop="signup"/>
+                            {activeTab === 'signup' && <SignUpForm />}
+                            {activeTab === 'signup' && <GoogleButton prop="signup" />}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Thêm Footer component dô đây nhe */}
         </>
     );
 }

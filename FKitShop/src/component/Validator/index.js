@@ -200,7 +200,7 @@ Validator.isValidDate = function (selector, message) {
 
             // Check if the year is within the valid range
             if (selectedYear < minYear || selectedYear > currentYear) {
-                return message || `Please enter year of birth within range ${minYear}-${currentYear}`;
+                return message || `Please enter year within range ${minYear}-${currentYear}`;
             }
 
             // Check if the selected date is in the future
