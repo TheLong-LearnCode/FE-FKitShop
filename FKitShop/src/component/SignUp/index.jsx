@@ -22,12 +22,12 @@ function SignUp() {
                         name="yob" 
                         type={isDateType || yob ? 'date' : 'text'} 
                         className="form-control" 
-                        placeholder="Year of birth" 
+                        placeholder="Date of birth" 
                         onFocus={() => setIsDateType(true)}
                         onBlur={(e) => {
                             if (!e.target.value) {
                                 setIsDateType(false);
-                                e.target.placeholder = 'Year of birth';
+                                e.target.placeholder = 'Date of birth';
                             }
                         }}
                         value={yob}
