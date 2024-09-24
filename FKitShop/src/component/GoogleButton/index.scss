@@ -1,0 +1,23 @@
+.google-signin-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%; /* Đảm bảo nút chiếm toàn bộ chiều rộng */
+    max-width: 400px; /* Nếu bạn muốn đặt giới hạn chiều rộng */
+    margin: 0 auto; /* Căn giữa nút nếu có chiều rộng cụ thể */
+}
+
+.google-icon {
+    margin-right: 30px; /* Khoảng cách giữa logo và text */
+}
+
+.google-signin-btn span {
+    font-weight: 500;
+    color: #333;
+}
