@@ -1,38 +1,60 @@
-import Validator from "../Validator";
-import { useEffect } from "react";
+import { useState } from "react";
 
 function SignIn() {
-    useEffect(() => {
-        // Re-initialize validation every time SignIn component is rendered
-        Validator({
-            form: '#form-sign-in',
-            formGroupSelector: '.form-group',
-            errorSelector: '.form-message',
-            rules: [
-                Validator.isEmail('#form-sign-in #email'),
-                Validator.minLength('#form-sign-in #password', 6),
-            ],
-            onSubmit: function (data) {
-                console.log('Sign In Data:', data);
-            }
-        });
-    }, []); // Ensure validation logic runs whenever SignIn component is mounted
+
+    // Sử dụng state để lưu giá trị các input
+    // const [email, setEmail] = useState('');
+    // const [password, setPassword] = useState('');
+
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+
+    //     const formData = {
+    //         email: email,
+    //         password: password,
+    //     };
+
+    //     //Kiểm tra dữ liệu khi submit
+    //     console.log("Sign In Data: ", formData);
+
+    // };
 
     return (
         <>
             <form id="form-sign-in">
                 <div className="form-group">
-                    <input id="email" type="email" className="form-control" placeholder="Email" />
+                    <input id="email" name="email" type="text" className="form-control" placeholder="Email"/>
                     <span className="form-message"></span>
                 </div>
                 <div className="form-group">
-                    <input id="password" type="password" className="form-control" placeholder="Password" />
+                    <input id="password" name="password" type="password" className="form-control" placeholder="Password"/>
                     <span className="form-message"></span>
                 </div>
                 <button type="submit" className="btn btn-dark btn-block">Sign In</button>
             </form>
         </>
     );
+
+    // return (
+    //     <>
+    //         <form id="form-sign-in" onSubmit={handleSubmit}>
+    //             <div className="form-group">
+    //                 <input id="email" type="email" className="form-control" placeholder="Email"
+    //                     value={email}
+    //                     onChange={(e) => setEmail(e.target.value)}
+    //                 />
+    //                 <span className="form-message"></span>
+    //             </div>
+    //             <div className="form-group">
+    //                 <input id="password" type="password" className="form-control" placeholder="Password"
+    //                     value={password}
+    //                     onChange={(e) => setPassword(e.target.value)} />
+    //                 <span className="form-message"></span>
+    //             </div>
+    //             <button type="submit" className="btn btn-dark btn-block">Sign In</button>
+    //         </form>
+    //     </>
+    // );
 }
 
 export default SignIn;

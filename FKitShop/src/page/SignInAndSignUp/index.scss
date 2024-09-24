@@ -1,16 +1,58 @@
 /* Custom underline for active tab */
 .custom-active-tab {
-    border-bottom: 3px solid black !important; /* Bold underline for active tab */
-    color: black !important; /* Ensure the active tab text is black */
-    opacity: 1; /* Full opacity for active tab */
+    border-bottom: 3px solid black !important;
+    /* Bold underline for active tab */
+    color: black !important;
+    /* Ensure the active tab text is black */
+    opacity: 1;
+    /* Full opacity for active tab */
 }
 
 /* Custom style for inactive tabs to make them faded */
 .custom-inactive-tab {
-    color: black !important; /* Ensure inactive tabs still have black text */
-    opacity: 0.5; /* Make inactive tabs faded */
-    transition: opacity 0.3s ease; /* Smooth transition when switching */
+    color: black !important;
+    /* Ensure inactive tabs still have black text */
+    opacity: 0.7;
+    /* Make inactive tabs faded */
+    transition: opacity 0.3s ease;
+    /* Smooth transition when switching */
 }
+
 .form-message {
     color: red;
+    font-size: 0.3 rem;
+    line-height: 0.5rem;
+    padding: 4px 0 0;
+
+}
+.form-control {
+    border: 1px solid #ccc; /* Viền ban đầu */
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
+    transition: border-color 0.3s ease-in-out; /* Hiệu ứng mượt khi chuyển viền */
+}
+
+.form-control:focus {
+    border-color: black; /* Viền đen khi focus */
+    outline: none; /* Loại bỏ viền mặc định màu xanh của trình duyệt */
+    box-shadow: none; /* Loại bỏ hiệu ứng đổ bóng mặc định nếu có */
+}
+
+button {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Khi người dùng hover */
+button:hover {
+    background-color: #333; /* Thay đổi màu nền khi hover */
+    transform: scale(1.05); /* Phóng to nhẹ nút */
 }

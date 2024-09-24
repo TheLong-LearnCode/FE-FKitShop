@@ -1,54 +1,50 @@
-import Validator from "../Validator";
-import { useEffect } from "react";
-
-const totalDigitsPhoneNumber = 10;
-const passwordLength = 6;
+import './index.scss';
+import React, { useState } from 'react';
 
 function SignUp() {
-    useEffect(() => {
-        // Re-initialize validation every time SignUp component is rendered
-        Validator({
-            form: '#form-sign-up',
-            formGroupSelector: '.form-group',
-            errorSelector: '.form-message',
-            rules: [
-                Validator.isRequired('#form-sign-up #fullname', 'Please enter your full name'),
-                Validator.isRequired('#form-sign-up #yob', 'Please enter your year of birth'),
-                Validator.isValidDate('#form-sign-up #yob', ''),
-                Validator.isRequired('#form-sign-up #phone', 'Please enter your phone number'),
-                Validator.isPhoneNumber('#form-sign-up #phone', '', totalDigitsPhoneNumber),
-                Validator.isRequired('#form-sign-up #email', 'Please enter your email'),
-                Validator.isEmail('#form-sign-up #email'),
-                Validator.isRequired('#form-sign-up #password', 'Please enter your password'),
-                Validator.minLength('#form-sign-up #password', passwordLength),
-            ],
-            onSubmit: function (data) {
-                console.log('Sign Up Data:', data);
-            }
-        });
-    }, []); // Ensure validation logic runs whenever SignUp component is mounted
+    const [yob, setYob] = useState(''); // Khởi tạo trạng thái cho Year of Birth
+    const [isDateType, setIsDateType] = useState(false); // Trạng thái để theo dõi khi nào input là kiểu 'date'
+
+    const handleYobChange = (event) => {
+        setYob(event.target.value);
+    };
 
     return (
         <>
             <form id="form-sign-up">
                 <div className="form-group">
-                    <input id="fullname" type="text" className="form-control" placeholder="Full name" />
+                    <input id="fullname" name="fullname" type="text" className="form-control" placeholder="Full name"/>
                     <span className="form-message"></span>
                 </div>
                 <div className="form-group">
-                    <input id="yob" type="date" className="form-control" placeholder="Year of birth" />
+                    <input 
+                        id="yob"
+                        name="yob" 
+                        type={isDateType || yob ? 'date' : 'text'} 
+                        className="form-control" 
+                        placeholder="Year of birth" 
+                        onFocus={() => setIsDateType(true)}
+                        onBlur={(e) => {
+                            if (!e.target.value) {
+                                setIsDateType(false);
+                                e.target.placeholder = 'Year of birth';
+                            }
+                        }}
+                        value={yob}
+                        onChange={handleYobChange}
+                    />
                     <span className="form-message"></span>
                 </div>
                 <div className="form-group">
-                    <input id="phone" type="text" className="form-control" placeholder="Phone number" />
+                    <input id="phone" name="phone" type="text" className="form-control" placeholder="Phone number"/>
                     <span className="form-message"></span>
                 </div>
                 <div className="form-group">
-                    <input id="email" type="email" className="form-control" placeholder="Email" />
+                    <input id="email" name="email" type="email" className="form-control" placeholder="Email"/>
                     <span className="form-message"></span>
                 </div>
                 <div className="form-group">
-                    <input id="password" type="password" className="form-control" placeholder="Password" />
+                    <input id="password" name="password" type="password" className="form-control" placeholder="Password"/>
                     <span className="form-message"></span>
                 </div>
                 <button type="submit" className="btn btn-dark btn-block">Sign Up</button>

@@ -1,0 +1,13 @@
+.required-label {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.required-label::before {
+    content: "*";
+    color: red;
+    margin-right: 0.5px;
+}
+

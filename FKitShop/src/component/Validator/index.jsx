@@ -1,4 +1,6 @@
-//-------------------------------------------------------------------------------------------
+// Import React if you want to use it later for any UI integration
+import React from 'react';
+
 function Validator(options) {
     function getParent(element, selector) {
         while (element.parentElement) {
@@ -20,7 +22,7 @@ function Validator(options) {
 
         // Lấy ra các rules của selector
         var rules = selectorRules[rule.selector];
-
+        
         // Lặp qua từng rule & kiểm tra
         // Nếu có lỗi thì dừng việc kiểm
         for (var i = 0; i < rules.length; ++i) {
@@ -36,7 +38,7 @@ function Validator(options) {
             }
             if (errorMessage) break;
         }
-
+        
         if (errorMessage) {
             errorElement.innerText = errorMessage;
             getParent(inputElement, options.formGroupSelector).classList.add('invalid');
@@ -54,9 +56,9 @@ function Validator(options) {
         // Khi submit form
         formElement.onsubmit = function (e) {
             e.preventDefault();
-
+        
             var isFormValid = true;
-
+        
             // Lặp qua từng rules và validate
             options.rules.forEach(function (rule) {
                 var inputElement = formElement.querySelector(rule.selector);
@@ -65,42 +67,55 @@ function Validator(options) {
                     isFormValid = false;
                 }
             });
-
+        
             if (isFormValid) {
-                // Trường hợp submit với javascript
-                if (typeof options.onSubmit === 'function') {
-                    var enableInputs = formElement.querySelectorAll('[name]');
-                    var formValues = Array.from(enableInputs).reduce(function (values, input) {
-
-                        switch (input.type) {
-                            case 'radio':
-                                values[input.name] = formElement.querySelector('input[name="' + input.name + '"]:checked').value;
-                                break;
-                            case 'checkbox':
-                                if (!input.matches(':checked')) {
-                                    values[input.name] = '';
-                                    return values;
-                                }
-                                if (!Array.isArray(values[input.name])) {
-                                    values[input.name] = [];
-                                }
-                                values[input.name].push(input.value);
-                                break;
-                            case 'file':
-                                values[input.name] = input.files;
-                                break;
-                            default:
-                                values[input.name] = input.value;
-                        }
-
-                        return values;
-                    }, {});
-                    options.onSubmit(formValues);
-                }
-                // Trường hợp submit với hành vi mặc định
-                else {
-                    formElement.submit();
-                }
+                // Lấy tất cả các input trong form
+                var enableInputs = formElement.querySelectorAll('[name]');
+        
+                // Tạo object để lưu giá trị input
+                var formValues = Array.from(enableInputs).reduce(function (values, input) {
+                    switch (input.type) {
+                        case 'radio':
+                            values[input.name] = formElement.querySelector('input[name="' + input.name + '"]:checked').value;
+                            break;
+                        case 'checkbox':
+                            if (!input.matches(':checked')) {
+                                values[input.name] = '';
+                                return values;
+                            }
+                            if (!Array.isArray(values[input.name])) {
+                                values[input.name] = [];
+                            }
+                            values[input.name].push(input.value);
+                            break;
+                        case 'file':
+                            values[input.name] = input.files;
+                            break;
+                        default:
+                            values[input.name] = input.value;
+                    }
+                    return values;
+                }, {});
+        
+                // Chuyển object thành JSON
+                var jsonData = JSON.stringify(formValues);
+                console.log("Json data: ", jsonData);
+        
+                // Thực hiện hành động sau khi có JSON
+                // Ví dụ: Gửi dữ liệu đến server qua API
+                // fetch('/api/submit', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     },
+                //     body: jsonData
+                // })
+                // .then(response => response.json())
+                // .then(data => console.log(data))
+                // .catch(error => console.error('Error:', error));
+        
+                // Nếu muốn submit form theo cách mặc định, có thể uncomment dòng này
+                // formElement.submit();
             }
         }
 
@@ -117,7 +132,7 @@ function Validator(options) {
             var inputElements = formElement.querySelectorAll(rule.selector);
 
             Array.from(inputElements).forEach(function (inputElement) {
-                // Xử lý trường hợp blur khỏi input
+               // Xử lý trường hợp blur khỏi input
                 inputElement.onblur = function () {
                     validate(inputElement, rule);
                 }
@@ -127,19 +142,13 @@ function Validator(options) {
                     var errorElement = getParent(inputElement, options.formGroupSelector).querySelector(options.errorSelector);
                     errorElement.innerText = '';
                     getParent(inputElement, options.formGroupSelector).classList.remove('invalid');
-                }
+                } 
             });
         });
     }
-
 }
 
-
-
-// Định nghĩa rules
-// Nguyên tắc của các rules:
-// 1. Khi có lỗi => Trả ra message lỗi
-// 2. Khi hợp lệ => Không trả ra cái gì cả (undefined)
+// Validator rules as before
 Validator.isRequired = function (selector, message) {
     return {
         selector: selector,
@@ -147,7 +156,7 @@ Validator.isRequired = function (selector, message) {
             return value ? undefined : message || 'Please enter this field';
         }
     };
-}
+};
 
 Validator.isEmail = function (selector, message) {
     return {
@@ -157,7 +166,7 @@ Validator.isEmail = function (selector, message) {
             return regex.test(value) ? undefined : message || 'This field must be a valid email';
         }
     };
-}
+};
 
 Validator.minLength = function (selector, min, message) {
     return {
@@ -166,7 +175,7 @@ Validator.minLength = function (selector, min, message) {
             return value.length >= min ? undefined : message || `Please enter a minimum of ${min} characters`;
         }
     };
-}
+};
 
 Validator.isConfirmed = function (selector, getConfirmValue, message) {
     return {
@@ -174,8 +183,8 @@ Validator.isConfirmed = function (selector, getConfirmValue, message) {
         test: function (value) {
             return value === getConfirmValue() ? undefined : message || 'The value entered is incorrect';
         }
-    }
-}
+    };
+};
 
 Validator.isValidDate = function (selector, message) {
     return {
@@ -185,38 +194,33 @@ Validator.isValidDate = function (selector, message) {
                 return message || 'Please enter a valid date';
             }
 
-            // Parse the input date
             const selectedDate = new Date(value);
             const today = new Date();
 
-            // Set the time to 00:00:00 to compare only the date part
             today.setHours(0, 0, 0, 0);
             selectedDate.setHours(0, 0, 0, 0);
 
-            // Define a valid range for the year of birth
             const minYear = 1900;
             const selectedYear = selectedDate.getFullYear();
             const currentYear = today.getFullYear();
 
-            // Check if the year is within the valid range
             if (selectedYear < minYear || selectedYear > currentYear) {
                 return message || `Please enter year within range ${minYear}-${currentYear}`;
             }
 
-            // Check if the selected date is in the future
             if (selectedDate > today) {
                 return message || 'Date cannot be in the future';
             }
 
-            return undefined;  // Valid date
+            return undefined;  
         }
     };
-}
+};
+
 Validator.isPhoneNumber = function (selector, message, totalDigits) {
     return {
         selector: selector,
         test: function (value) {
-            // Example regex to match a 10-digit phone number
             const phoneRegex = new RegExp(`^0\\d{${totalDigits - 1}}$`);
 
             return phoneRegex.test(value) ? undefined : message || `A valid phone number must have ${totalDigits} digits`;
@@ -224,6 +228,4 @@ Validator.isPhoneNumber = function (selector, message, totalDigits) {
     };
 };
 
-
 export default Validator;
-
