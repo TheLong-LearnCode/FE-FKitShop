@@ -6,6 +6,9 @@ import SignUpForm from '../../component/SignUp';
 import SignInForm from '../../component/SignIn';
 import Validator from "../../component/Validator";
 
+import Header from '../../assets/component/Header/Header.jsx';
+import Footer from '../../assets/component/Footer/Footer.jsx';
+
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
 
@@ -17,8 +20,14 @@ function SignInAndSignUp() {
     };
 
     useEffect(() => {
+
+        requestAnimationFrame(() => {
+            window.scrollTo(0, 0);
+        });
+
         // Run validation depending on the active tab
         if (activeTab === 'signin') {
+
             Validator({
                 form: '#form-sign-in',
                 formGroupSelector: '.form-group',
@@ -28,8 +37,24 @@ function SignInAndSignUp() {
                     Validator.minLength('#form-sign-in #password', 6),
                 ],
                 onSubmit: function (data) {
-                    //call API
+                    // Gọi API hoặc xử lý dữ liệu Sign In
                     console.log('Sign In Data:', data);
+
+                    // Ví dụ gọi API
+                    fetch('/api/signin', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    })
+                        .then((response) => response.json())
+                        .then((result) => {
+                            console.log('Success:', result);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
                 }
             });
         } else if (activeTab === 'signup') {
@@ -49,16 +74,34 @@ function SignInAndSignUp() {
                     Validator.minLength('#form-sign-up #password', passwordLength),
                 ],
                 onSubmit: function (data) {
-                    // Call API
+                    // Gọi API hoặc xử lý dữ liệu Sign Up
                     console.log('Sign Up Data:', data);
+
+                    // Ví dụ gọi API
+                    fetch('/api/signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    })
+                        .then((response) => response.json())
+                        .then((result) => {
+                            console.log('Success:', result);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
                 }
             });
         }
-    }, [activeTab]); // This ensures the validation is set up when the active tab changes
+    }, [activeTab]);
+
 
     return (
         <>
-            <div className="d-flex justify-content-center align-items-center vh-100">
+            <Header />
+            <div id="mooc" className="d-flex justify-content-center align-items-center vh-100">
                 <div className="card p-3" style={{ width: '370px' }}>
                     <div id="form-tabs">
                         <ul className="nav nav-tabs d-flex justify-content-between w-100">
@@ -96,6 +139,7 @@ function SignInAndSignUp() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

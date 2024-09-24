@@ -1,3 +1,8 @@
+#mooc {
+    margin-top: 54px;
+    /* Adjust this value as needed */
+}
+
 /* Custom underline for active tab */
 .custom-active-tab {
     border-bottom: 3px solid black !important;
@@ -20,25 +25,31 @@
 
 .form-message {
     color: red;
-    font-size: 0.3 rem;
+    font-size: 0.8rem !important;
     line-height: 0.5rem;
-    padding: 4px 0 0;
+    padding: 2px 0 0;
 
 }
+
 .form-control {
-    border: 1px solid #ccc; /* Viền ban đầu */
+    border: 1px solid #ccc;
+    /* Viền ban đầu */
     padding: 10px;
     font-size: 16px;
     width: 100%;
     box-sizing: border-box;
     border-radius: 4px;
-    transition: border-color 0.3s ease-in-out; /* Hiệu ứng mượt khi chuyển viền */
+    transition: border-color 0.3s ease-in-out;
+    /* Hiệu ứng mượt khi chuyển viền */
 }
 
 .form-control:focus {
-    border-color: black; /* Viền đen khi focus */
-    outline: none; /* Loại bỏ viền mặc định màu xanh của trình duyệt */
-    box-shadow: none; /* Loại bỏ hiệu ứng đổ bóng mặc định nếu có */
+    border-color: black;
+    /* Viền đen khi focus */
+    outline: none;
+    /* Loại bỏ viền mặc định màu xanh của trình duyệt */
+    box-shadow: none;
+    /* Loại bỏ hiệu ứng đổ bóng mặc định nếu có */
 }
 
 button {
@@ -53,6 +64,8 @@ button {
 
 /* Khi người dùng hover */
 button:hover {
-    background-color: #333; /* Thay đổi màu nền khi hover */
-    transform: scale(1.05); /* Phóng to nhẹ nút */
+    background-color: #333;
+    /* Thay đổi màu nền khi hover */
+    transform: scale(1.05);
+    /* Phóng to nhẹ nút */
 }

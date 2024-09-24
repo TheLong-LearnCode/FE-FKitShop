@@ -22,7 +22,7 @@ function Validator(options) {
 
         // Lấy ra các rules của selector
         var rules = selectorRules[rule.selector];
-        
+
         // Lặp qua từng rule & kiểm tra
         // Nếu có lỗi thì dừng việc kiểm
         for (var i = 0; i < rules.length; ++i) {
@@ -38,7 +38,7 @@ function Validator(options) {
             }
             if (errorMessage) break;
         }
-        
+
         if (errorMessage) {
             errorElement.innerText = errorMessage;
             getParent(inputElement, options.formGroupSelector).classList.add('invalid');
@@ -56,9 +56,9 @@ function Validator(options) {
         // Khi submit form
         formElement.onsubmit = function (e) {
             e.preventDefault();
-        
+
             var isFormValid = true;
-        
+
             // Lặp qua từng rules và validate
             options.rules.forEach(function (rule) {
                 var inputElement = formElement.querySelector(rule.selector);
@@ -67,11 +67,12 @@ function Validator(options) {
                     isFormValid = false;
                 }
             });
-        
+
+            // Thay thế đoạn này
             if (isFormValid) {
                 // Lấy tất cả các input trong form
                 var enableInputs = formElement.querySelectorAll('[name]');
-        
+
                 // Tạo object để lưu giá trị input
                 var formValues = Array.from(enableInputs).reduce(function (values, input) {
                     switch (input.type) {
@@ -96,27 +97,20 @@ function Validator(options) {
                     }
                     return values;
                 }, {});
-        
+
                 // Chuyển object thành JSON
                 var jsonData = JSON.stringify(formValues);
                 console.log("Json data: ", jsonData);
-        
-                // Thực hiện hành động sau khi có JSON
-                // Ví dụ: Gửi dữ liệu đến server qua API
-                // fetch('/api/submit', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: jsonData
-                // })
-                // .then(response => response.json())
-                // .then(data => console.log(data))
-                // .catch(error => console.error('Error:', error));
-        
+
+                // Nếu có options.onSubmit, gọi hàm này với dữ liệu JSON
+                if (typeof options.onSubmit === 'function') {
+                    options.onSubmit(formValues); // Gửi formValues thay vì jsonData để dễ xử lý trong React
+                }
+
                 // Nếu muốn submit form theo cách mặc định, có thể uncomment dòng này
                 // formElement.submit();
             }
+
         }
 
         // Lặp qua mỗi rule và xử lý (lắng nghe sự kiện blur, input, ...)
@@ -132,7 +126,7 @@ function Validator(options) {
             var inputElements = formElement.querySelectorAll(rule.selector);
 
             Array.from(inputElements).forEach(function (inputElement) {
-               // Xử lý trường hợp blur khỏi input
+                // Xử lý trường hợp blur khỏi input
                 inputElement.onblur = function () {
                     validate(inputElement, rule);
                 }
@@ -142,7 +136,7 @@ function Validator(options) {
                     var errorElement = getParent(inputElement, options.formGroupSelector).querySelector(options.errorSelector);
                     errorElement.innerText = '';
                     getParent(inputElement, options.formGroupSelector).classList.remove('invalid');
-                } 
+                }
             });
         });
     }
@@ -212,7 +206,7 @@ Validator.isValidDate = function (selector, message) {
                 return message || 'Date cannot be in the future';
             }
 
-            return undefined;  
+            return undefined;
         }
     };
 };
