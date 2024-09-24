@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.scss';  // Import your custom CSS
+import './index.css';  // Import your custom CSS
 import GoogleButton from '../../component/GoogleButton';
 import SignUpForm from '../../component/SignUp';
 import SignInForm from '../../component/SignIn';
 import Validator from "../../component/Validator";
 
-import Header from '../../assets/component/Header/Header.jsx';
-import Footer from '../../assets/component/Footer/Footer.jsx';
+import Header from '../../component/Header/Header.jsx';
+import Footer from '../../component/Footer/Footer.jsx';
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
@@ -102,7 +102,7 @@ function SignInAndSignUp() {
         <>
             <Header />
             <div id="mooc" className="d-flex justify-content-center align-items-center vh-100">
-                <div className="card p-3" style={{ width: '370px' }}>
+                <div className="card p-3 card-shadow" style={{ width: '370px' }}>
                     <div id="form-tabs">
                         <ul className="nav nav-tabs d-flex justify-content-between w-100">
                             <li className="nav-item w-50 text-center">
