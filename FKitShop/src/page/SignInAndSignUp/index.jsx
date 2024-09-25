@@ -88,7 +88,7 @@ function SignInAndSignUp() {
             <Header />
             <div id="mooc" className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
                 <div className="card p-3 card-shadow" style={{
-                    width: activeTab === 'signup' ? '430px' : '370px',
+                    width: activeTab === 'signup' ? '600px' : '370px',
                     overflow: 'auto',
                 }}>
                     <div id="form-tabs">
