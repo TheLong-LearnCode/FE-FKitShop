@@ -99,8 +99,8 @@ function Validator(options) {
                 }, {});
 
                 // Chuyển object thành JSON
-                var jsonData = JSON.stringify(formValues);
-                console.log("Json data: ", jsonData);
+                // var jsonData = JSON.stringify(formValues);
+                // console.log("Json data: ", jsonData);
 
                 // Nếu có options.onSubmit, gọi hàm này với dữ liệu JSON
                 if (typeof options.onSubmit === 'function') {

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';  // Import your custom CSS
-import SignUpForm from '../../component/SignUp';
-import SignInForm from '../../component/SignIn';
-import Validator from "../../component/Validator";
+import SignUpForm from '../../component/SignUp/index.jsx';
+import SignInForm from '../../component/SignIn/index.jsx';
+import Validator from "../../component/Validator/index.jsx";
 import Header from '../../component/Header/Header.jsx';
 import Footer from '../../component/Footer/Footer.jsx';
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
 
-function SignInAndSignUp() {
+function SignInSignUp() {
     const [activeTab, setActiveTab] = useState('signin'); // State to track active tab
 
     const handleTabClick = (tab) => {
@@ -85,7 +85,7 @@ function SignInAndSignUp() {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div id="mooc" className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
                 <div className="card p-3 card-shadow" style={{
                     width: activeTab === 'signup' ? '600px' : '370px',
@@ -125,9 +125,9 @@ function SignInAndSignUp() {
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     );
 }
 
-export default SignInAndSignUp;
+export default SignInSignUp;
