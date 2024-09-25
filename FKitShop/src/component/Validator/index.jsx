@@ -215,9 +215,11 @@ Validator.isPhoneNumber = function (selector, message, totalDigits) {
     return {
         selector: selector,
         test: function (value) {
+            if (value.charAt(0) !== '0') {
+                return 'Valid phone number must start at 0';
+            }
             const phoneRegex = new RegExp(`^0\\d{${totalDigits - 1}}$`);
-
-            return phoneRegex.test(value) ? undefined : message || `A valid phone number must have ${totalDigits} digits`;
+            return phoneRegex.test(value) ? undefined : message || `Valid phone number must have ${totalDigits} digits`;
         }
     };
 };
