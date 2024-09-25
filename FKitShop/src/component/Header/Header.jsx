@@ -41,8 +41,8 @@ export default function Header() {
                                     <span>Account</span>
                                 </a>
                                 <div className="dropdown-menu">
-                                    <a className="dropdown-item" href="#">Sign In</a>
-                                    <a className="dropdown-item" href="#">Sign Up</a>
+                                    <a className="dropdown-item" href="#signin">Sign In</a>
+                                    <a className="dropdown-item" href="#signup">Sign Up</a>
                                     <a className="dropdown-item" href="#">Favorite List</a>
                                 </div>
                             </div>
