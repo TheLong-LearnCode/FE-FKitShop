@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import GoogleButton from "../GoogleButton";
 function SignIn() {
 
     // Sử dụng state để lưu giá trị các input
@@ -31,6 +31,7 @@ function SignIn() {
                     <span className="form-message"></span>
                 </div>
                 <button type="submit" className="btn btn-dark btn-block">Sign In</button>
+                <GoogleButton prop="signin" />
             </form>
         </>
     );
