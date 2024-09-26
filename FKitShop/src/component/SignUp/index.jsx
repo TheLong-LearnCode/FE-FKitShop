@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import GoogleButton from '../GoogleButton';
 
 function SignUp() {
-    const [yob, setYob] = useState(''); // Khởi tạo trạng thái cho Year of Birth
+    const [dob, setDob] = useState(''); // Khởi tạo trạng thái cho Year of Birth
     const [isDateType, setIsDateType] = useState(false); // Trạng thái để theo dõi khi nào input là kiểu 'date'
 
     const handleYobChange = (event) => {
-        setYob(event.target.value);
+        setDob(event.target.value);
     };
 
     return (
@@ -23,9 +23,9 @@ function SignUp() {
                         </div>
                         <div className="form-group">
                             <input
-                                id="yob"
-                                name="yob"
-                                type={isDateType || yob ? 'date' : 'text'}
+                                id="dob"
+                                name="dob"
+                                type={isDateType || dob ? 'date' : 'text'}
                                 className="form-control"
                                 placeholder="Date of birth"
                                 onFocus={() => setIsDateType(true)}
@@ -35,7 +35,7 @@ function SignUp() {
                                         e.target.placeholder = 'Date of birth';
                                     }
                                 }}
-                                value={yob}
+                                value={dob}
                                 onChange={handleYobChange}
                             />
                             <span className="form-message"></span>
