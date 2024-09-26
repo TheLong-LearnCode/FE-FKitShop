@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 
 export default function Header() {
     const [activeLink, setActiveLink] = useState('');
+    const onClose= null;
 
     const handleNavClick = (linkName) => {
         setActiveLink(linkName);
@@ -52,9 +53,9 @@ export default function Header() {
                     </div>
 
                     <ul className='lower-nav-menu'>
-                    <li>
-                            <Link 
-                                to={'/home'} 
+                        <li>
+                            <Link
+                                to={'/home'}
                                 className={`nav-menu-link ${activeLink === 'Home' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Home')}
                             >
@@ -62,17 +63,17 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
-                            <Link 
-                                to={'/Product'} 
+                            <a
+                                href="#product-menu"
                                 className={`nav-menu-link ${activeLink === 'Product' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Product')}
                             >
                                 Product
-                            </Link>
+                            </a>
                         </li>
                         <li>
-                            <Link 
-                                to={'/blog'} 
+                            <Link
+                                to={'/blog'}
                                 className={`nav-menu-link ${activeLink === 'Blog' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Blog')}
                             >
@@ -80,8 +81,8 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
-                            <Link 
-                                to={'/contact'} 
+                            <Link
+                                to={'/contact'}
                                 className={`nav-menu-link ${activeLink === 'Contact' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Contact')}
                             >
@@ -90,7 +91,15 @@ export default function Header() {
                         </li>
                     </ul>
                 </nav>
-            </header>
-        </div>
+                <div>
+                    <div id='product-menu' className='overlay' onClick={onClose}>
+                        <div className="popup">
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </header >
+        </div >
     )
 }

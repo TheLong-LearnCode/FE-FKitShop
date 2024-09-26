@@ -120,3 +120,39 @@ ul {
     font-weight: 600;
 }
 
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(196, 187, 187, 0.7); /* Dark transparent background */
+    display: none; /* Hide by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Popup box styling */
+  .popup {
+    background-color: black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+  }
+  
+  /* Close button styling */
+  
+  /* Content inside popup */
+  .popup .content {
+    margin-top: 15px;
+    color: #555;
+    font-size: 16px;
+  }
+  
+  /* Show the overlay when popup is open */
+  #product-menu:target {
+    display: flex; /* Show overlay */
+  }
