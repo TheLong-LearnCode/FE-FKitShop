@@ -60,7 +60,7 @@ function SignUp() {
                         </div>
                     </div>
                     <div className="col-md-12 tab-content mt-3">
-                        <button type="submit" className="btn btn-dark btn-block">Sign Up</button>
+                        <button type="submit" className="btn btn-outline-dark btn-block">Sign Up</button>
                         <GoogleButton prop="signup" />
                     </div>
                 </div>
