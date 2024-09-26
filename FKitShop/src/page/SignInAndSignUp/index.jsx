@@ -85,7 +85,6 @@ function SignInAndSignUp() {
 
     return (
         <>
-            <Header />
             <div id="mooc" className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
                 <div className="card p-3 card-shadow" style={{
                     width: activeTab === 'signup' ? '600px' : '370px',
@@ -127,7 +126,6 @@ function SignInAndSignUp() {
                     </div>
                 </div>
             </div>
-            <Footer />
         </>
     );
 }

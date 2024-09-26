@@ -3,6 +3,7 @@ import './Header.css'
 import 'boxicons'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import { Link } from 'react-router-dom'
 
 export default function Header() {
     const [activeLink, setActiveLink] = useState('');
@@ -15,9 +16,9 @@ export default function Header() {
             <header className='sticky-header fixed-top'>
                 <nav>
                     <div className='upper-nav'>
-                        <a href="#">
+                        <Link to={'/home'}>
                             <img className='upper-nav-logo' src="/img/Logo.png" alt="shop logo" />
-                        </a>
+                        </Link>
                         <form className="upper-nav-search-form">
                             <input
                                 type="search"
@@ -30,10 +31,10 @@ export default function Header() {
                         </form>
 
                         <div className='upper-nav-user-actions'>
-                            <a href="#" className='upper-nav-item'>
+                            <Link to={'/cart'} className='upper-nav-item'>
                                 <box-icon name='cart' color='#ffffff'></box-icon>
                                 <span>Cart (0)</span>
-                            </a>
+                            </Link>
 
                             <div className="dropdown">
                                 <a className="dropdown-toggle upper-nav-item" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
@@ -41,9 +42,9 @@ export default function Header() {
                                     <span>Account</span>
                                 </a>
                                 <div className="dropdown-menu">
-                                    <a className="dropdown-item" href="#signin">Sign In</a>
-                                    <a className="dropdown-item" href="#signup">Sign Up</a>
-                                    <a className="dropdown-item" href="#">Favorite List</a>
+                                    <Link to={'/signin'} className="dropdown-item">Sign In</Link>
+                                    <Link to={'/signup'} className="dropdown-item">Sign Up</Link>
+                                    <Link to={'/favoriteList'} className="dropdown-item">Favorite List</Link>
                                 </div>
                             </div>
                         </div>
@@ -52,40 +53,40 @@ export default function Header() {
 
                     <ul className='lower-nav-menu'>
                     <li>
-                            <a 
-                                href="#" 
+                            <Link 
+                                to={'/home'} 
                                 className={`nav-menu-link ${activeLink === 'Home' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Home')}
                             >
                                 Home
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a 
-                                href="#" 
+                            <Link 
+                                to={'/Product'} 
                                 className={`nav-menu-link ${activeLink === 'Product' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Product')}
                             >
                                 Product
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a 
-                                href="#" 
+                            <Link 
+                                to={'/blog'} 
                                 className={`nav-menu-link ${activeLink === 'Blog' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Blog')}
                             >
                                 Blog
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a 
-                                href="#" 
+                            <Link 
+                                to={'/contact'} 
                                 className={`nav-menu-link ${activeLink === 'Contact' ? 'active' : ''}`}
                                 onClick={() => handleNavClick('Contact')}
                             >
                                 Contact
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </nav>
