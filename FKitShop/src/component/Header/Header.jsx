@@ -1,17 +1,40 @@
 import React, { useState } from 'react'
+import Modal from 'react-modal';
 import './Header.css'
 import 'boxicons'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { Link } from 'react-router-dom'
+import ProductPopup from '../Popup/ProductPopup'
+
+Modal.setAppElement('#root');
+
+const products = [
+    { id: 1, name: 'Sản phẩm 1', price: '$10' },
+    { id: 2, name: 'Sản phẩm 2', price: '$20' },
+    { id: 3, name: 'Sản phẩm 3', price: '$30' },
+];
 
 export default function Header() {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    // Mở popup
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+
+    // Đóng popup
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
     const [activeLink, setActiveLink] = useState('');
-    const onClose= null;
+    const onClose = null;
 
     const handleNavClick = (linkName) => {
         setActiveLink(linkName);
     };
+
     return (
         <div>
             <header className='sticky-header fixed-top'>
@@ -57,25 +80,35 @@ export default function Header() {
                             <Link
                                 to={'/home'}
                                 className={`nav-menu-link ${activeLink === 'Home' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Home')}
+                                onClick={() => {
+                                    handleNavClick('Home');
+                                    closeModal();
+                                  }}
                             >
                                 Home
                             </Link>
                         </li>
                         <li>
-                            <a
-                                href="#product-menu"
+                            <Link
                                 className={`nav-menu-link ${activeLink === 'Product' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Product')}
+                                onClick={() => {
+                                    handleNavClick('Product');
+                                    openModal();
+                                  }}
+                                
                             >
                                 Product
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <Link
                                 to={'/blog'}
                                 className={`nav-menu-link ${activeLink === 'Blog' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Blog')}
+                                onClick={() => {
+                                    handleNavClick('Blog');
+                                    closeModal();
+                                  }}
+
                             >
                                 Blog
                             </Link>
@@ -84,21 +117,43 @@ export default function Header() {
                             <Link
                                 to={'/contact'}
                                 className={`nav-menu-link ${activeLink === 'Contact' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Contact')}
+                                onClick={() => {
+                                    handleNavClick('Contact');
+                                    closeModal();
+                                  }}
                             >
                                 Contact
                             </Link>
                         </li>
                     </ul>
                 </nav>
-                <div>
-                    <div id='product-menu' className='overlay' onClick={onClose}>
-                        <div className="popup">
-                            
-                        </div>
-                    </div>
-
-                </div>
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Product menu"
+                    style={{
+                        content: {
+                            top: '50%',
+                            left: '50%',
+                            right: 'auto',
+                            bottom: 'auto',
+                            marginRight: '-50%',
+                            transform: 'translate(-50%, -50%)',
+                            padding: '20px',
+                            width: '400px',
+                        },
+                    }}
+                >
+                    <h2>Danh sách sản phẩm</h2>
+                    <ul>
+                        {products.map(product => (
+                            <li key={product.id}>
+                                {product.name} - {product.price}
+                            </li>
+                        ))}
+                    </ul>
+                    <button onClick={closeModal}>Đóng</button>
+                </Modal>
             </header >
         </div >
     )
