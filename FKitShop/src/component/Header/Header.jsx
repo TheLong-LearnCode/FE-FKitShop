@@ -5,7 +5,6 @@ import 'boxicons'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { Link } from 'react-router-dom'
-import ProductPopup from '../Popup/ProductPopup'
 
 Modal.setAppElement('#root');
 
@@ -83,7 +82,7 @@ export default function Header() {
                                 onClick={() => {
                                     handleNavClick('Home');
                                     closeModal();
-                                  }}
+                                }}
                             >
                                 Home
                             </Link>
@@ -94,8 +93,8 @@ export default function Header() {
                                 onClick={() => {
                                     handleNavClick('Product');
                                     openModal();
-                                  }}
-                                
+                                }}
+
                             >
                                 Product
                             </Link>
@@ -107,7 +106,7 @@ export default function Header() {
                                 onClick={() => {
                                     handleNavClick('Blog');
                                     closeModal();
-                                  }}
+                                }}
 
                             >
                                 Blog
@@ -120,7 +119,7 @@ export default function Header() {
                                 onClick={() => {
                                     handleNavClick('Contact');
                                     closeModal();
-                                  }}
+                                }}
                             >
                                 Contact
                             </Link>
@@ -133,26 +132,25 @@ export default function Header() {
                     contentLabel="Product menu"
                     style={{
                         content: {
-                            top: '50%',
-                            left: '50%',
-                            right: 'auto',
-                            bottom: 'auto',
-                            marginRight: '-50%',
-                            transform: 'translate(-50%, -50%)',
-                            padding: '20px',
-                            width: '400px',
+                            top: '16%',
+                            left: '30%',
+                            height: '340px',
+                            width: '250px',
+                            overflow: 'hidden',
+                        },
+                        overlay: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.25)', // Màu overlay mờ
                         },
                     }}
                 >
-                    <h2>Danh sách sản phẩm</h2>
-                    <ul>
-                        {products.map(product => (
-                            <li key={product.id}>
-                                {product.name} - {product.price}
-                            </li>
-                        ))}
-                    </ul>
-                    <button onClick={closeModal}>Đóng</button>
+                        <p className="product-tag">All</p>
+                        <p className="product-tag">Arduino</p>
+                        <p className="product-tag">STEM Robotics & AI & IoT</p>
+                        <p className="product-tag">Sensor</p>
+                        <p className="product-tag">STEM Programming</p>
+                        <p className="product-tag">Accessories and Tools</p>
+                        <p className="product-tag">STEM Toy</p>
+                        <p className="product-tag">Module</p>
                 </Modal>
             </header >
         </div >
