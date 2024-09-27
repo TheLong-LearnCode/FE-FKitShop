@@ -4,8 +4,7 @@ import './index.css';  // Import your custom CSS
 import SignUpForm from '../../component/SignUp/index.jsx';
 import SignInForm from '../../component/SignIn/index.jsx';
 import Validator from "../../component/Validator/index.jsx";
-import Header from '../../component/Header/Header.jsx';
-import Footer from '../../component/Footer/Footer.jsx';
+
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;

@@ -1,13 +1,14 @@
 // ProfileInformation.js
 import React from 'react';
+import './Purchase.css'; // Import a CSS file for custom styles
 
 const Purchase = () => {
   return (
-    <div>
+    <div className="purchase-container">
       <h4 className='text-center'>Purchase</h4>
-      <div>
-        <table class="table table-bordered table-hover">
-          <thead class="thead-dark">
+      <div className="table-container">
+        <table className="table table-hover">
+          <thead className="thead-dark">
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Date</th>
@@ -16,6 +17,7 @@ const Purchase = () => {
               <th scope="col">Status</th>
               <th scope="col">Support</th>
               <th scope="col">Support Times</th>
+              <th scope="col">Question</th>
             </tr>
           </thead>
           <tbody>
@@ -23,10 +25,13 @@ const Purchase = () => {
               <th scope="row">1</th>
               <td>Mark</td>
               <td>Otto</td>
+              <td>Nguyen Van A, Quan 7, TPHCM</td>
               <td>@mdo</td>
               <td>@mdo</td>
               <td>@mdo</td>
-              <td>@mdo</td>
+              <td>
+                <button type="button" className="btn btn-outline-warning">Ask for</button>
+              </td>
             </tr>
             <tr>
               <th scope="row">2</th>
@@ -36,6 +41,9 @@ const Purchase = () => {
               <td>Thornton</td>
               <td>Thornton</td>
               <td>Thornton</td>
+              <td>
+                <button type="button" className="btn btn-outline-warning">Ask for</button>
+              </td>
             </tr>
             <tr>
               <th scope="row">3</th>
@@ -45,6 +53,9 @@ const Purchase = () => {
               <td>the Bird</td>
               <td>@twitter</td>
               <td>@twitter</td>
+              <td>
+                <button type="button" className="btn btn-outline-warning">Ask for</button>
+              </td>
             </tr>
           </tbody>
         </table>

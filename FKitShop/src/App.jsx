@@ -7,7 +7,6 @@ import './App.css'
 // import SignInSignUp from './component/SignInSignUp'
 // import Login from './page/Login/'
 import ViewUserProfile from './page/ViewUserProfile'
-//import ViewProfile from './page/ViewProfile/ViewProfile'
 
 function App() {
   return (

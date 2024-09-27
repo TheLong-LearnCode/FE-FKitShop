@@ -18,9 +18,9 @@ export default function UserProfile() {
     return (
         <>
             <div className={styles.ht}>
-                <div className="container mt-5">
+                <div className="container">
                     <div className="row justify-content-center">
-                        <div className="col-md-10 col-lg-10">
+                        <div className="col-md-10 col-lg-12 col-xs-12">
                             <div className={classes}>
                                 <div className="row">
                                     <div className="col-md-3 border-right">

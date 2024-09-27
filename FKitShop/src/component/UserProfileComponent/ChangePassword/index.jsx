@@ -1,70 +1,66 @@
-// UpdateAccountForm.js
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+// import clsx from 'clsx';
+import styles from './index.module.css';
+import Validator from '../../Validator'; // Ensure this import points to the correct path
 
-//import './index.css'
+export default function ChangePassword() {
+    const passwordLength = 6; // Example password length, adjust if necessary
 
-export default function ChangePasssword() {
-    const [yob, setYob] = useState(''); // Initialize state for Year of Birth
-    const [isDateType, setIsDateType] = useState(false); // Track when the input is of type 'date'
-
-    const handleYobChange = (event) => {
-        setYob(event.target.value);
-    };
+    useEffect(() => {
+        Validator({
+            form: '#form-change-password',
+            formGroupSelector: '.form-group',
+            errorSelector: '.form-message',
+            rules: [
+                Validator.minLength('#newPassword', passwordLength, `Please enter at least ${passwordLength} characters`),
+                Validator.isConfirmed('#password_confirmation', function () {
+                    return document.querySelector('#form-change-password #newPassword').value;
+                }, 'Passwords do not match')
+            ],
+            onSubmit: function (data) {
+                console.log('Change Password Data:', data);
+                fetch('/api/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                })
+                    .then((response) => response.json())
+                    .then((result) => console.log('Success:', result))
+                    .catch((error) => console.error('Error:', error));
+            },
+        });
+    }, []);
 
     return (
-        <>
-            <div>
-                <form>
-                    <div className="form-group row">
-                        <div className='col-md-1'></div>
-                        <label htmlFor="fullname" className="col-md-3 col-form-label">Full Name</label>
-                        <div className="col-md-5">
-                            <input type="text" className="form-control" id="fullname" placeholder="Full Name" />
-                        </div>
+        <div className={`${styles.ht} ${styles.wd}`}>
+            <form id="form-change-password">
+                <div className="form-group">
+                    <label htmlFor="currentPassword"><strong>Current Password</strong></label>
+                    <div className='col-md-5'>
+                        <input type="password" className="form-control" id="currentPassword" />
+                        <span className="form-message"></span>
                     </div>
-                    <div className="form-group row">
-                        <div className='col-md-1'></div>
-                        <label htmlFor="yob" className="col-md-3 col-form-label">Date of birth</label>
-                        <div className="col-md-5">
-                            <input
-                                id="yob"
-                                name="yob"
-                                type={isDateType || yob ? 'date' : 'text'}
-                                className="form-control"
-                                placeholder="Date of birth"
-                                onFocus={() => setIsDateType(true)}
-                                onBlur={(e) => {
-                                    if (!e.target.value) {
-                                        setIsDateType(false);
-                                        e.target.placeholder = 'Date of birth'; //giá trị date of birth cũ
-                                    }
-                                }}
-                                value={yob}
-                                onChange={handleYobChange}
-                            />
-                        </div>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="newPassword"><strong>New Password</strong></label>
+                    <div className='col-md-5'>
+                        <input type="password" className="form-control" id="newPassword" />
+                        <span className="form-message"></span>
                     </div>
-                    <div className="form-group row">
-                        <div className='col-md-1'></div>
-                        <label htmlFor="phone" className="col-md-3 col-form-label">Phone number</label>
-                        <div className="col-md-5">
-                            <input type="tel" className="form-control" id="phone" placeholder="Phone number" />
-                        </div>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password_confirmation"><strong>Confirm Password</strong></label>
+                    <div className='col-md-5'>
+                        <input type="password" className="form-control" id="password_confirmation" />
+                        <span className="form-message"></span>
                     </div>
-                    <div className="form-group row">
-                        <div className='col-md-1'></div>
-                        <label htmlFor="email" className="col-md-3 col-form-label">Email</label>
-                        <div className="col-md-5">
-                            <input type="email" className="form-control" id="email" placeholder="Email" />
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <button type="submit" className="btn btn-outline-dark custom-btn">
-                            Save
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </>
+                </div>
+                <div className={`${styles.btnCustom}`}>
+                    <button type="submit" className="btn btn-outline-success btn-custom col-md-3">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
     );
 }
