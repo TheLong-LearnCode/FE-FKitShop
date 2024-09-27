@@ -8,12 +8,6 @@ import { Link } from 'react-router-dom'
 
 Modal.setAppElement('#root');
 
-const products = [
-    { id: 1, name: 'Sản phẩm 1', price: '$10' },
-    { id: 2, name: 'Sản phẩm 2', price: '$20' },
-    { id: 3, name: 'Sản phẩm 3', price: '$30' },
-];
-
 export default function Header() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -65,9 +59,9 @@ export default function Header() {
                                     <span>Account</span>
                                 </a>
                                 <div className="dropdown-menu">
-                                    <Link to={'/signin'} className="dropdown-item">Sign In</Link>
-                                    <Link to={'/signup'} className="dropdown-item">Sign Up</Link>
-                                    <Link to={'/favoriteList'} className="dropdown-item">Favorite List</Link>
+                                    <Link to={'/signin'} className="dropdown-item" onClick={closeModal}>Sign In</Link>
+                                    <Link to={'/signup'} className="dropdown-item" onClick={closeModal}>Sign Up</Link>
+                                    <Link to={'/favoriteList'} className="dropdown-item" onClick={closeModal}>Favorite List</Link>
                                 </div>
                             </div>
                         </div>
@@ -134,24 +128,28 @@ export default function Header() {
                         content: {
                             top: '16%',
                             left: '30%',
-                            height: '340px',
-                            width: '250px',
+                            height: '230px',
+                            width: '230px',
                             overflow: 'hidden',
+                            borderRadius: '10px',
                         },
                         overlay: {
                             backgroundColor: 'rgba(0, 0, 0, 0.25)', // Màu overlay mờ
                         },
                     }}
                 >
-                        <p className="product-tag">All</p>
-                        <p className="product-tag">Arduino</p>
-                        <p className="product-tag">STEM Robotics & AI & IoT</p>
-                        <p className="product-tag">Sensor</p>
-                        <p className="product-tag">STEM Programming</p>
-                        <p className="product-tag">Accessories and Tools</p>
-                        <p className="product-tag">STEM Toy</p>
-                        <p className="product-tag">Module</p>
+                    <div className="product-tag-container">
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>All</Link>
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Arduino</Link>
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>STEM Robotics & AI & IoT</Link>
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Sensor</Link>
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>STEM Programming</Link>
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Accessories and Tools</Link>
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>STEM Toy</Link>
+                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Module</Link>
+                    </div>
                 </Modal>
+                
             </header >
         </div >
     )
