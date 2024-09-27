@@ -4,16 +4,15 @@ import './App.css'
 
 
 //import 'bootstrap/dist/css/bootstrap.min.css';
-import SignInAndSignUp from './page/SignInAndSignUp'
-//import ViewProfile from './page/ViewProfile/ViewProfile'
+// import SignInSignUp from './component/SignInSignUp'
+// import Login from './page/Login/'
+import ViewUserProfile from './page/ViewUserProfile'
 
 function App() {
-
-
   return (
     <>
-    <SignInAndSignUp/>
-    {/* <ViewProfile/> */}
+      <ViewUserProfile />
+      {/* <Login/> */}
     </>
   )
 }

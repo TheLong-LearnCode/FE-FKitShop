@@ -1,0 +1,24 @@
+/* Purchase.css */
+.table-container {
+    max-height: 300px; /* Adjust height as needed */
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #343a40; /* Background color of the header */
+    color: white; /* Text color for the header */
+  }
+
+.purchase-container {
+    width: 100%; /* Or a specific width like 90%, adjust as needed */
+  }
+    

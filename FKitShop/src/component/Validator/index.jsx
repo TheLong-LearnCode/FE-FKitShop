@@ -1,5 +1,5 @@
 // Import React if you want to use it later for any UI integration
-import React from 'react';
+//import React from 'react';
 
 function Validator(options) {
     function getParent(element, selector) {
@@ -40,7 +40,7 @@ function Validator(options) {
         }
 
         if (errorMessage) {
-            errorElement.innerText = errorMessage;
+            errorElement.innerText = `* ${errorMessage} *`;
             getParent(inputElement, options.formGroupSelector).classList.add('invalid');
         } else {
             errorElement.innerText = '';
@@ -99,8 +99,8 @@ function Validator(options) {
                 }, {});
 
                 // Chuyển object thành JSON
-                var jsonData = JSON.stringify(formValues);
-                console.log("Json data: ", jsonData);
+                // var jsonData = JSON.stringify(formValues);
+                // console.log("Json data: ", jsonData);
 
                 // Nếu có options.onSubmit, gọi hàm này với dữ liệu JSON
                 if (typeof options.onSubmit === 'function') {
@@ -157,7 +157,7 @@ Validator.isEmail = function (selector, message) {
         selector: selector,
         test: function (value) {
             var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            return regex.test(value) ? undefined : message || 'This field must be a valid email';
+            return regex.test(value) ? undefined : message || 'Invalid email';
         }
     };
 };
@@ -166,7 +166,7 @@ Validator.minLength = function (selector, min, message) {
     return {
         selector: selector,
         test: function (value) {
-            return value.length >= min ? undefined : message || `Please enter a minimum of ${min} characters`;
+            return value.length >= min ? undefined : message || `At least ${min} characters`;
         }
     };
 };
@@ -185,7 +185,7 @@ Validator.isValidDate = function (selector, message) {
         selector: selector,
         test: function (value) {
             if (!value) {
-                return message || 'Please enter a valid date';
+                return message || 'Invalid date';
             }
 
             const selectedDate = new Date(value);
@@ -199,7 +199,7 @@ Validator.isValidDate = function (selector, message) {
             const currentYear = today.getFullYear();
 
             if (selectedYear < minYear || selectedYear > currentYear) {
-                return message || `Please enter year within range ${minYear}-${currentYear}`;
+                return message || `Year must be within range ${minYear}-${currentYear}`;
             }
 
             if (selectedDate > today) {
@@ -216,20 +216,20 @@ Validator.isPhoneNumber = function (selector, message, totalDigits) {
         selector: selector,
         test: function (value) {
             if (value.charAt(0) !== '0') {
-                return 'Valid phone number must start at 0';
+                return 'Must start at 0';
             }
             const phoneRegex = new RegExp(`^0\\d{${totalDigits - 1}}$`);
-            return phoneRegex.test(value) ? undefined : message || `Valid phone number must have ${totalDigits} digits`;
+            return phoneRegex.test(value) ? undefined : message || `Must have ${totalDigits} digits`;
         }
     };
 };
-Validator.isConfirmed = function (selector, getConfirmValue, message) {
-    return {
-        selector: selector,
-        test: function (value) {
-            return value === getConfirmValue() ? undefined : message || 'Giá trị nhập vào không chính xác';
-        }
-    }
-}
+// Validator.isConfirmed = function (selector, getConfirmValue, message) {
+//     return {
+//         selector: selector,
+//         test: function (value) {
+//             return value === getConfirmValue() ? undefined : message || 'Giá trị nhập vào không chính xác';
+//         }
+//     }
+// }
 
 export default Validator;
