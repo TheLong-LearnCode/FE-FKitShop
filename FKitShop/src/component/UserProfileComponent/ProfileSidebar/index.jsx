@@ -1,8 +1,9 @@
+// ProfileSidebar.js
 import React from 'react';
 import clsx from 'clsx'; // Using clsx to handle class names
-import './index.module.css'
+import './index.module.css';
 
-const ProfileSidebar = ({ activeTab, setActiveTab }) => {
+export default function ProfileSidebar({ activeTab, setActiveTab }) {
   const handleOnclick = (id) => () => {
     setActiveTab(id); // Update the active tab in UserProfile component
   };
@@ -52,7 +53,4 @@ const ProfileSidebar = ({ activeTab, setActiveTab }) => {
       </button>
     </div>
   );
-};
-
-export default ProfileSidebar;
-
+}

@@ -3,8 +3,11 @@ import clsx from 'clsx';
 import styles from './index.module.css';
 
 import ProfileSidebar from '../ProfileSidebar';
+
 import ProfileInformation from '../ProfileInformation';
-import Purchase from '../Purchase'; // Assuming you have a component for Purchase information
+import Purchase from '../Purchase';
+import UpdateAccount from '../UpdateAccount';
+import ChangePasssword from '../ChangePassword';
 
 export default function UserProfile() {
     const [activeTab, setActiveTab] = useState('information'); // State to manage the active tab
@@ -20,16 +23,16 @@ export default function UserProfile() {
                         <div className="col-md-10 col-lg-10">
                             <div className={classes}>
                                 <div className="row">
-                                    <div className="col-md-4 border-right">
+                                    <div className="col-md-3 border-right">
                                         {/* Pass the activeTab and setActiveTab to ProfileSidebar */}
                                         <ProfileSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
                                     </div>
-                                    <div className="col-md-8">
+                                    <div className='col-md-9'>
                                         {/* Render the content based on the activeTab */}
                                         {activeTab === 'information' && <ProfileInformation />}
                                         {activeTab === 'purchase' && <Purchase />}
-                                        {/* {activeTab === 'updateAccount' && <div>Update Account Form</div>} */}
-                                        {/* {activeTab === 'changePassword' && <div>Change Password Form</div>} */}
+                                        {activeTab === 'updateAccount' && <UpdateAccount/>}
+                                        {activeTab === 'changePassword' && <ChangePasssword/>}
                                     </div>
                                 </div>
                             </div>
