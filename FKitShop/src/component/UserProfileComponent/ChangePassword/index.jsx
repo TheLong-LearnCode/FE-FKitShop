@@ -14,7 +14,6 @@ export default function ChangePasssword() {
     return (
         <>
             <div>
-                <h4 className="text-center">Update account</h4>
                 <form>
                     <div className="form-group row">
                         <div className='col-md-1'></div>

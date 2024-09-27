@@ -3,4 +3,9 @@
     font-size: 16px;    /* Adjust font size */
     width: 100px;
   }
-  
+  .form-message {
+    display: block;
+    color: red; /* You can change the color */
+    font-size: 12px; /* Adjust the font size as needed */
+    margin-top: 4px; /* Adjust the spacing */
+}

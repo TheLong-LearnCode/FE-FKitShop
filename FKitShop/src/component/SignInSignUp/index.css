@@ -35,6 +35,14 @@ body {
 
 }
 
+.form-star {
+    display: block;
+    color: red; /* You can change the color */
+    font-size: 12px; /* Adjust the font size as needed */
+    margin-top: 4px; /* Adjust the spacing */
+
+}
+
 .form-control {
     border: 1px solid #F2F2F2;
     /* Viền ban đầu */

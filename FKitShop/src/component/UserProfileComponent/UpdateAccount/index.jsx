@@ -21,6 +21,7 @@ export default function UpdateAccountForm() {
                         <label htmlFor="fullname" className="col-md-3 col-form-label">Full Name</label>
                         <div className="col-md-5">
                             <input type="text" className="form-control" id="fullname" placeholder="Full Name" />
+                            <span className="form-message">* heloo *</span>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -43,6 +44,7 @@ export default function UpdateAccountForm() {
                                 value={yob}
                                 onChange={handleYobChange}
                             />
+                            <span className="form-message">* heloo *</span>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -50,6 +52,7 @@ export default function UpdateAccountForm() {
                         <label htmlFor="phone" className="col-md-3 col-form-label">Phone number</label>
                         <div className="col-md-5">
                             <input type="tel" className="form-control" id="phone" placeholder="Phone number" />
+                            <span className="form-message">* heloo *</span>
                         </div>
                     </div>
                     <div className="form-group row">
@@ -57,6 +60,7 @@ export default function UpdateAccountForm() {
                         <label htmlFor="email" className="col-md-3 col-form-label">Email</label>
                         <div className="col-md-5">
                             <input type="email" className="form-control" id="email" placeholder="Email" />
+                            <span className="form-message">* heloo *</span>
                         </div>
                     </div>
                     <div className="text-center">
