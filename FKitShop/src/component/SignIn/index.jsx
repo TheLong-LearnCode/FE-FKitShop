@@ -30,7 +30,7 @@ function SignIn() {
                     <input id="password" name="password" type="password" className="form-control" placeholder="Password"/>
                     <span className="form-message"></span>
                 </div>
-                <button type="submit" className="btn btn-dark btn-block">Sign In</button>
+                <button type="submit" className="btn btn-outline-dark btn-block">Sign In</button>
                 <GoogleButton prop="signin" />
             </form>
         </>
