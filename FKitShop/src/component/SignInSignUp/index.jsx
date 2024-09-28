@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';  // Import your custom CSS
-import SignUpForm from '../../component/SignUp/index.jsx';
-import SignInForm from '../../component/SignIn/index.jsx';
-import Validator from "../../component/Validator/index.jsx";
+import SignUpForm from '../../component/SignUp';
+import SignInForm from '../../component/SignIn';
+import Validator from "../../component/Validator";
 
+import { loginUser, signUpUser } from '../../service/authUser.jsx';
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
@@ -37,7 +38,7 @@ function SignInSignUp() {
                 ],
                 onSubmit: function (data) {
                     console.log('Sign In Data:', data);
-                    fetch('/api/signin', {
+                    fetch('/api/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data),
@@ -45,7 +46,23 @@ function SignInSignUp() {
                         .then((response) => response.json())
                         .then((result) => console.log('Success:', result))
                         .catch((error) => console.error('Error:', error));
-                }
+                },
+                // onSubmit: async (data) => {
+                //     try {
+                //         // Make sure data is correctly structured
+                //         const loginData = {
+                //             email: data.email,
+                //             password: data.password,
+                //         };
+                //         console.log(JSON.stringify(loginData));
+
+                //         const result = await loginUser(loginData);
+                //         console.log('Login Success:', result);
+                //     } catch (error) {
+                //         console.error('Login Error:', error);
+                //     }
+                // },
+
             });
         } else if (activeTab === 'signup') {
             Validator({
@@ -53,11 +70,11 @@ function SignInSignUp() {
                 formGroupSelector: '.form-group',
                 errorSelector: '.form-message',
                 rules: [
-                    Validator.isRequired('#form-sign-up #fullname', 'Please enter full name'),
-                    Validator.isRequired('#form-sign-up #yob', 'Please enter year of birth'),
-                    Validator.isValidDate('#form-sign-up #yob', ''),
-                    Validator.isRequired('#form-sign-up #phone', 'Please enter phone number'),
-                    Validator.isPhoneNumber('#form-sign-up #phone', '', totalDigitsPhoneNumber),
+                    Validator.isRequired('#form-sign-up #fullName', 'Please enter full name'),
+                    Validator.isRequired('#form-sign-up #dob', 'Please enter date of birth'),
+                    Validator.isValidDate('#form-sign-up #dob', ''),
+                    Validator.isRequired('#form-sign-up #phoneNumber', 'Please enter phone number'),
+                    Validator.isPhoneNumber('#form-sign-up #phoneNumber', '', totalDigitsPhoneNumber),
                     Validator.isRequired('#form-sign-up #email', 'Please enter email'),
                     Validator.isEmail('#form-sign-up #email'),
                     Validator.isRequired('#form-sign-up #password', 'Please enter password'),
@@ -67,17 +84,25 @@ function SignInSignUp() {
                         return document.querySelector('#form-sign-up #password').value;
                     }, 'Passwords do not match')
                 ],
-                onSubmit: function (data) {
-                    console.log('Sign Up Data:', data);
-                    fetch('/api/signup', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data),
-                    })
-                        .then((response) => response.json())
-                        .then((result) => console.log('Success:', result))
-                        .catch((error) => console.error('Error:', error));
-                }
+                // onSubmit: function (data) {
+                //     console.log('Sign Up Data:', data);
+                //     fetch('/api/signup', {
+                //         method: 'POST',
+                //         headers: { 'Content-Type': 'application/json' },
+                //         body: JSON.stringify(data),
+                //     })
+                //         .then((response) => response.json())
+                //         .then((result) => console.log('Success:', result))
+                //         .catch((error) => console.error('Error:', error));
+                // }
+                onSubmit: async (data) => {
+                    try {
+                        const result = await signUpUser(data);
+                        console.log('Sign Up Success:', result);
+                    } catch (error) {
+                        console.error('Sign Up Error:', error);
+                    }
+                },
             });
         }
     }, [activeTab]);

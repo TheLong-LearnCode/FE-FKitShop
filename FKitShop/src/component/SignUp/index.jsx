@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import GoogleButton from '../GoogleButton';
 
 function SignUp() {
-    const [yob, setYob] = useState(''); // Khởi tạo trạng thái cho Year of Birth
+    const [dob, setDob] = useState(''); // Khởi tạo trạng thái cho Year of Birth
     const [isDateType, setIsDateType] = useState(false); // Trạng thái để theo dõi khi nào input là kiểu 'date'
 
-    const handleYobChange = (event) => {
-        setYob(event.target.value);
+    const handleDobChange = (event) => {
+        setDob(event.target.value);
     };
 
     return (
@@ -19,15 +19,15 @@ function SignUp() {
 
                         <div className="form-group">
                             <span className="form-star">*</span>
-                            <input id="fullname" name="fullname" type="text" className="form-control" placeholder="Full name" />
+                            <input id="fullName" name="fullName" type="text" className="form-control" placeholder="Full name" />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
                             <span className="form-star">*</span>
                             <input
-                                id="yob"
-                                name="yob"
-                                type={isDateType || yob ? 'date' : 'text'}
+                                id="dob"
+                                name="dob"
+                                type={isDateType || dob ? 'date' : 'text'}
                                 className="form-control"
                                 placeholder="Date of birth"
                                 onFocus={() => setIsDateType(true)}
@@ -37,14 +37,14 @@ function SignUp() {
                                         e.target.placeholder = 'Date of birth';
                                     }
                                 }}
-                                value={yob}
-                                onChange={handleYobChange}
+                                value={dob}
+                                onChange={handleDobChange}
                             />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
                             <span className="form-star">*</span>
-                            <input id="phone" name="phone" type="text" className="form-control" placeholder="Phone number" />
+                            <input id="phoneNumber" name="phoneNumber" type="text" className="form-control" placeholder="phone number" />
                             <span className="form-message"></span>
                         </div>
                     </div>
