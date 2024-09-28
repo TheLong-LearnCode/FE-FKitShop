@@ -6,9 +6,7 @@ import Footer from '../../component/Footer/Footer'
 export default function ViewUserProfile() {
   return (
     <>
-      <Header />
       <UserProfile />
-      <Footer />
     </>
 
   )

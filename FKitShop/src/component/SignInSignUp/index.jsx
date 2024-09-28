@@ -84,7 +84,6 @@ function SignInSignUp() {
 
     return (
         <>
-            {/* <Header /> */}
             <div id="mooc" className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
                 <div className="card p-3 card-shadow" style={{
                     width: activeTab === 'signup' ? '600px' : '370px',
@@ -97,6 +96,7 @@ function SignInSignUp() {
                                     className={`nav-link ${activeTab === 'signin' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
                                     href="#signin"
                                     onClick={() => handleTabClick('signin')}
+                                    style={{fontSize: '1.5rem'}}
                                 >
                                     Sign In
                                 </a>
@@ -106,6 +106,7 @@ function SignInSignUp() {
                                     className={`nav-link ${activeTab === 'signup' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
                                     href="#signup"
                                     onClick={() => handleTabClick('signup')}
+                                    style={{fontSize: '1.5rem'}}
                                 >
                                     Sign Up
                                 </a>
@@ -124,7 +125,6 @@ function SignInSignUp() {
                     </div>
                 </div>
             </div>
-            {/* <Footer /> */}
         </>
     );
 }
