@@ -14,6 +14,7 @@ function App() {
   return (
     <>
     <Header/>
+
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/home" element={<HomePage />} />
@@ -21,7 +22,7 @@ function App() {
       <Route path="/signup" element={<SignInAndSignUp />} />
       <Route path="/profile" element={<ViewProfile />} />
     </Routes>
-    <Footer/>
+    
     </>
   )
 }

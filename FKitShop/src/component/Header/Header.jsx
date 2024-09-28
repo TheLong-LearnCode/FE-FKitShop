@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Modal from 'react-modal';
 import './Header.css'
 import 'boxicons'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -7,23 +6,11 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { Link } from 'react-router-dom'
 import { Container } from 'react-bootstrap';
 
-Modal.setAppElement('#root');
+
 
 export default function Header() {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-
-    // Mở popup
-    const openModal = () => {
-        setModalIsOpen(true);
-    };
-
-    // Đóng popup
-    const closeModal = () => {
-        setModalIsOpen(false);
-    };
 
     const [activeLink, setActiveLink] = useState('');
-    const onClose = null;
 
     const handleNavClick = (linkName) => {
         setActiveLink(linkName);
@@ -60,9 +47,9 @@ export default function Header() {
                                     <span>Account</span>
                                 </a>
                                 <div className="dropdown-menu">
-                                    <Link to={'/signin'} className="dropdown-item" onClick={closeModal}>Sign In</Link>
-                                    <Link to={'/signup'} className="dropdown-item" onClick={closeModal}>Sign Up</Link>
-                                    <Link to={'/favoriteList'} className="dropdown-item" onClick={closeModal}>Favorite List</Link>
+                                    <Link to={'/signin'} className="dropdown-item" >Sign In</Link>
+                                    <Link to={'/signup'} className="dropdown-item" >Sign Up</Link>
+                                    <Link to={'/favoriteList'} className="dropdown-item" >Favorite List</Link>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +63,7 @@ export default function Header() {
                                 className={`nav-menu-link ${activeLink === 'Home' ? 'active' : ''}`}
                                 onClick={() => {
                                     handleNavClick('Home');
-                                    closeModal();
+
                                 }}
                             >
                                 Home
@@ -87,8 +74,8 @@ export default function Header() {
                                 className={`nav-menu-link ${activeLink === 'Product' ? 'active' : ''}`}
                                 onClick={() => {
                                     handleNavClick('Product');
-                                    openModal();
                                 }}
+                                data-toggle="modal" data-target="#tagModal"
 
                             >
                                 Product
@@ -100,8 +87,8 @@ export default function Header() {
                                 className={`nav-menu-link ${activeLink === 'Blog' ? 'active' : ''}`}
                                 onClick={() => {
                                     handleNavClick('Blog');
-                                    closeModal();
                                 }}
+
 
                             >
                                 Blog
@@ -113,7 +100,7 @@ export default function Header() {
                                 className={`nav-menu-link ${activeLink === 'Contact' ? 'active' : ''}`}
                                 onClick={() => {
                                     handleNavClick('Contact');
-                                    closeModal();
+
                                 }}
                             >
                                 Contact
@@ -121,37 +108,50 @@ export default function Header() {
                         </li>
                     </ul>
                 </nav>
-                <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    contentLabel="Product menu"
-                    style={{
-                        content: {
-                            top: '16%',
-                            left: '30%',
-                            height: '230px',
-                            width: '230px',
-                            overflow: 'hidden',
-                            borderRadius: '10px',
-                        },
-                        overlay: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.25)', // Màu overlay mờ
-                        },
-                    }}
-                >
-                    <div className="product-tag-container">
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>All</Link>
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Arduino</Link>
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>STEM Robotics & AI & IoT</Link>
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Sensor</Link>
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>STEM Programming</Link>
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Accessories and Tools</Link>
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>STEM Toy</Link>
-                        <Link className="product-tag" to={'/product'} onClick={closeModal}>Module</Link>
-                    </div>
-                </Modal>
-                
             </header >
+            <div className="modal fade" id="tagModal" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content product-tag-container">
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">All</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Arduino</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Robotics & AI & IoT</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Sensor</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Programming</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Accessories and Tools</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Toy</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Module</Link>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+                <div className="modal-dialog container">
+                    <div className="modal-content product-category-container row">
+                        <Link  to={'/product'} >Ardunio board</Link>
+                        <Link  to={'/product'} >Arduino Shield</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+
+
+                        
+                    </div>
+                </div>
+            </div>
         </div >
     )
 }

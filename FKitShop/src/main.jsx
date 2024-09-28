@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Footer from './component/Footer/Footer.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -12,5 +13,6 @@ createRoot(document.getElementById('root')).render(
         <App />
       </BrowserRouter>
     </GoogleOAuthProvider>;
+    <Footer/>
   </StrictMode>,
 )
