@@ -11,8 +11,8 @@ import ViewUserProfile from './page/ViewUserProfile'
 function App() {
   return (
     <>
-      <ViewUserProfile />
       {/* <Login/> */}
+      <ViewUserProfile />
     </>
   )
 }
