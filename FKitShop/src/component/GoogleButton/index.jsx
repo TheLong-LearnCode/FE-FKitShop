@@ -28,8 +28,8 @@ function GoogleButton({ prop }) {
     //   });
     return (
         <>
-            <div class=" mt-3">
-                <button class="btn btn-google" onClick={() => login()}>
+            <div className=" mt-3">
+                <button className="btn btn-google" onClick={() => login()}>
                     <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google logo"/>
                     <span>{prop === 'signin' ? "Sign in with Google" : "Sign up with Google"}</span>
                 </button>

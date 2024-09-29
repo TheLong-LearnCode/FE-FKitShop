@@ -25,8 +25,6 @@ function App() {
       <Route path="/profile" element={<ViewUserProfile />} />
     </Routes>
     
-
-
     </>
   )
 }

@@ -103,8 +103,8 @@ function SignInSignUp() {
                 // }
                 onSubmit: async (rawData) => {
                     const{password_confirmation, ...data}= rawData;
-
-                    console.log('Sign Up Data:', data);
+                    // JSON.parse(data) -> object
+                    console.log('Sign Up Data:', JSON.stringify(data));
                     try {
                         const response = await signUpUser(data, navigate);
                         console.log('Result:', response.data);
