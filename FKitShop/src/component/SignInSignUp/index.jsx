@@ -101,10 +101,11 @@ function SignInSignUp() {
 
                     console.log('Sign Up Data:', data);
                     try {
-                        const result = await signUpUser(data);
-                        console.log('Sign Up Success:', result);
+                        const response = await signUpUser(data);
+                        console.log('Result:', response.data);
                     } catch (error) {
-                        console.error('Sign Up Error:', error);
+                        console.error('Sign Up Error:', error.response.data.message);
+                        alert(error.response.data.message);
                     }
                 },
             });

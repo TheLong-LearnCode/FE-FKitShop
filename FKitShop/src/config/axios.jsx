@@ -1,27 +1,29 @@
 import axios from "axios";
-// const baseUrl = "http://14.225.220.131:8080/api/";
-// const baseUrl = "http://localhost:8088/api/";
+
+// Define the base URL for the API
 const baseUrl = "http://localhost:8080/fkshop";
 
-const config = {
-  baseUrl: baseUrl,
-};
+const api = axios.create({
+  baseURL: baseUrl, // Setting the baseURL configuration directly in axios.create
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-const api = axios.create(config);
-
-api.defaults.baseURL = baseUrl;
-
-// handle before call API
+// Interceptor to handle the request before sending
 const handleBefore = (config) => {
-  // handle hành động trước khi call API
-
-  // lấy ra cái token và đính kèm theo cái request
-  const token = localStorage.getItem("token")?.replaceAll('"', "");
-  config.headers["Authorization"] = `Bearer ${token}`;
+  // Retrieve the token from localStorage
+  const token = localStorage.getItem("token")?.replace(/"/g, "");
+  
+  // Attach the token to the Authorization header if it exists
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  
   return config;
 };
 
-// api.interceptors.request.use(handleBefore, null);
-api.interceptors.request.use(handleBefore, (error) => Promise.reject(error));
+// Use the interceptor to attach the Authorization header
+api.interceptors.request.use(handleBefore, null);
 
 export default api;
