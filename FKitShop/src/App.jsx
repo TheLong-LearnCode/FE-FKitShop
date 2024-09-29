@@ -2,7 +2,6 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 //import 'bootstrap/dist/css/bootstrap.min.css';
-
 import SignInSignUp from './component/SignInSignUp'
 import Header from './component/Header/Header'
 import HomePage from './component/HomePage/HomePage'

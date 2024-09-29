@@ -1,12 +1,13 @@
-import './index.scss';
+import './index.css';
 import { useGoogleLogin } from '@react-oauth/google';
 // import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
 
-function GoogleButton({prop}) {
+
+function GoogleButton({ prop }) {
     const login = useGoogleLogin({
         onSuccess: async (response) => {
-            try{
+            try {
                 const res = await axios.get(
                     `https://www.googleapis.com/oauth2/v3/userinfo`,
                     {
@@ -20,19 +21,20 @@ function GoogleButton({prop}) {
                 console.error(error);
             }
         },
-      });
+    });
 
     // const login = useGoogleLogin({
     //     onSuccess: tokenResponse => console.log(tokenResponse.access_token),
     //   });
     return (
         <>
-            <div className="mt-3 text-center">
-                <button className="btn btn-light btn-block google-signin-btn" onClick={() => login()}>
-                        <img className="google-icon" src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google logo" />
-                        <span>{prop === 'signin' ? "Sign in with Google" : "Sign up with Google"}</span>
+            <div class=" mt-3">
+                <button class="btn btn-google" onClick={() => login()}>
+                    <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google logo"/>
+                    <span>{prop === 'signin' ? "Sign in with Google" : "Sign up with Google"}</span>
                 </button>
             </div>
+
         </>
     )
 
