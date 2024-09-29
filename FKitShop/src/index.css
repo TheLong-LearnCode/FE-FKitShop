@@ -5,6 +5,12 @@
   --third-color: #B19615;
 }
 
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body{
   font-family: 'Roboto', sans-serif;
 }
