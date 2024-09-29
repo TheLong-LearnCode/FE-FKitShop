@@ -109,7 +109,7 @@ export default function Header() {
                     </ul>
                 </nav>
             </header >
-            <div className="modal fade" id="tagModal" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
+            <div className="modal fade" id="tagModal" tabIndex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content product-tag-container">
                         <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">All</Link>
@@ -124,7 +124,7 @@ export default function Header() {
                 </div>
             </div>
 
-            <div className="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+            <div className="modal fade" id="categoryModal" tabIndex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
                 <div className="modal-dialog container">
                     <div className="modal-content product-category-container row">
                         <Link  to={'/product'} >Ardunio board</Link>
