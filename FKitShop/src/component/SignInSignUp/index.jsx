@@ -5,7 +5,8 @@ import SignUpForm from '../../component/SignUp';
 import SignInForm from '../../component/SignIn';
 import Validator from "../../component/Validator";
 
-import { loginUser, signUpUser } from '../../service/authUser.jsx';
+
+import {signUpUser, loginUser} from '../../service/authUser.jsx'
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
@@ -36,32 +37,32 @@ function SignInSignUp() {
                     Validator.isEmail('#form-sign-in #email'),
                     Validator.minLength('#form-sign-in #password', 6),
                 ],
-                onSubmit: function (data) {
-                    console.log('Sign In Data:', data);
-                    fetch('/api/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data),
-                    })
-                        .then((response) => response.json())
-                        .then((result) => console.log('Success:', result))
-                        .catch((error) => console.error('Error:', error));
-                },
-                // onSubmit: async (data) => {
-                //     try {
-                //         // Make sure data is correctly structured
-                //         const loginData = {
-                //             email: data.email,
-                //             password: data.password,
-                //         };
-                //         console.log(JSON.stringify(loginData));
-
-                //         const result = await loginUser(loginData);
-                //         console.log('Login Success:', result);
-                //     } catch (error) {
-                //         console.error('Login Error:', error);
-                //     }
+                // onSubmit: function (data) {
+                //     console.log('Sign In Data:', data);
+                //     fetch('/api/login', {
+                //         method: 'POST',
+                //         headers: { 'Content-Type': 'application/json' },
+                //         body: JSON.stringify(data),
+                //     })
+                //         .then((response) => response.json())
+                //         .then((result) => console.log('Success:', result))
+                //         .catch((error) => console.error('Error:', error));
                 // },
+                onSubmit: async (data) => {
+                    try {
+                        // Make sure data is correctly structured
+                        const loginData = {
+                            email: data.email,
+                            password: data.password,
+                        };
+                        console.log(JSON.stringify(loginData));
+
+                        const result = await loginUser(loginData);
+                        console.log('Login Success:', result);
+                    } catch (error) {
+                        console.error('Login Error:', error);
+                    }
+                },
 
             });
         } else if (activeTab === 'signup') {
@@ -95,7 +96,10 @@ function SignInSignUp() {
                 //         .then((result) => console.log('Success:', result))
                 //         .catch((error) => console.error('Error:', error));
                 // }
-                onSubmit: async (data) => {
+                onSubmit: async (rawData) => {
+                    const{password_confirmation, ...data}= rawData;
+
+                    console.log('Sign Up Data:', data);
                     try {
                         const result = await signUpUser(data);
                         console.log('Sign Up Success:', result);

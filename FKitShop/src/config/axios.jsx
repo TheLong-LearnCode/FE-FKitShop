@@ -1,7 +1,7 @@
 import axios from "axios";
 // const baseUrl = "http://14.225.220.131:8080/api/";
-const baseUrl = "http://localhost:8088/api/";
-// const baseUrl = "http://localhost:8088/fkshop/";
+// const baseUrl = "http://localhost:8088/api/";
+const baseUrl = "http://localhost:8080/fkshop";
 
 const config = {
   baseUrl: baseUrl,
