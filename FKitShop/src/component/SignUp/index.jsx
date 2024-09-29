@@ -7,7 +7,8 @@ function SignUp() {
     const [dob, setDob] = useState(''); // Khởi tạo trạng thái cho Year of Birth
     const [isDateType, setIsDateType] = useState(false); // Trạng thái để theo dõi khi nào input là kiểu 'date'
 
-    const handleYobChange = (event) => {
+
+    const handleDobChange = (event) => {
         setDob(event.target.value);
     };
 
@@ -19,7 +20,7 @@ function SignUp() {
 
                         <div className="form-group">
                             <span className="form-star">*</span>
-                            <input id="fullname" name="fullname" type="text" className="form-control" placeholder="Full name" />
+                            <input id="fullName" name="fullName" type="text" className="form-control" placeholder="Full name" />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
@@ -38,13 +39,16 @@ function SignUp() {
                                     }
                                 }}
                                 value={dob}
-                                onChange={handleYobChange}
+
+                                onChange={handleDobChange}
+
+                                
                             />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
                             <span className="form-star">*</span>
-                            <input id="phone" name="phone" type="text" className="form-control" placeholder="Phone number" />
+                            <input id="phoneNumber" name="phoneNumber" type="text" className="form-control" placeholder="phone number" />
                             <span className="form-message"></span>
                         </div>
                     </div>

@@ -10,9 +10,11 @@ import ViewUserProfile from './page/ViewUserProfile'
 
 
 
+
 function App() {
   return (
     <>
+
 
     <Header/>
 
@@ -24,6 +26,7 @@ function App() {
       <Route path="/profile" element={<ViewUserProfile />} />
     </Routes>
     
+
 
     </>
   )
