@@ -3,21 +3,27 @@ import './Header.css'
 import 'boxicons'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import { Link } from 'react-router-dom'
+import { Container } from 'react-bootstrap';
+
+
 
 export default function Header() {
+
     const [activeLink, setActiveLink] = useState('');
 
     const handleNavClick = (linkName) => {
         setActiveLink(linkName);
     };
+
     return (
         <div>
             <header className='sticky-header fixed-top'>
                 <nav>
                     <div className='upper-nav'>
-                        <a href="#">
+                        <Link to={'/home'}>
                             <img className='upper-nav-logo' src="/img/Logo.png" alt="shop logo" />
-                        </a>
+                        </Link>
                         <form className="upper-nav-search-form">
                             <input
                                 type="search"
@@ -30,10 +36,10 @@ export default function Header() {
                         </form>
 
                         <div className='upper-nav-user-actions'>
-                            <a href="#" className='upper-nav-item'>
+                            <Link to={'/cart'} className='upper-nav-item'>
                                 <box-icon name='cart' color='#ffffff'></box-icon>
                                 <span>Cart (0)</span>
-                            </a>
+                            </Link>
 
                             <div className="dropdown">
                                 <a className="dropdown-toggle upper-nav-item" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
@@ -41,9 +47,9 @@ export default function Header() {
                                     <span>Account</span>
                                 </a>
                                 <div className="dropdown-menu">
-                                    <a className="dropdown-item" href="#signin">Sign In</a>
-                                    <a className="dropdown-item" href="#signup">Sign Up</a>
-                                    <a className="dropdown-item" href="#">Favorite List</a>
+                                    <Link to={'/signin'} className="dropdown-item" >Sign In</Link>
+                                    <Link to={'/signup'} className="dropdown-item" >Sign Up</Link>
+                                    <Link to={'/favoriteList'} className="dropdown-item" >Favorite List</Link>
                                 </div>
                             </div>
                         </div>
@@ -51,45 +57,101 @@ export default function Header() {
                     </div>
 
                     <ul className='lower-nav-menu'>
-                    <li>
-                            <a 
-                                href="#" 
+                        <li>
+                            <Link
+                                to={'/home'}
                                 className={`nav-menu-link ${activeLink === 'Home' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Home')}
+                                onClick={() => {
+                                    handleNavClick('Home');
+
+                                }}
                             >
                                 Home
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a 
-                                href="#" 
+                            <Link
                                 className={`nav-menu-link ${activeLink === 'Product' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Product')}
+                                onClick={() => {
+                                    handleNavClick('Product');
+                                }}
+                                data-toggle="modal" data-target="#tagModal"
+
                             >
                                 Product
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a 
-                                href="#" 
+                            <Link
+                                to={'/blog'}
                                 className={`nav-menu-link ${activeLink === 'Blog' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Blog')}
+                                onClick={() => {
+                                    handleNavClick('Blog');
+                                }}
+
+
                             >
                                 Blog
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a 
-                                href="#" 
+                            <Link
+                                to={'/contact'}
                                 className={`nav-menu-link ${activeLink === 'Contact' ? 'active' : ''}`}
-                                onClick={() => handleNavClick('Contact')}
+                                onClick={() => {
+                                    handleNavClick('Contact');
+
+                                }}
                             >
                                 Contact
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </nav>
-            </header>
-        </div>
+            </header >
+            <div className="modal fade" id="tagModal" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content product-tag-container">
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">All</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Arduino</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Robotics & AI & IoT</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Sensor</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Programming</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Accessories and Tools</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Toy</Link>
+                        <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Module</Link>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+                <div className="modal-dialog container">
+                    <div className="modal-content product-category-container row">
+                        <Link  to={'/product'} >Ardunio board</Link>
+                        <Link  to={'/product'} >Arduino Shield</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+                        <Link  to={'/product'} >Arduino Accessories</Link>
+
+
+                        
+                    </div>
+                </div>
+            </div>
+        </div >
     )
 }
