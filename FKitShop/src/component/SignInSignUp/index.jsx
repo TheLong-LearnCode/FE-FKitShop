@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import {useNavigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';  // Import your custom CSS
 import SignUpForm from '../../component/SignUp';
 import SignInForm from '../../component/SignIn';
 import Validator from "../../component/Validator";
+
+import { message } from 'antd';
 
 
 import {signUpUser, loginUser} from '../../service/authUser.jsx'
@@ -12,6 +15,7 @@ const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
 
 function SignInSignUp() {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('signin'); // State to track active tab
 
     const handleTabClick = (tab) => {
@@ -57,8 +61,9 @@ function SignInSignUp() {
                         };
                         console.log(JSON.stringify(loginData));
 
-                        const result = await loginUser(loginData);
+                        const result = await loginUser(loginData, navigate);
                         console.log('Login Success:', result);
+                        message.success('Login successful');
                     } catch (error) {
                         console.error('Login Error:', error);
                     }
@@ -101,11 +106,13 @@ function SignInSignUp() {
 
                     console.log('Sign Up Data:', data);
                     try {
-                        const response = await signUpUser(data);
+                        const response = await signUpUser(data, navigate);
                         console.log('Result:', response.data);
+                        //alert("Chao " + response.data.fullName + " đã đến với bình nguyên vô tận!!")
+                        message.success("Chao " + response.data.fullName + " đã đăng ký tài khoản thành côngg!!")
                     } catch (error) {
                         console.error('Sign Up Error:', error.response.data.message);
-                        alert(error.response.data.message);
+                        message.error(error.response.data.message)
                     }
                 },
             });

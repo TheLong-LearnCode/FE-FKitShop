@@ -1,12 +1,11 @@
 import React from 'react'
-import Header from '../Header/Header'
-import Footer from '../Footer/Footer'
-
+import '../HomePage/index.css'
 export default function HomePage() {
   return (
     <div>
-        
-        <div style={{height: '100vh'}}></div>
+        <div style={{height: '100vh'}}>
+          <h1 className='h1css'>HOME PAGE</h1>
+        </div>
     </div>
   )
 }
