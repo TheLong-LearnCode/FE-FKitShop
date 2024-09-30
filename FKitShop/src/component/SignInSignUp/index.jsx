@@ -1,37 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css';  // Import your custom CSS
+import './index.css';
 import SignUpForm from '../../component/SignUp';
 import SignInForm from '../../component/SignIn';
 import Validator from "../../component/Validator";
-
 import { message } from 'antd';
-
-
-import {signUpUser, loginUser} from '../../service/authUser.jsx'
+import { signUpUser, loginUser } from '../../service/authUser.jsx';
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
 
 function SignInSignUp() {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('signin'); // State to track active tab
+    const location = useLocation();
+    const [activeTab, setActiveTab] = useState('signin');
 
     const handleTabClick = (tab) => {
-        setActiveTab(tab); // Set the active tab when clicked
+        setActiveTab(tab);
+        navigate(`/${tab}`);
         document.getElementById(`tab-content-${tab}`).scrollTo({
             top: 0,
             behavior: 'smooth',
-        })
+        });
     };
+
+    useEffect(() => {
+        // Set activeTab based on the current path
+        const currentPath = location.pathname.replace('/', '');
+        setActiveTab(currentPath === 'signup' ? 'signup' : 'signin');
+    }, [location]);
 
     useEffect(() => {
         requestAnimationFrame(() => {
             window.scrollTo(0, 0);
         });
 
-        // Validation logic here
         if (activeTab === 'signin') {
             Validator({
                 form: '#form-sign-in',
@@ -43,21 +47,16 @@ function SignInSignUp() {
                 ],
                 onSubmit: async (data) => {
                     try {
-                        // Make sure data is correctly structured
                         const loginData = {
                             email: data.email,
                             password: data.password,
                         };
-                        console.log(JSON.stringify(loginData));
-
                         const result = await loginUser(loginData, navigate);
-                        console.log('Login Success:', result);
                         message.success('Login successful');
                     } catch (error) {
                         console.error('Login Error:', error);
                     }
                 },
-
             });
         } else if (activeTab === 'signup') {
             Validator({
@@ -80,17 +79,13 @@ function SignInSignUp() {
                     }, 'Passwords do not match')
                 ],
                 onSubmit: async (rawData) => {
-                    const{password_confirmation, ...data}= rawData;
-                    // JSON.parse(data) -> object
-                    console.log('Sign Up Data:', JSON.stringify(data));
+                    const { password_confirmation, ...data } = rawData;
                     try {
                         const response = await signUpUser(data, navigate);
-                        console.log('Result:', response.data);
-                        //alert("Chao " + response.data.fullName + " đã đến với bình nguyên vô tận!!")
-                        message.success("Chao " + response.data.fullName + " đã đăng ký tài khoản thành côngg!!")
+                        message.success("Welcome " + response.data.fullName + ", you've successfully registered!");
                     } catch (error) {
                         console.error('Sign Up Error:', error.response.data.message);
-                        message.error(error.response.data.message)
+                        message.error(error.response.data.message);
                     }
                 },
             });
@@ -98,49 +93,47 @@ function SignInSignUp() {
     }, [activeTab]);
 
     return (
-        <>
-            <div id="mooc" className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-                <div className="card p-3 card-shadow" style={{
-                    width: activeTab === 'signup' ? '600px' : '370px',
-                    overflow: 'auto',
-                }}>
-                    <div id="form-tabs">
-                        <ul className="nav nav-tabs d-flex justify-content-between w-100">
-                            <li className="nav-item w-50 text-center">
-                                <a
-                                    className={`nav-link ${activeTab === 'signin' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
-                                    href="#signin"
-                                    onClick={() => handleTabClick('signin')}
-                                    style={{fontSize: '1.5rem'}}
-                                >
-                                    Sign In
-                                </a>
-                            </li>
-                            <li className="nav-item w-50 text-center">
-                                <a
-                                    className={`nav-link ${activeTab === 'signup' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
-                                    href="#signup"
-                                    onClick={() => handleTabClick('signup')}
-                                    style={{fontSize: '1.5rem'}}
-                                >
-                                    Sign Up
-                                </a>
-                            </li>
-                        </ul>
+        <div id="mooc" className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+            <div className="card p-3 card-shadow" style={{
+                width: activeTab === 'signup' ? '600px' : '370px',
+                overflow: 'auto',
+            }}>
+                <div id="form-tabs">
+                    <ul className="nav nav-tabs d-flex justify-content-between w-100">
+                        <li className="nav-item w-50 text-center">
+                            <a
+                                className={`nav-link ${activeTab === 'signin' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
+                                href="#signin"
+                                onClick={() => handleTabClick('signin')}
+                                style={{ fontSize: '1.5rem' }}
+                            >
+                                Sign In
+                            </a>
+                        </li>
+                        <li className="nav-item w-50 text-center">
+                            <a
+                                className={`nav-link ${activeTab === 'signup' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
+                                href="#signup"
+                                onClick={() => handleTabClick('signup')}
+                                style={{ fontSize: '1.5rem' }}
+                            >
+                                Sign Up
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div className="tab-content mt-3">
+                    <div className={`tab-pane ${activeTab === 'signin' ? 'active show' : 'fade'}`} id="tab-content-signin">
+                        {activeTab === 'signin' && <SignInForm />}
                     </div>
 
-                    <div className="tab-content mt-3">
-                        <div className={`tab-pane ${activeTab === 'signin' ? 'active show' : 'fade'}`} id="tab-content-signin">
-                            {activeTab === 'signin' && <SignInForm />}
-                        </div>
-
-                        <div className={`tab-pane ${activeTab === 'signup' ? 'active show' : 'fade'}`} id="tab-content-signup">
-                            {activeTab === 'signup' && <SignUpForm />}
-                        </div>
+                    <div className={`tab-pane ${activeTab === 'signup' ? 'active show' : 'fade'}`} id="tab-content-signup">
+                        {activeTab === 'signup' && <SignUpForm />}
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
