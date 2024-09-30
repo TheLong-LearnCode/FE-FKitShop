@@ -21,7 +21,7 @@ export default function Header() {
             <header className='sticky-header fixed-top'>
                 <nav>
                     <div className='upper-nav'>
-                        <Link to={'/home'}>
+                        <Link to={'/home'}  onClick={() => handleNavClick('Home')}>
                             <img className='upper-nav-logo' src="/img/Logo.png" alt="shop logo" />
                         </Link>
                         <form className="upper-nav-search-form">
