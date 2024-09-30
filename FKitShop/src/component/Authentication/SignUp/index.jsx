@@ -19,12 +19,10 @@ function SignUp() {
                     <div className="col-md-6">
 
                         <div className="form-group">
-                            <span className="form-star">*</span>
                             <input id="fullName" name="fullName" type="text" className="form-control" placeholder="Full name" />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
-                            <span className="form-star">*</span>
                             <input
                                 id="dob"
                                 name="dob"
@@ -47,24 +45,20 @@ function SignUp() {
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
-                            <span className="form-star">*</span>
                             <input id="phoneNumber" name="phoneNumber" type="text" className="form-control" placeholder="Phone number" />
                             <span className="form-message"></span>
                         </div>
                     </div>
                     <div className="col-md-6">
                         <div className="form-group">
-                            <span className="form-star">*</span>
                             <input id="email" name="email" type="email" className="form-control" placeholder="Email" />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
-                            <span className="form-star">*</span>
                             <input id="password" name="password" type="password" className="form-control" placeholder="Password" />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
-                            <span className="form-star">*</span>
                             <input id="password_confirmation" name="password_confirmation" type="password" className="form-control" placeholder="Password confirmation" />
                             <span className="form-message"></span>
                         </div>

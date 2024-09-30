@@ -14,6 +14,7 @@ body {
     color: var(--primary-color) !important;
     /* Ensure the active tab text is black */
     opacity: 1;
+    width: 120%;
     /* Full opacity for active tab */
 }
 
@@ -73,6 +74,9 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
+.btn-cus{
+    border-radius: 0;
+}
 
 /* Khi người dùng hover */
 button:hover {
@@ -81,7 +85,20 @@ button:hover {
     /* Phóng to nhẹ nút */
 }
 
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 .card-shadow{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
-} 
+}
+
+/* -------------------------------------- */
+
+.nav-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

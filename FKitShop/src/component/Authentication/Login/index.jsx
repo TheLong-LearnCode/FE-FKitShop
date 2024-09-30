@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
@@ -15,13 +15,16 @@ function SignInSignUp() {
     const navigate = useNavigate();
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('signin');
+    const [isPending, startTransition] = useTransition();
 
     const handleTabClick = (tab) => {
-        setActiveTab(tab);
-        navigate(`/${tab}`);
-        document.getElementById(`tab-content-${tab}`).scrollTo({
-            top: 0,
-            behavior: 'smooth',
+        startTransition(() => {
+            setActiveTab(tab);
+            navigate(`/${tab}`);
+            document.getElementById(`tab-content-${tab}`).scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
         });
     };
 
@@ -101,24 +104,24 @@ function SignInSignUp() {
                 <div id="form-tabs">
                     <ul className="nav nav-tabs d-flex justify-content-between w-100">
                         <li className="nav-item w-50 text-center">
-                            <a
-                                className={`nav-link ${activeTab === 'signin' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
-                                href="#signin"
+                            <button
+                                className={`btn-cus nav-link ${activeTab === 'signin' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
                                 onClick={() => handleTabClick('signin')}
-                                style={{ fontSize: '1.5rem' }}
+                                style={{ fontSize: '1.5rem', background: 'none', border: 'none', outline: 'none', cursor: 'pointer' }}
+                                disabled={isPending}
                             >
                                 Sign In
-                            </a>
+                            </button>
                         </li>
                         <li className="nav-item w-50 text-center">
-                            <a
-                                className={`nav-link ${activeTab === 'signup' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
-                                href="#signup"
+                            <button
+                                className={`btn-cus nav-link ${activeTab === 'signup' ? 'active font-weight-bold custom-active-tab' : 'custom-inactive-tab'}`}
                                 onClick={() => handleTabClick('signup')}
-                                style={{ fontSize: '1.5rem' }}
+                                style={{ fontSize: '1.5rem', background: 'none', border: 'none', outline: 'none', cursor: 'pointer' }}
+                                disabled={isPending}
                             >
                                 Sign Up
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </div>

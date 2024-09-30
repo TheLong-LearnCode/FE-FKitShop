@@ -1,10 +1,10 @@
 import React from 'react'
-import './index.css'
+import '../../../util/GlobalStyle/GlobalStyle.css'
 export default function HomePage() {
   return (
     <div>
-        <div style={{height: '100vh'}}>
-          <h1 className='h1css'>HOME PAGE</h1>
+        <div className="fixed-header">
+          <h1>HOME PAGE</h1>
         </div>
     </div>
   )
