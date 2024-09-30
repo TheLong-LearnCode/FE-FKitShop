@@ -3,6 +3,7 @@ import '../HomePage/index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Carousel } from 'react-bootstrap';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import CardMainContent from '../ProductCard/CardMainContent';
 
 export default function HomePage() {
   return (
@@ -12,14 +13,14 @@ export default function HomePage() {
           <Carousel.Item className='banner-container'>
             <img
               className="d-block w-100 banner-img"
-              src="\img\banner1.png"
+              src="\img\banner2.png"
               alt="First slide"
             />
           </Carousel.Item>
           <Carousel.Item className='banner-container'>
             <img
               className="d-block w-100 banner-img"
-              src="\img\banner2.png"
+              src="\img\banner1.png"
               alt="Second slide"
             />
           </Carousel.Item>
@@ -32,6 +33,7 @@ export default function HomePage() {
           </Carousel.Item>
         </Carousel>
 
+        <CardMainContent/>
 
       </div>
     </div>
