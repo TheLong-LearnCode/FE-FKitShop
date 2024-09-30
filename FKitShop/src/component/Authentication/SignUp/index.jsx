@@ -42,13 +42,13 @@ function SignUp() {
 
                                 onChange={handleDobChange}
 
-                                
+
                             />
                             <span className="form-message"></span>
                         </div>
                         <div className="form-group">
                             <span className="form-star">*</span>
-                            <input id="phoneNumber" name="phoneNumber" type="text" className="form-control" placeholder="phone number" />
+                            <input id="phoneNumber" name="phoneNumber" type="text" className="form-control" placeholder="Phone number" />
                             <span className="form-message"></span>
                         </div>
                     </div>
@@ -71,7 +71,11 @@ function SignUp() {
                     </div>
                     <div className="col-md-12 tab-content mt-3">
                         <button type="submit" className="btn btn-outline-dark btn-block">Sign Up</button>
-                        <GoogleButton prop="signup" />
+                        <div className="form-group text-center">
+                            <hr />
+                            <span className="text-muted">or continue with</span>
+                        </div>
+                        <GoogleButton />
                     </div>
                 </div>
             </form >

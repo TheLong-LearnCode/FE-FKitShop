@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import styles from './index.module.css';
 
-import ProfileSidebar from '../ProfileSidebar';
+import Sidebar from '../Sidebar';
 
-import ProfileInformation from '../ProfileInformation';
+import ProfileInformation from '../Information';
 import Purchase from '../Purchase';
 import UpdateAccount from '../UpdateAccount';
 import ChangePasssword from '../ChangePassword';
@@ -24,8 +24,8 @@ export default function UserProfile() {
                             <div className={classes}>
                                 <div className="row">
                                     <div className="col-md-3 border-right">
-                                        {/* Pass the activeTab and setActiveTab to ProfileSidebar */}
-                                        <ProfileSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+                                        {/* Pass the activeTab and setActiveTab to Sidebar */}
+                                        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
                                     </div>
                                     <div className='col-md-9'>
                                         {/* Render the content based on the activeTab */}

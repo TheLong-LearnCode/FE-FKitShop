@@ -2,10 +2,10 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 //import 'bootstrap/dist/css/bootstrap.min.css';
-import SignInSignUp from './component/SignInSignUp'
-import Header from './layouts/Header/Header.jsx'
-import HomePage from './component/HomePage/HomePage'
-import ViewUserProfile from './page/ViewUserProfile'
+import SignInSignUp from './component/Authentication/SignInSignUp/index.jsx'
+import Header from './layouts/user/Header/Header.jsx'
+import HomePage from './page/user/home/HomePage.jsx'
+import ViewUserProfile from './page/user/profile/index.jsx'
 
 
 

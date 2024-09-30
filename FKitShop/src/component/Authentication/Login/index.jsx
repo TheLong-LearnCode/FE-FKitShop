@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-import SignUpForm from '../../component/SignUp';
-import SignInForm from '../../component/SignIn';
-import Validator from "../../component/Validator";
+import SignUpForm from '../SignUp/index.jsx';
+import SignInForm from '../SignIn/index.jsx';
+import Validator from "../../Validator/index.jsx";
 import { message } from 'antd';
-import { signUpUser, loginUser } from '../../service/authUser.jsx';
+import { signUpUser, loginUser } from '../../../service/authUser.jsx';
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
