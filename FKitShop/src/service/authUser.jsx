@@ -12,7 +12,7 @@ export const loginUser = async (data, navigate) => {
 
 export const signUpUser = async (data, navigate) => {
   try {
-    const response = await api.post("/accounts", JSON.stringify(data), {
+    const response = await api.post("/accounts/signup", JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
       },
