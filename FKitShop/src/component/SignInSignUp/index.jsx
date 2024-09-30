@@ -41,17 +41,6 @@ function SignInSignUp() {
                     Validator.isEmail('#form-sign-in #email'),
                     Validator.minLength('#form-sign-in #password', 6),
                 ],
-                // onSubmit: function (data) {
-                //     console.log('Sign In Data:', data);
-                //     fetch('/api/login', {
-                //         method: 'POST',
-                //         headers: { 'Content-Type': 'application/json' },
-                //         body: JSON.stringify(data),
-                //     })
-                //         .then((response) => response.json())
-                //         .then((result) => console.log('Success:', result))
-                //         .catch((error) => console.error('Error:', error));
-                // },
                 onSubmit: async (data) => {
                     try {
                         // Make sure data is correctly structured
@@ -90,17 +79,6 @@ function SignInSignUp() {
                         return document.querySelector('#form-sign-up #password').value;
                     }, 'Passwords do not match')
                 ],
-                // onSubmit: function (data) {
-                //     console.log('Sign Up Data:', data);
-                //     fetch('/api/signup', {
-                //         method: 'POST',
-                //         headers: { 'Content-Type': 'application/json' },
-                //         body: JSON.stringify(data),
-                //     })
-                //         .then((response) => response.json())
-                //         .then((result) => console.log('Success:', result))
-                //         .catch((error) => console.error('Error:', error));
-                // }
                 onSubmit: async (rawData) => {
                     const{password_confirmation, ...data}= rawData;
                     // JSON.parse(data) -> object
