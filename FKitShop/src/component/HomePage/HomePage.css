@@ -56,12 +56,19 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
     max-height: 250px;
+    overflow: hidden;
 }
 
 .featured-card img {
     width: 100%;
     height: 190px;
     object-fit: fill;
+    transition: transform 0.3s ease;
+  }
+
+  .featured-card img:hover{
+    transform: scale(1.1);
+   
   }
 
 .featured-card-title{
