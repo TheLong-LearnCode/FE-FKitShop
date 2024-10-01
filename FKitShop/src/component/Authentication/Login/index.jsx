@@ -5,8 +5,10 @@ import './index.css';
 import SignUpForm from '../SignUp/index.jsx';
 import SignInForm from '../SignIn/index.jsx';
 import Validator from "../../Validator/index.jsx";
-import { message } from 'antd';
-import { signUpUser, loginUser } from '../../../service/authUser.jsx';
+import { message, notification } from 'antd';
+import { register, login, verifyToken } from '../../../service/authUser.jsx';
+import { useDispatch} from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
@@ -16,6 +18,7 @@ function SignInSignUp() {
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('signin');
     const [isPending, startTransition] = useTransition();
+    const dispatch = useDispatch();
 
     const handleTabClick = (tab) => {
         startTransition(() => {
@@ -54,14 +57,42 @@ function SignInSignUp() {
                 ],
                 onSubmit: async (data) => {
                     try {
-                        const loginData = {
+                        const user = {
                             email: data.email,
                             password: data.password,
                         };
-                        const result = await loginUser(loginData, navigate);
-                        message.success('Login successfully!');
+                        const resultAction = await dispatch(login(user));
+                        console.log("resultAction:");
+                        
+                        console.log(resultAction);
+
+                        const originalPromiseResult = unwrapResult(resultAction);
+                        console.log("originalPromiseResult:");
+                        
+                        console.log(originalPromiseResult);
+                        if(originalPromiseResult){
+
+                            //Gọi hàm giải mã token
+                            const resultVerify = await verifyToken(originalPromiseResult.data.token);
+                            console.log("resultVerify:");
+                            console.log(resultVerify);
+
+                            if(resultVerify.data.role.some(item => item === 'admin')){
+                                //chuyển về dashboard
+                                navigate('/admin');
+                            } else {
+                                navigate('/');
+                            }
+                            
+                            notification.success({
+                                message: "Success!!",
+                                description: `Login successfully!! Hế nhô ${resultVerify.data.role} ${resultVerify.data.fullName}`,
+                            });
+                        }
                     } catch (error) {
-                        console.error('Login Error:', error);
+                        const responseError = error?.response?.data?.error;
+                        console.error(responseError);
+                        message.error(responseError);
                     }
                 },
             });
@@ -88,11 +119,13 @@ function SignInSignUp() {
                 onSubmit: async (rawData) => {
                     const { password_confirmation, ...data } = rawData;
                     try {
-                        const response = await signUpUser(data, navigate);
+                        const response = await register(data);
                         message.success("Welcome " + response.data.fullName + ", you've successfully registered!");
+                        navigate('/login'); // Điều hướng sau khi đăng ký thành công
                     } catch (error) {
                         console.error('Sign Up Error:', error.response.data.message);
-                        message.error(error.response.data.message);
+                        const ErrorMessage = error?.response?.data?.message;
+                        message.error(ErrorMessage);
                     }
                 },
             });
@@ -145,3 +178,4 @@ function SignInSignUp() {
 }
 
 export default SignInSignUp;
+

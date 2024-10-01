@@ -54,11 +54,12 @@ function Validator(options) {
     var formElement = document.querySelector(options.form);
     if (formElement) {
         // Khi submit form
-        formElement.onsubmit = function (e) {
+
+        formElement.onsubmit = async function (e) { // Add 'async' here
             e.preventDefault();
-
+        
             var isFormValid = true;
-
+        
             // Lặp qua từng rules và validate
             options.rules.forEach(function (rule) {
                 var inputElement = formElement.querySelector(rule.selector);
@@ -67,13 +68,10 @@ function Validator(options) {
                     isFormValid = false;
                 }
             });
-
-            // Thay thế đoạn này
+        
             if (isFormValid) {
-                // Lấy tất cả các input trong form
                 var enableInputs = formElement.querySelectorAll('[name]');
-
-                // Tạo object để lưu giá trị input
+        
                 var formValues = Array.from(enableInputs).reduce(function (values, input) {
                     switch (input.type) {
                         case 'radio':
@@ -97,21 +95,81 @@ function Validator(options) {
                     }
                     return values;
                 }, {});
-
-                // Chuyển object thành JSON
-                // var jsonData = JSON.stringify(formValues);
-                // console.log("Json data: ", jsonData);
-
-                // Nếu có options.onSubmit, gọi hàm này với dữ liệu JSON
+        
+                // If there's an options.onSubmit, call it
                 if (typeof options.onSubmit === 'function') {
-                    options.onSubmit(formValues); // Gửi formValues thay vì jsonData để dễ xử lý trong React
+                    try {
+                        await options.onSubmit(formValues); // Use 'await' to wait for the async onSubmit
+                    } catch (error) {
+                        console.error('Error in onSubmit:', error);
+                    }
                 }
-
-                // Nếu muốn submit form theo cách mặc định, có thể uncomment dòng này
-                // formElement.submit();
             }
+        };
+        
 
-        }
+        // formElement.onsubmit = async function (e) {
+        //     e.preventDefault();
+
+        //     var isFormValid = true;
+
+        //     // Lặp qua từng rules và validate
+        //     options.rules.forEach(function (rule) {
+        //         var inputElement = formElement.querySelector(rule.selector);
+        //         var isValid = validate(inputElement, rule);
+        //         if (!isValid) {
+        //             isFormValid = false;
+        //         }
+        //     });
+
+        //     // Thay thế đoạn này
+        //     if (isFormValid) {
+        //         // Lấy tất cả các input trong form
+        //         var enableInputs = formElement.querySelectorAll('[name]');
+
+        //         // Tạo object để lưu giá trị input
+        //         var formValues = Array.from(enableInputs).reduce(function (values, input) {
+        //             switch (input.type) {
+        //                 case 'radio':
+        //                     values[input.name] = formElement.querySelector('input[name="' + input.name + '"]:checked').value;
+        //                     break;
+        //                 case 'checkbox':
+        //                     if (!input.matches(':checked')) {
+        //                         values[input.name] = '';
+        //                         return values;
+        //                     }
+        //                     if (!Array.isArray(values[input.name])) {
+        //                         values[input.name] = [];
+        //                     }
+        //                     values[input.name].push(input.value);
+        //                     break;
+        //                 case 'file':
+        //                     values[input.name] = input.files;
+        //                     break;
+        //                 default:
+        //                     values[input.name] = input.value;
+        //             }
+        //             return values;
+        //         }, {});
+
+        //         // Chuyển object thành JSON
+        //         // var jsonData = JSON.stringify(formValues);
+        //         // console.log("Json data: ", jsonData);
+
+        //         // Nếu có options.onSubmit, gọi hàm này với dữ liệu JSON
+        //         // if (typeof options.onSubmit === 'function') {
+        //             try {
+        //                 await options.onSubmit(formValues); // Use 'await' to wait for the async onSubmit
+        //             } catch (error) {
+        //                 console.error('Error in onSubmit:', error);
+        //             }
+        //         // }
+
+        //         // Nếu muốn submit form theo cách mặc định, có thể uncomment dòng này
+        //         // formElement.submit();
+        //     }
+
+        // }
 
         // Lặp qua mỗi rule và xử lý (lắng nghe sự kiện blur, input, ...)
         options.rules.forEach(function (rule) {
