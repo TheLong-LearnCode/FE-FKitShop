@@ -17,7 +17,7 @@ export const signUpUser = async (data, navigate) => {
         'Content-Type': 'application/json',
       },
     });
-    navigate("/signin");
+    navigate("/login");
     return response.data;
   } catch (error) {
     throw error;

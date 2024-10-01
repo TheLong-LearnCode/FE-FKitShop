@@ -33,11 +33,11 @@ const PublicRoutes = [
                 element: <ContactPage />
             },
             {
-                path: "signin",
+                path: "login",
                 element: <LoginPage />
             },
             {
-                path: "signup",
+                path: "register",
                 element: <RegisterPage />
             },
 

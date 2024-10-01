@@ -20,7 +20,11 @@ function SignInSignUp() {
     const handleTabClick = (tab) => {
         startTransition(() => {
             setActiveTab(tab);
-            navigate(`/${tab}`);
+            if (tab === 'signin') {
+                navigate('/login');  // Điều hướng đến /login
+            } else {
+                navigate('/register');  // Điều hướng đến /register
+            }
             document.getElementById(`tab-content-${tab}`).scrollTo({
                 top: 0,
                 behavior: 'smooth',
@@ -31,7 +35,7 @@ function SignInSignUp() {
     useEffect(() => {
         // Set activeTab based on the current path
         const currentPath = location.pathname.replace('/', '');
-        setActiveTab(currentPath === 'signup' ? 'signup' : 'signin');
+        setActiveTab(currentPath === 'register' ? 'signup' : 'signin');
     }, [location]);
 
     useEffect(() => {
