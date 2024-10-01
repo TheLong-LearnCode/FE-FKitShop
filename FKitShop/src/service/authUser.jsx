@@ -2,6 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../config/axios.jsx";
 import { GET, POST } from "../constants/httpMethod.js";
 
+import Cookies from 'js-cookie';
+
 /**
  * 
  * @param {*} userdata 
@@ -9,8 +11,13 @@ import { GET, POST } from "../constants/httpMethod.js";
  */
 export const login = createAsyncThunk("auth/login", async (user) => {
   try {
-    const response = await api[POST]("/auth/login", user); // data should already be a JSON object
-    return response.data;
+    const response = await api[POST]("/auth/login", user);
+    console.log("response::");
+    console.log(response);
+
+    Cookies.set("token", JSON.stringify(response.data.data.token));
+
+    return response.data.data;
   } catch (error) {
     throw error;
   }
@@ -35,12 +42,27 @@ export const register = async (user) => {
  * @returns trả về thông tin chi tiết của user
  */
 export const verifyToken = async (token) => {
-  // const response = await api[GET]("user/info", {
-  const response = await api[GET]("accounts", {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  try {
 
-  return response.data;
+    const response = await api[GET]('accounts/allAccounts', {
+      // const response = await api[GET](`accounts${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}` // Thêm header xác thực
+      },
+    });
+
+    return response.data; // Trả về dữ liệu từ phản hồi
+  } catch (error) {
+    throw error; // Xử lý lỗi nếu có
+  }
 }
+
+
+//do xử lý với Redux => dùng hàm CreateAsyncThunk()
+/**
+ * //lấy dữ liệu từ Cookie và cập nhật vào State/Redux
+ */
+export const loadUserFromCookie = createAsyncThunk("auth/loadUserFromCookie",
+  async (token) => {
+    return await token;
+  })

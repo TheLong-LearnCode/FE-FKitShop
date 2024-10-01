@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as status from "../constants/status";
-import { login } from "../../service/authUser";
+import { loadUserFromCookie, login } from "../../service/authUser";
+import Cookies from 'js-cookie'
+
 
 const authSlice = createSlice({
     name: "auth",
@@ -9,7 +11,14 @@ const authSlice = createSlice({
         data: null,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        //remove cookies
+        logout: (state) => {
+            Cookies.remove("token");
+
+            state.data = null;
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(login.pending, (state, action) => {
             state.status = status.PENDING;
@@ -24,7 +33,11 @@ const authSlice = createSlice({
             state.status = status.FAILED;
             state.error = action.error.message;
         })
+
+        .addCase(loadUserFromCookie.fulfilled, (state, action) => {
+            state.data = action.payload;
+        })//chỉ riêng trường hợp 
     },
 });
-
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

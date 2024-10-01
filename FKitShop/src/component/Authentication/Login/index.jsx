@@ -7,7 +7,7 @@ import SignInForm from '../SignIn/index.jsx';
 import Validator from "../../Validator/index.jsx";
 import { message, notification } from 'antd';
 import { register, login, verifyToken } from '../../../service/authUser.jsx';
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 
 const totalDigitsPhoneNumber = 10;
@@ -19,6 +19,7 @@ function SignInSignUp() {
     const [activeTab, setActiveTab] = useState('signin');
     const [isPending, startTransition] = useTransition();
     const dispatch = useDispatch();
+    const [notificationData, setNotificationData] = useState(null);
 
     const handleTabClick = (tab) => {
         startTransition(() => {
@@ -34,6 +35,15 @@ function SignInSignUp() {
             });
         });
     };
+
+    useEffect(() => {
+        if (notificationData) {
+            notification.success({
+                message: "Success!",
+                description: notificationData,
+            });
+        }
+    }, [notificationData]);
 
     useEffect(() => {
         // Set activeTab based on the current path
@@ -63,36 +73,36 @@ function SignInSignUp() {
                         };
                         const resultAction = await dispatch(login(user));
                         console.log("resultAction:");
-                        
+
                         console.log(resultAction);
 
                         const originalPromiseResult = unwrapResult(resultAction);
                         console.log("originalPromiseResult:");
-                        
+
                         console.log(originalPromiseResult);
-                        if(originalPromiseResult){
+                        if (originalPromiseResult) {
 
                             //Gọi hàm giải mã token
-                            const resultVerify = await verifyToken(originalPromiseResult.data.token);
+                            const resultVerify = await verifyToken(originalPromiseResult.token);
                             console.log("resultVerify:");
                             console.log(resultVerify);
 
-                            if(resultVerify.data.role.some(item => item === 'admin')){
+                            const filteredUser = resultVerify.data.find(u => u.email === user.email);
+                            console.log(filteredUser);
+                            
+                            if (filteredUser.role === 'admin') {
                                 //chuyển về dashboard
                                 navigate('/admin');
                             } else {
-                                navigate('/');
+                                navigate('/home');
                             }
-                            
-                            notification.success({
-                                message: "Success!!",
-                                description: `Login successfully!! Hế nhô ${resultVerify.data.role} ${resultVerify.data.fullName}`,
-                            });
+
+                            setNotificationData(`Login successfully! 
+                                Welcome ${resultVerify.data.role} ${resultVerify.data.fullName}`);
                         }
                     } catch (error) {
                         const responseError = error?.response?.data?.error;
-                        console.error(responseError);
-                        message.error(responseError);
+                        message.error(responseError || "An error occurred.");
                     }
                 },
             });
@@ -120,13 +130,16 @@ function SignInSignUp() {
                     const { password_confirmation, ...data } = rawData;
                     try {
                         const response = await register(data);
-                        message.success("Welcome " + response.data.fullName + ", you've successfully registered!");
+                        console.log("Sign Up Response:", response);
+                        message.success(`Welcome ${response.data.fullName}, you've successfully registered!`);
                         navigate('/login'); // Điều hướng sau khi đăng ký thành công
                     } catch (error) {
                         console.error('Sign Up Error:', error.response.data.message);
                         const ErrorMessage = error?.response?.data?.message;
                         message.error(ErrorMessage);
                     }
+
+
                 },
             });
         }
@@ -147,7 +160,7 @@ function SignInSignUp() {
                                 style={{ fontSize: '1.5rem', background: 'none', border: 'none', outline: 'none', cursor: 'pointer' }}
                                 disabled={isPending}
                             >
-                                Sign In
+                                Sign In 
                             </button>
                         </li>
                         <li className="nav-item w-50 text-center">
