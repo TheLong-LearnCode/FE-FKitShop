@@ -16,6 +16,11 @@
     border: 1px solid var(--primary-color);
 }
 
+.product-buttons .btn.active{
+    background-color: var(--primary-color);
+    color: var(--background-color);
+}
+
 .product-buttons .btn:hover {
     background-color: var(--primary-color);
     color: var(--background-color);
