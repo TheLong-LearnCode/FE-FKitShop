@@ -84,13 +84,12 @@ function SignInSignUp() {
 
                             //Gọi hàm giải mã token
                             const resultVerify = await verifyToken(originalPromiseResult.token);
+
+                            //resultVerify là user nhận đc sau khi gửi token cho BACKEND
                             console.log("resultVerify:");
                             console.log(resultVerify);
 
-                            const filteredUser = resultVerify.data.find(u => u.email === user.email);
-                            console.log(filteredUser);
-                            
-                            if (filteredUser.role === 'admin') {
+                            if (resultVerify.data.role === 'admin') {
                                 //chuyển về dashboard
                                 navigate('/admin');
                             } else {
@@ -103,6 +102,7 @@ function SignInSignUp() {
                     } catch (error) {
                         const responseError = error?.response?.data?.error;
                         message.error(responseError || "An error occurred.");
+                        console.log(error);
                     }
                 },
             });

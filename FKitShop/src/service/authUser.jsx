@@ -30,7 +30,7 @@ export const login = createAsyncThunk("auth/login", async (user) => {
  */
 export const register = async (user) => {
   try {
-    const response = await api[POST]("/accounts/signup", user);
+    const response = await api[POST]("/auth/register", user);
     return response.data;
   } catch (error) {
     throw error;
@@ -43,13 +43,13 @@ export const register = async (user) => {
  */
 export const verifyToken = async (token) => {
   try {
-
-    const response = await api[GET]('accounts/allAccounts', {
-      // const response = await api[GET](`accounts${userId}`, {
+    const response = await api[GET]('/accounts/info', {
       headers: {
-        Authorization: `Bearer ${token}` // Thêm header xác thực
+        Authorization: `Bearer ${token}` // Thêm token vào header
       },
     });
+    console.log("response: ", response);
+    
 
     return response.data; // Trả về dữ liệu từ phản hồi
   } catch (error) {
