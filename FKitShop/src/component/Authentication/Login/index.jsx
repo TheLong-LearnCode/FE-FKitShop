@@ -55,7 +55,7 @@ function SignInSignUp() {
                             password: data.password,
                         };
                         const result = await loginUser(loginData, navigate);
-                        message.success('Login successful');
+                        message.success('Login successfully!');
                     } catch (error) {
                         console.error('Login Error:', error);
                     }
