@@ -3,7 +3,7 @@ import 'boxicons'
 import './CardContent.css'
 
 
-export default function CardContent({productData}) {
+export default function CardContent({ productData }) {
     const [product, setProduct] = useState({})
     console.log(productData)
     return (
@@ -23,8 +23,14 @@ export default function CardContent({productData}) {
                             <div className="card-body">
                                 <h5 className="card-title">{product.name}</h5>
                                 <p className="price">{product.price}</p>
-                                <button className="btn btn-primary">Add to cart</button>
-                                <button className="btn btn-light like"><box-icon name='heart' type='solid' color='#b43f3f' ></box-icon> Like</button>
+                                <div className="card-bottom">
+                                    <button className="btn view-detail-btn">View details</button>
+                                    <button className="btn like-btn">
+                                        <box-icon name='heart' type='solid' color='var(--secondary-color)'></box-icon>
+                                         Like
+                                     </button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
