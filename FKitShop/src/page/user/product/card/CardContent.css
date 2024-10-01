@@ -1,0 +1,33 @@
+.main-content{
+    background-color: var(--background-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.product-buttons {
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+.product-buttons .btn {
+    margin-right: 5px;
+    transition: all 0.3s ease-in-out;
+    font-size: 1.2rem;
+    font-weight: 400;
+    border: 1px solid var(--primary-color);
+}
+
+.product-buttons .btn:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+}
+
+.product-card {
+    margin-bottom: 20px;
+}
+.card-body .price {
+    color: red;
+    font-weight: bold;
+}
+.card-body .like {
+    color: red;
+}

@@ -1,0 +1,14 @@
+.wrapper{
+    margin-top: 100px;
+}
+
+.banner-container{
+    height: 650px;
+    object-fit: cover;
+}
+
+.banner-img{
+    height: 100%;
+}
+
+

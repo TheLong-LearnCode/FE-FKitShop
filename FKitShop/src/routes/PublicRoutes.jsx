@@ -9,7 +9,7 @@ const ContactPage = React.lazy(() => import("../page/user/contact"));
 const LoginPage = React.lazy(() => import("../page/auth/login"));
 const RegisterPage = React.lazy(() => import("../page/auth/login"));
 const ProductListPage = React.lazy(() => import("../page/user/product/list"));
-const ProductCardPage = React.lazy(() => import("../page/user/product/card"));
+const ProductCardPage = React.lazy(() => import("../page/user/product/card/CardContent"));
 
 const PublicRoutes = [
     {
