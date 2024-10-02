@@ -3,11 +3,9 @@ import { Route, Routes } from 'react-router-dom'
 import './App.css'
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import SignInSignUp from './component/SignInSignUp'
-import Header from './layouts/Header/Header.jsx'
+import Header from './layouts/User/Header/Header.jsx'
 import HomePage from './component/HomePage/HomePage'
 import ViewUserProfile from './page/ViewUserProfile'
-
-
 
 
 function App() {
