@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Products } from '../../ListOfProduct'
+import { Products } from '../ListOfProduct.jsx'
 import CardContent from './CardContent'
 
 export default class CardMainContent extends Component {

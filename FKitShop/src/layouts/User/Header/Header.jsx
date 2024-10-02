@@ -47,8 +47,8 @@ export default function Header() {
                                     <span>Account</span>
                                 </a>
                                 <div className="dropdown-menu">
-                                    <Link to={'/signin'} className="dropdown-item" >Sign In</Link>
-                                    <Link to={'/signup'} className="dropdown-item" >Sign Up</Link>
+                                    <Link to={'/login'} className="dropdown-item" >Sign In</Link>
+                                    <Link to={'/register'} className="dropdown-item" >Sign Up</Link>
                                     <Link to={'/favoriteList'} className="dropdown-item" >Favorite List</Link>
                                 </div>
                             </div>
