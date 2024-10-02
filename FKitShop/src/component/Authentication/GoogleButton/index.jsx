@@ -4,7 +4,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
 
-function GoogleButton({ prop }) {
+function GoogleButton() {
     const login = useGoogleLogin({
         onSuccess: async (response) => {
             try {
@@ -28,10 +28,10 @@ function GoogleButton({ prop }) {
     //   });
     return (
         <>
-            <div className=" mt-3">
+            <div className="mt-3">
                 <button className="btn btn-google" onClick={() => login()}>
-                    <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google logo"/>
-                    <span>{prop === 'signin' ? "Sign in with Google" : "Sign up with Google"}</span>
+                    <img src="https://id-frontend.prod-east.frontend.public.atl-paas.net/assets/google-logo.5867462c.svg" alt="Google logo"/>
+                    <span>Google</span>
                 </button>
             </div>
 

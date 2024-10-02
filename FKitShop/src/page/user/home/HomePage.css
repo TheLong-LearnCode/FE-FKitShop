@@ -15,7 +15,7 @@
 .small-banner{
     width: 100%;
     overflow: hidden;
-    padding: 0 5px;
+    padding:  0 5px;
     border-radius: 10px;
 }
 
@@ -83,7 +83,3 @@
     color: var(--third-color);
     text-decoration: none;
 }
-
-  
-
-  

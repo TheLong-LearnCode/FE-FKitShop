@@ -3,8 +3,15 @@ import './HomePage.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import CardMainContent from '../product/card/CardMainContent';
+import { useSelector } from 'react-redux';
+
 import { Link } from 'react-router-dom';
 export default function HomePage() {
+  const data = useSelector(state => state.auth);
+  console.log("data: ");
+  
+  console.log(data);
+  
   return (
     <div>
 
