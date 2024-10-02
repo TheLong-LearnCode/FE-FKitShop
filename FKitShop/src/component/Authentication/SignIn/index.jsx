@@ -5,6 +5,7 @@ function SignIn() {
         <>
             <form id="form-sign-in">
                 <div className="form-group">
+
                     <input id="email" name="email" type="text" className="form-control" placeholder="Email" />
                     <span className="form-message"></span>
                 </div>
@@ -13,7 +14,7 @@ function SignIn() {
                     <span className="form-message"></span>
                 </div>
                 <button type="submit" className="btn btn-outline-dark btn-block">Sign In</button>
-                
+
                 {/* Add a horizontal line and the text "Hoặc tiếp tục với:" */}
                 <div className="form-group text-center mt-4">
                     <hr />
@@ -25,6 +26,7 @@ function SignIn() {
             </form>
         </>
     );
+
 }
 
 export default SignIn;
