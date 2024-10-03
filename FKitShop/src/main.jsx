@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// import App from './App.jsx'
+
 import './index.css'
 import { RouterProvider } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google';
-// import Footer from './layouts/user/Footer/Footer.jsx'
+
 import routes from './routes/index.jsx'
 import { Provider } from 'react-redux';
 import store from './redux/store/index.js';
