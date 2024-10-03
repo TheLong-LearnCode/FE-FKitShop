@@ -1,7 +1,5 @@
 import React from 'react'
 import './HomePage.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import CardMainContent from '../product/card/CardMainContent';
 import { useSelector } from 'react-redux';
 
@@ -36,7 +34,9 @@ export default function HomePage() {
             <span className="carousel-control-next-icon" aria-hidden="true"></span>
           </button>
         </div>
+        
         <CardMainContent />
+
         <div className="container mt-4">
           <div className="row">
             <div className='col-md-6 small-banner'>

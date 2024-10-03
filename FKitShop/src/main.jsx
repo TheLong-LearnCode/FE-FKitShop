@@ -8,6 +8,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import routes from './routes/index.jsx'
 import { Provider } from 'react-redux';
 import store from './redux/store/index.js';
+import Footer from './layouts/user/Footer/Footer.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,5 +17,7 @@ createRoot(document.getElementById('root')).render(
         <RouterProvider router={routes} />
       </GoogleOAuthProvider>;
     </Provider>
+
+    <Footer />
   </StrictMode>,
 )

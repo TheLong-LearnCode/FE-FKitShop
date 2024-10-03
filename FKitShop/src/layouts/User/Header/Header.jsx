@@ -1,8 +1,6 @@
 import React, { useState, useTransition, Suspense, useEffect } from 'react';
 import './Header.css';
 import 'boxicons';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../redux/slices/authSlice';
