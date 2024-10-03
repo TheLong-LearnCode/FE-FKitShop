@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import Header from './Header/Header.jsx'
-import Footer from './Footer/Footer.jsx'
 import { Outlet } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie'
@@ -21,7 +20,7 @@ export default function UserLayout() {
     <>
       <Header />
       <Outlet />
-      <Footer />
+      
     </>
   )
 }

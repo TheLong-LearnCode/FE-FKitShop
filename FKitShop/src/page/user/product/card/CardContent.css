@@ -24,6 +24,7 @@
 .product-buttons .btn:hover {
     background-color: var(--primary-color);
     color: var(--background-color);
+
 }
 
 .product-card {

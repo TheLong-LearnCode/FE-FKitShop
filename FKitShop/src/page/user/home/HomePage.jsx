@@ -34,7 +34,9 @@ export default function HomePage() {
             <span className="carousel-control-next-icon" aria-hidden="true"></span>
           </button>
         </div>
+        
         <CardMainContent />
+
         <div className="container mt-4">
           <div className="row">
             <div className='col-md-6 small-banner'>
