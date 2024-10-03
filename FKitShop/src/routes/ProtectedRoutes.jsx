@@ -4,6 +4,8 @@ import useAuthen from '../hooks/useAuthen';
 
 const ProtectedRoutes = ({ children, allowedRoles }) => {
     const { userRole, loading } = useAuthen(); 
+    console.log("userRole: " + userRole);
+    
   
     if (loading) {
       return <div>Loading...</div>; // Hiển thị trong lúc đang xác thực token

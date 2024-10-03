@@ -9,6 +9,7 @@ import { message, notification } from 'antd';
 import { register, login, verifyToken } from '../../../service/authUser.jsx';
 import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { ROLE_ADMIN } from '../../../constants/role.js';
 
 const totalDigitsPhoneNumber = 10;
 const passwordLength = 6;
@@ -37,15 +38,6 @@ function SignInSignUp() {
     };
 
     useEffect(() => {
-        if (notificationData) {
-            notification.success({
-                message: "Success!",
-                description: notificationData,
-            });
-        }
-    }, [notificationData]);
-
-    useEffect(() => {
         // Set activeTab based on the current path
         const currentPath = location.pathname.replace('/', '');
         setActiveTab(currentPath === 'register' ? 'signup' : 'signin');
@@ -72,37 +64,25 @@ function SignInSignUp() {
                             password: data.password,
                         };
                         const resultAction = await dispatch(login(user));
-                        console.log("resultAction:");
-
+                        console.log("resultAction: ", resultAction);
                         console.log(resultAction);
-
-                        const originalPromiseResult = unwrapResult(resultAction);
-                        console.log("originalPromiseResult:");
-
-                        console.log(originalPromiseResult);
-                        if (originalPromiseResult) {
-
-                            //Gọi hàm giải mã token
-                            const resultVerify = await verifyToken(originalPromiseResult.token);
-
-                            //resultVerify là user nhận đc sau khi gửi token cho BACKEND
-                            console.log("resultVerify:");
-                            console.log(resultVerify);
-
-                            if (resultVerify.data.role === 'admin') {
-                                //chuyển về dashboard
-                                navigate('/admin');
-                            } else {
-                                navigate('/home');
-                            }
-
-                            setNotificationData(`Login successfully! 
-                                Welcome ${resultVerify.data.role} ${resultVerify.data.fullName}`);
+                        //resultAction.payload.data là lấy ra được user
+                        const userResponse = resultAction.payload.data.accounts;
+                        console.log("userResponse.role: ", userResponse.role)
+                        message.success(`Login successfully! 
+                            Welcome ${userResponse.role} ${userResponse.fullName}`);
+                        if (userResponse.role === ROLE_ADMIN) {
+                            //chuyển về dashboard
+                            navigate('/admin');
+                            console.log("đã vào /admin");
+                            
+                        } else {
+                            navigate('/home');
                         }
                     } catch (error) {
+                        console.log(error);
                         const responseError = error?.response?.data?.error;
                         message.error(responseError || "An error occurred.");
-                        console.log(error);
                     }
                 },
             });
@@ -160,7 +140,7 @@ function SignInSignUp() {
                                 style={{ fontSize: '1.5rem', background: 'none', border: 'none', outline: 'none', cursor: 'pointer' }}
                                 disabled={isPending}
                             >
-                                Sign In 
+                                Sign In
                             </button>
                         </li>
                         <li className="nav-item w-50 text-center">

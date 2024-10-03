@@ -1,30 +1,70 @@
+// import { useSelector, useDispatch } from 'react-redux';
+// import { useEffect, useState } from 'react';
+// import { loadUserFromCookie } from '../service/authUser';
+// import { IDLE, PENDING } from '../redux/constants/status';
+
+// const useAuthen = () => {
+//   const dispatch = useDispatch();
+//   const { data: userData, status } = useSelector((state) => state.auth);
+//   const [loading, setLoading] = useState(true);
+
+//   console.log("user data in useAuthen:", userData);
+  
+//   useEffect(() => {
+//     // If there's no user data in the state, try loading from cookie
+//     if (!userData) {
+//       dispatch(loadUserFromCookie());
+//     } else {
+//       setLoading(false);
+//     }
+//   }, [dispatch, userData]);
+
+//   useEffect(() => {
+//     if (status === IDLE || status === PENDING) {
+//       setLoading(true);
+//     } else {
+//       setLoading(false);
+//     }
+//   }, [status]);
+
+//   const userRole = userData ? userData?.data?.accounts.role : null; // Assuming `userData` contains a `role` field
+
+//   return { userRole, loading };
+// };
+
+// export default useAuthen;
+
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { loadUserFromCookie } from '../service/authUser';
+import { IDLE, PENDING } from '../redux/constants/status';
 
 const useAuthen = () => {
   const dispatch = useDispatch();
   const { data: userData, status } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
 
+  console.log("user data in useAuthen:", userData);
+  
   useEffect(() => {
-    // If there's no user data in the state, try loading from cookie
-    if (!userData) {
+    // If there's no user data in the state and not already loading, try loading from cookie
+    if (!userData && !loading) {
+      setLoading(true);
       dispatch(loadUserFromCookie());
     } else {
       setLoading(false);
     }
-  }, [dispatch, userData]);
+  }, [dispatch, userData, loading]);
 
   useEffect(() => {
-    if (status === 'IDLE' || status === 'PENDING') {
+    if (status === IDLE || status === PENDING) {
       setLoading(true);
     } else {
       setLoading(false);
     }
   }, [status]);
 
-  const userRole = userData ? userData.role : null; // Assuming `userData` contains a `role` field
+  const userRole = userData?.data?.accounts?.role || null;
 
   return { userRole, loading };
 };

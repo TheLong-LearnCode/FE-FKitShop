@@ -1,4 +1,4 @@
-import React, { useState, useTransition, Suspense, useEffect } from 'react';
+import React, { useState, useTransition, useEffect, Suspense } from 'react';
 import './Header.css';
 import 'boxicons';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,35 +6,49 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../redux/slices/authSlice';
+import { verifyToken } from '../../../service/authUser';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
     const [activeLink, setActiveLink] = useState('');
+    const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
-    //in ra token
-    console.log("user in header: ", user);
+
+    useEffect(() => {
+
+        if (user.data && user.data.data) {
+            const fetchUserInfo = async () => {
+                try {
+                    const userData = await verifyToken(user.data.data.token); // Gọi hàm verifyToken để lấy dữ liệu
+                    
+                    setUserInfo(userData); // Lưu thông tin user vào state
+                } catch (error) {
+                    console.error("Error verifying token: ", error);
+                }
+            };
+            fetchUserInfo(); // Gọi API lấy thông tin người dùng
+        }
+    }, [user.data]); //user.data là thông tin người dùng
+
+    console.log("user: ", user);
+    //khi load lại thì user.data là chuỗi token
 
     const handleNavClick = (linkName) => {
         startTransition(() => {
             setActiveLink(linkName);
         });
     };
+
     const handleLogout = () => {
         startTransition(() => {
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
             navigate('/login');  // Điều hướng về trang đăng nhập
         });
     };
-    // Use useEffect to navigate to /login when the user logs out
-    // useEffect(() => {
-    //     if (!user) {
-    //         navigate('/login');
-    //     }
-    // }, [user, navigate]);
 
     return (
         <div>
@@ -68,7 +82,7 @@ export default function Header() {
                                         <span>Account</span>
                                     </a>
                                     <div className="dropdown-menu">
-                                        {user.data && user.data.token ? (
+                                        {userInfo ? (
                                             <>
                                                 <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
                                                 <button onClick={handleLogout} className="dropdown-item">Log Out</button>

@@ -12,7 +12,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("Data: ", data);
+  console.log("Data in dashboard: ", data); //data.data => lấy ra info của admin
 
   const handleLogout = () => {
     dispatch(logout());
