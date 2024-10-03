@@ -1,22 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 import 'boxicons'
 import './CardContent.css'
 
-export default function CardContent({ productData }) {
-    const [selectedProducts, setSelectedProducts] = useState(productData); // Mặc định hiển thị 6 sản phẩm đầu tiên
-    const [activeButton, setActiveButton] = useState('new'); 
+export default function CardContent() {
+
+    const [products, setProducts] = useState([]); // Trạng thái để lưu danh sách sản phẩm
+    const [loading, setLoading] = useState(true); // Trạng thái để theo dõi quá trình tải dữ liệu
+    const [error, setError] = useState(null); // Trạng thái để lưu lỗi nếu có
+
+    const [selectedProducts, setSelectedProducts] = useState(); // Mặc định hiển thị 6 sản phẩm đầu tiên
+    const [activeButton, setActiveButton] = useState('new');
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/fkshop/product/products'); // Thay thế bằng URL API của bạn
+                setProducts(response.data.data); // Lưu dữ liệu vào trạng thái
+            
+            } catch (err) {
+                setError(err); // Lưu lỗi nếu có
+            } finally {
+                setLoading(false); // Đặt loading thành false sau khi hoàn thành
+            }
+        };
+
+        fetchProducts(); // Gọi hàm để lấy dữ liệu
+    }, []); // Chạy một lần khi component được mount
+
+    if (loading) return <div>Loading...</div>; // Hiển thị loading khi đang tải
+    if (error) return <div>Error: {error.message}</div>; // Hiển thị lỗi nếu có
+
+    
 
     const handleButtonClick = (buttonType) => {
         if (buttonType === 'new') {
-            setSelectedProducts(productData); // Hiển thị 6 sản phẩm đầu tiên
+            setSelectedProducts(products); // Hiển thị 6 sản phẩm đầu tiên
         } else if (buttonType === 'hot') {
-            setSelectedProducts(productData.slice(4, 12)); // Hiển thị 6 sản phẩm tiếp theo (giả sử có 12 sản phẩm)
+            setSelectedProducts(products.slice(4, 10)); // Hiển thị 6 sản phẩm tiếp theo (giả sử có 12 sản phẩm)
         } else if (buttonType === 'highlyRated') {
-            setSelectedProducts(productData.slice(0, 4)); // Thay đổi logic nếu cần cho sản phẩm được đánh giá cao
+            setSelectedProducts(products.slice(0, 4)); // Thay đổi logic nếu cần cho sản phẩm được đánh giá cao
         }
-        setActiveButton(buttonType); 
+        setActiveButton(buttonType);
     };
 
+    console.log(products);
     return (
         <div className='container mt-4 main-content'>
             <div className="product-buttons">
@@ -41,7 +69,7 @@ export default function CardContent({ productData }) {
             </div>
 
             <div className='row'>
-                {selectedProducts.map((product) => ( // Hiển thị các sản phẩm đã chọn
+                {products.map(product => ( // Hiển thị các sản phẩm đã chọn
                     <div className="col-md-3 product-card" key={product.id}>
                         <div className="card">
                             <img className="card-img-top" src={product.image} alt={product.name} />
