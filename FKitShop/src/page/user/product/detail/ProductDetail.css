@@ -1,0 +1,13 @@
+.atc-btn{
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.2s ease-in-out;
+    opacity: 0.8;
+}
+
+.atc-btn:hover{
+    opacity: 1;
+    color: var(--background-color);
+}

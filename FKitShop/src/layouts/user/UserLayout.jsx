@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie'
 import { loadUserFromCookie } from '../../service/authUser.jsx';
 import Footer from './Footer/Footer.jsx';
+
 export default function UserLayout() {
   const dispatch = useDispatch();
 
