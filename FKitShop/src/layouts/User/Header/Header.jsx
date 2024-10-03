@@ -14,26 +14,27 @@ export default function Header() {
     const dispatch = useDispatch();
 
     // Lấy thông tin người dùng từ Redux Store
-    const user = useSelector((state) => state.auth.data);
-    
+    const user = useSelector((state) => state.auth);
+    //in ra token
+    console.log("user in header: ", user);
+
     const handleNavClick = (linkName) => {
         startTransition(() => {
             setActiveLink(linkName);
         });
     };
-
     const handleLogout = () => {
         startTransition(() => {
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
+            navigate('/login');  // Điều hướng về trang đăng nhập
         });
     };
-
     // Use useEffect to navigate to /login when the user logs out
-    useEffect(() => {
-        if (!user) {
-            navigate('/login');
-        }
-    }, [user, navigate]);
+    // useEffect(() => {
+    //     if (!user) {
+    //         navigate('/login');
+    //     }
+    // }, [user, navigate]);
 
     return (
         <div>
@@ -67,7 +68,7 @@ export default function Header() {
                                         <span>Account</span>
                                     </a>
                                     <div className="dropdown-menu">
-                                        {user ? (
+                                        {user.data && user.data.token ? (
                                             <>
                                                 <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
                                                 <button onClick={handleLogout} className="dropdown-item">Log Out</button>
@@ -132,7 +133,48 @@ export default function Header() {
                         </ul>
                     </nav>
                 </header>
+                <div className="modal fade" id="tagModal" tabIndex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content product-tag-container">
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">All</Link>
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Arduino</Link>
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Robotics & AI & IoT</Link>
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Sensor</Link>
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Programming</Link>
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Accessories and Tools</Link>
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Toy</Link>
+                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Module</Link>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="modal fade" id="categoryModal" tabIndex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+                    <div className="modal-dialog container">
+                        <div className="modal-content product-category-container row">
+                            <Link to={'/product'} >Ardunio board</Link>
+                            <Link to={'/product'} >Arduino Shield</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                            <Link to={'/product'} >Arduino Accessories</Link>
+                        </div>
+                    </div>
+                </div>
             </Suspense>
         </div>
-    );
+    )
 }
+
