@@ -1,6 +1,5 @@
 import React from 'react';
 import './Footer.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'boxicons'
 
 export default function Footer() {
