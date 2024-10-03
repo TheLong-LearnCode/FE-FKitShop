@@ -8,10 +8,11 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 export default function HomePage() {
   const data = useSelector(state => state.auth);
-  console.log("data: ");
-  
+  console.log("data in homepage: ");
   console.log(data);
-  
+
+
+
   return (
     <div>
 
