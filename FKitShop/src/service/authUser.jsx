@@ -15,7 +15,7 @@ export const login = createAsyncThunk("auth/login", async (user) => {
     console.log("response::");
     console.log(response);
 
-    Cookies.set("token", JSON.stringify(response.data.data.token));
+    Cookies.set("token", response.data.data.token);
 
     return response.data;
   } catch (error) {
@@ -43,9 +43,6 @@ export const register = async (user) => {
  */
 export const verifyToken = async (token) => {
   try {
-    console.log("token in verifyToken:");
-    console.log(token);
-    
     const response = await api[GET]('/accounts/info', {
       headers: {
         Authorization: `Bearer ${token}` // Thêm token vào header

@@ -20,7 +20,6 @@ export default function Dashboard() {
     //chuyển hướng về trang login
     navigate("/login");
   }
-
   return (
     <>
       <h1>Dashboard</h1>

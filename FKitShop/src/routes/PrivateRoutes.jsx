@@ -14,9 +14,9 @@ const PrivateRoutes = [
     {
         path: "/admin",
         element: (
-            <ProtectedRoutes allowedRoles={ROLE_ADMIN}>
+            // <ProtectedRoutes allowedRoles={ROLE_ADMIN}>
                 <LazyLoader children={<AdminLayOut />} />
-            </ProtectedRoutes>
+            // </ProtectedRoutes>
         ),
         children: [
             { index: true, element: <LazyLoader children={<DashboardPage />} /> },
@@ -31,9 +31,9 @@ const PrivateRoutes = [
         children: [
 
             { path: "profile", element: <UserProfilePage /> },
-            // { path: "orders", element: <UserOrdersPage /> },
-            // { path: "settings", element: <UserSettingsPage /> },
-            // { path: "logout", element: <Logout /> },
+            { path: "purchase", element: <UserProfilePage /> },
+            { path: "updateAccount", element: <UserProfilePage /> },
+            { path: "changePassword", element: <UserProfilePage /> },
         ],
     },
 ];

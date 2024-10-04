@@ -82,7 +82,7 @@ export default function Header() {
                                         <span>Account</span>
                                     </a>
                                     <div className="dropdown-menu">
-                                        {userInfo ? (
+                                        {(user.data !== null) ? (
                                             <>
                                                 <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
                                                 <button onClick={handleLogout} className="dropdown-item">Log Out</button>

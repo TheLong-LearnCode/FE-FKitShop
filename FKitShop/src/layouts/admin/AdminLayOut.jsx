@@ -11,7 +11,7 @@ export default function AdminLayOut() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = JSON.parse(Cookies.get("token"));
+    const token = Cookies.get("token");
 
     dispatch(loadUserFromCookie(token));
 
