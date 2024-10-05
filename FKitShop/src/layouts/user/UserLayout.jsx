@@ -15,14 +15,15 @@ export default function UserLayout() {
     dispatch(loadUserFromCookie(token));
     console.log("token in UserLayout");
     console.log(token);
-    
+
   }, []);
 
+
   return (
-    <>
+    <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <Header />
       <Outlet />
       <Footer />
-    </>
+    </div>
   )
 }

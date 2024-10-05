@@ -11,3 +11,26 @@
     opacity: 1;
     color: var(--background-color);
 }
+
+.product-detail-buttons {
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+.product-detail-buttons .btn {
+    margin-right: 5px;
+    transition: all 0.3s ease-in-out;
+    font-size: 1.2rem;
+    font-weight: 400;
+    border: 1px solid var(--primary-color);
+}
+
+.product-detail-buttons .btn.active{
+    background-color: var(--primary-color);
+    color: var(--background-color);
+}
+
+.product-detail-buttons .btn:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+
+}
