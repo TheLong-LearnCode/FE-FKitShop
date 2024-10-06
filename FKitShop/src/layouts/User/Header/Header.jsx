@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../redux/slices/authSlice';
 import { verifyToken } from '../../../service/authUser';
+import { IDLE } from '../../../redux/constants/status';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
@@ -17,24 +19,37 @@ export default function Header() {
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
+    console.log("user in Header: ", user);
 
+    var userToken;
+    var userData;
     useEffect(() => {
-
-        if (user.data && user.data.data) {
+        console.log("user.data.token: ", user.data?.token);
+        if (user.data !== null) {
+            userToken = user.data?.token;
+            
+        } if(user.status === IDLE && user.data !== null){
+            userToken = user.data;
+        }
+        console.log("userToken in Header: ", userToken);
+        console.log("user.data: ", user.data);
+        
+        
             const fetchUserInfo = async () => {
-                try {
-                    const userData = await verifyToken(user.data.data.token); // Gọi hàm verifyToken để lấy dữ liệu
+                try {   
+                    userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
+                    console.log("user after verify token: ", userData);
                     
                     setUserInfo(userData); // Lưu thông tin user vào state
+                    console.log("user after verify token2: ", userData);
                 } catch (error) {
                     console.error("Error verifying token: ", error);
                 }
             };
             fetchUserInfo(); // Gọi API lấy thông tin người dùng
-        }
     }, [user.data]); //user.data là thông tin người dùng
 
-    console.log("user: ", user);
+
     //khi load lại thì user.data là chuỗi token
 
     const handleNavClick = (linkName) => {
@@ -82,7 +97,7 @@ export default function Header() {
                                         <span>Account</span>
                                     </a>
                                     <div className="dropdown-menu">
-                                        {(user.data !== null) ? (
+                                        {(user.data !== null && userData?.data !== null) ? (
                                             <>
                                                 <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
                                                 <button onClick={handleLogout} className="dropdown-item">Log Out</button>

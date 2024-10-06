@@ -5,14 +5,12 @@ import './index.css';
 import SignUpForm from '../SignUp/index.jsx';
 import SignInForm from '../SignIn/index.jsx';
 import Validator from "../../Validator/index.jsx";
-import { message, notification } from 'antd';
+import { message } from 'antd';
 import { register, login, verifyToken } from '../../../service/authUser.jsx';
 import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { ROLE_ADMIN } from '../../../constants/role.js';
-
-const totalDigitsPhoneNumber = 10;
-const passwordLength = 6;
+import { PASSWORD_LENGTH, TOTAL_DIGITS_PHONE_NUMBER } from '../../../constants/fomConstrant.js';
 
 function SignInSignUp() {
     const navigate = useNavigate();
@@ -20,7 +18,6 @@ function SignInSignUp() {
     const [activeTab, setActiveTab] = useState('signin');
     const [isPending, startTransition] = useTransition();
     const dispatch = useDispatch();
-    const [notificationData, setNotificationData] = useState(null);
 
     const handleTabClick = (tab) => {
         startTransition(() => {
@@ -65,24 +62,33 @@ function SignInSignUp() {
                         };
                         const resultAction = await dispatch(login(user));
                         console.log("resultAction: ", resultAction);
-                        console.log(resultAction);
-                        //resultAction.payload.data là lấy ra được user
-                        const userResponse = resultAction.payload.data.accounts;
-                        console.log("userResponse.role: ", userResponse.role)
-                        message.success(`Login successfully! 
+
+                        const originalPromiseResult = unwrapResult(resultAction);
+                        console.log("originalPromiseResult:");
+
+                        console.log(originalPromiseResult);
+                        if (originalPromiseResult) {
+                            const resultVerify = await verifyToken(originalPromiseResult.token);
+                            console.log("resultVerify: ", resultVerify);
+
+                            //resultAction.payload.data là lấy ra được user
+                            const userResponse = resultVerify.data;
+                            console.log("userResponse: ", userResponse)
+                            message.success(`Login successfully! 
                             Welcome ${userResponse.role} ${userResponse.fullName}`);
-                        if (userResponse.role === ROLE_ADMIN) {
-                            //chuyển về dashboard
-                            navigate('/admin');
-                            console.log("đã vào /admin");
-                            
-                        } else {
-                            navigate('/home');
+                            if (userResponse.role === ROLE_ADMIN) {
+                                //chuyển về dashboard
+                                navigate('/admin');
+                                console.log("đã vào /admin");
+
+                            } else {
+                                navigate('/home');
+                            }
                         }
                     } catch (error) {
                         console.log(error);
                         const responseError = error?.response?.data?.error;
-                        message.error(responseError || "An error occurred.");
+                        message.error(responseError || error);
                     }
                 },
             });
@@ -96,11 +102,11 @@ function SignInSignUp() {
                     Validator.isRequired('#form-sign-up #dob', 'Please enter date of birth'),
                     Validator.isValidDate('#form-sign-up #dob', ''),
                     Validator.isRequired('#form-sign-up #phoneNumber', 'Please enter phone number'),
-                    Validator.isPhoneNumber('#form-sign-up #phoneNumber', '', totalDigitsPhoneNumber),
+                    Validator.isPhoneNumber('#form-sign-up #phoneNumber', '', TOTAL_DIGITS_PHONE_NUMBER),
                     Validator.isRequired('#form-sign-up #email', 'Please enter email'),
                     Validator.isEmail('#form-sign-up #email'),
                     Validator.isRequired('#form-sign-up #password', 'Please enter password'),
-                    Validator.minLength('#form-sign-up #password', passwordLength),
+                    Validator.minLength('#form-sign-up #password', PASSWORD_LENGTH),
                     Validator.isRequired('#form-sign-up #password_confirmation', 'Please confirm password'),
                     Validator.isConfirmed('#form-sign-up #password_confirmation', function () {
                         return document.querySelector('#form-sign-up #password').value;

@@ -9,9 +9,8 @@ import { Link } from 'react-router-dom';
 export default function HomePage() {
   const data = useSelector(state => state.auth);
   console.log("data in homepage, data.data là token, data.accounts là lấy đc info account: ");
-  console.log(data);
-
-
+  console.log(data); //-passed:gòm status:success, data.accounts->userdata và error:null
+                     //empty: status: idle, data: token, error:null
 
   return (
     <div>

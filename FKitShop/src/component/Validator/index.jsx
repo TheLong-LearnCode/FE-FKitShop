@@ -1,6 +1,6 @@
 // Import React if you want to use it later for any UI integration
 //import React from 'react';
-
+import { TOTAL_DIGITS_PHONE_NUMBER } from "../../constants/fomConstrant";
 function Validator(options) {
     function getParent(element, selector) {
         while (element.parentElement) {
@@ -136,7 +136,8 @@ function Validator(options) {
     }
 }
 
-// Validator rules as before
+//-------Ràng buộc input user info--------
+
 Validator.isRequired = function (selector, message) {
     return {
         selector: selector,
@@ -205,25 +206,105 @@ Validator.isValidDate = function (selector, message) {
     };
 };
 
-Validator.isPhoneNumber = function (selector, message, totalDigits) {
+Validator.isPhoneNumber = function (selector, message, TOTAL_DIGITS_PHONE_NUMBER) {
     return {
         selector: selector,
         test: function (value) {
             if (value.charAt(0) !== '0') {
                 return 'Must start at 0';
             }
-            const phoneRegex = new RegExp(`^0\\d{${totalDigits - 1}}$`);
-            return phoneRegex.test(value) ? undefined : message || `Must have ${totalDigits} digits`;
+            const phoneRegex = new RegExp(`^0\\d{${TOTAL_DIGITS_PHONE_NUMBER - 1}}$`);
+            return phoneRegex.test(value) ? undefined : message || `Must have ${TOTAL_DIGITS_PHONE_NUMBER} digits`;
         }
     };
 };
-// Validator.isConfirmed = function (selector, getConfirmValue, message) {
-//     return {
-//         selector: selector,
-//         test: function (value) {
-//             return value === getConfirmValue() ? undefined : message || 'Giá trị nhập vào không chính xác';
-//         }
-//     }
-// }
 
+//---------------------------------------------------------------------------
+
+//-----------------------Ràng buộc update user info--------------------------
+
+Validator.updateFullName = function (selector, getFullName, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            // Get the current full name value
+            const currentFullName = getFullName; 
+
+            // Check if the value is empty or unchanged
+            if (value === currentFullName) {
+                return undefined; // Return the current value
+            }
+            // Regex for valid full name
+            const nameRegex = /^[a-zA-Z\s]+$/;
+
+            // Validate the new value
+            return nameRegex.test(value) ? undefined : message ||'Invalid full name';
+        }
+    };
+};
+
+
+Validator.updateDateOfBirth = function (selector, getDateOfBirthValue, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            if (value === getDateOfBirthValue) {
+                return undefined;
+            }
+            // Gọi lại hàm xác thực ngày tháng nếu người dùng thay đổi giá trị ngày
+            return Validator.isValidDate(selector, message).test(value);
+        }
+    };
+};
+
+
+Validator.updateEmail = function (selector, getEmailValue, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            if (value === getEmailValue) {
+                return undefined;
+            }
+            return Validator.isEmail(selector, message).test(value);
+        }
+    };
+};
+
+Validator.updatePhoneNumber = function (selector, getPhoneNumberValue, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            if (value === getPhoneNumberValue) {
+                return undefined;
+            }
+            return Validator.isPhoneNumber(selector, message, TOTAL_DIGITS_PHONE_NUMBER).test(value);
+        }
+    };
+};
+
+Validator.updatePassword = function (selector, getPasswordValue, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            if (value === getPasswordValue()) {
+                return undefined;
+            }
+            return Validator.minLength(selector, 8, message).test(value);
+        }
+    };
+};
+
+Validator.updateConfirmPassword = function (selector, getConfirmPasswordValue, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            if (value === getConfirmPasswordValue()) {
+                return undefined;
+            }
+            return Validator.isConfirmed(selector, getPasswordValue, message).test(value);
+        }
+    };
+};
+
+//---------------------------------------------------------------------------
 export default Validator;
