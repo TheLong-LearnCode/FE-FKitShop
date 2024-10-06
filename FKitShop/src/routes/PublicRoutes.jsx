@@ -12,6 +12,8 @@ const LoginPage = React.lazy(() => import("../page/auth/login"));
 const RegisterPage = React.lazy(() => import("../page/auth/login"));
 const ProductListPage = React.lazy(() => import("../page/user/product/list"));
 const ProductCardPage = React.lazy(() => import("../page/user/product/detail/ProductDetail"));
+const ProductCartPage = React.lazy(() => import("../page/user/cart/ProductCart"));
+
 
 
 const PublicRoutes = [
@@ -50,8 +52,12 @@ const PublicRoutes = [
                 element: <LazyLoader children={<ProductListPage />} />,
             },
             {
-                path: "detail/:id",
+                path: "detail/:productID",
                 element: <LazyLoader children={<ProductCardPage />} />,
+            },
+            {
+                path: "cart",
+                element: <LazyLoader children={<ProductCartPage />} />,
             },
         ]
     },

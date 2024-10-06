@@ -34,6 +34,24 @@ export default function Header() {
     //     }
     // }, [user, navigate]);
 
+    const CartProducts = useSelector(state => state.cart.CartArr)
+
+    // Thêm state cho menu product
+    const [showProductMenu, setShowProductMenu] = useState(false);
+    const [activeTag, setActiveTag] = useState(null);
+
+    // Giả sử chúng ta có dữ liệu về tags và categories
+    const productTags = [
+        { name: 'Arduino', categories: ['Arduino Board', 'Arduino Shield', 'Arduino Accessories'] },
+        { name: 'STEM Robotics & AI & IoT', categories: ['STEM Robotics Kit', 'AI & IoT'] },
+        { name: 'Sensor', categories: ['Light & Color & Sound', 'Motion & Vibration', 'Image & Barcode & QR'] },
+        { name: 'Accessories & Tools', categories: ['Electronic Components', 'Power Supply'] },
+        { name: 'STEM Programming', categories: ['Raspberry Pi', 'BBC Micro:Bit Programming'] },
+        { name: 'STEM Toy', categories: ['Preschool STEM', 'Primary STEM', 'Secondary STEM', 'High School STEM'] },
+        { name: 'Functional Module', categories: ['Control & Keyboard & Joystick', 'LCD Screen & HMI'] },
+        
+    ];
+
     return (
         <div>
             <Suspense fallback={<div>Loading...</div>}>
@@ -57,7 +75,7 @@ export default function Header() {
                             <div className='upper-nav-user-actions'>
                                 <Link to={'/cart'} className='upper-nav-item'>
                                     <box-icon name='cart' color='#ffffff'></box-icon>
-                                    <span>Cart (0)</span>
+                                    <span>Cart ({CartProducts.length})</span>
                                 </Link>
 
                                 <div className="dropdown">
@@ -95,16 +113,39 @@ export default function Header() {
                                     Home
                                 </Link>
                             </li>
-                            <li>
+                            <li className="product-menu-container"
+                                onMouseEnter={() => setShowProductMenu(true)}
+                                onMouseLeave={() => setShowProductMenu(false)}>
                                 <Link
                                     className={`nav-menu-link ${activeLink === 'Product' ? 'active' : ''}`}
-                                    onClick={() => {
-                                        handleNavClick('Product');
-                                    }}
-                                    data-toggle="modal" data-target="#tagModal"
+                                    onClick={() => handleNavClick('Product')}
                                 >
                                     Product
                                 </Link>
+                                {showProductMenu && (
+                                    <div className="product-submenu">
+                                        <div className="tags-list">
+                                            {productTags.map((tag) => (
+                                                <Link to={'/product'}
+                                                     key={tag.name}
+                                                     className="tag-item"
+                                                     onMouseEnter={() => setActiveTag(tag.name)}
+                                                     onMouseLeave={() => setActiveTag(null)}>
+                                                    {tag.name}
+                                                    {activeTag === tag.name && (
+                                                        <div className="categories-list">
+                                                            {tag.categories.map((category) => (
+                                                                <Link key={category} to={`/products/${tag.name.toLowerCase()}/${category.toLowerCase()}`}>
+                                                                    {category}
+                                                                </Link>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </li>
                             <li>
                                 <Link
@@ -131,46 +172,8 @@ export default function Header() {
                         </ul>
                     </nav>
                 </header>
-                <div className="modal fade" id="tagModal" tabIndex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
-                    <div className="modal-dialog">
-                        <div className="modal-content product-tag-container">
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">All</Link>
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Arduino</Link>
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Robotics & AI & IoT</Link>
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Sensor</Link>
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Programming</Link>
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Accessories and Tools</Link>
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">STEM Toy</Link>
-                            <Link className="product-tag" to={'/product'} data-toggle="modal" data-target="#categoryModal">Module</Link>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="modal fade" id="categoryModal" tabIndex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-                    <div className="modal-dialog container">
-                        <div className="modal-content product-category-container row">
-                            <Link to={'/product'} >Ardunio board</Link>
-                            <Link to={'/product'} >Arduino Shield</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                            <Link to={'/product'} >Arduino Accessories</Link>
-                        </div>
-                    </div>
-                </div>
+                
+                {showProductMenu && <div className="overlay"></div>}
             </Suspense>
         </div>
     )

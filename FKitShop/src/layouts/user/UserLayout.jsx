@@ -20,7 +20,7 @@ export default function UserLayout() {
 
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+    <div style={{ width: '100%', height: '100vh' }}>
       <Header />
       <Outlet />
       <Footer />
