@@ -123,13 +123,13 @@ export default function HomePage() {
         </Modal.Header>
         <Modal.Body>Có vẻ như bạn chưa đăng nhập nhỉ??</Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={handleLogin}>
+          <Button variant="outline-success" onClick={handleLogin}>
             Oke dô nè
           </Button>
-          <Button variant="secondary" onClick={handleRegister}>
+          <Button variant="outline-primary" onClick={handleRegister}>
             Toii chưa có tài khoản
           </Button>
-          <Button variant="first" onClick={handleClose}>
+          <Button variant="outline-secondary" onClick={handleClose}>
             Thôii
           </Button>
         </Modal.Footer>

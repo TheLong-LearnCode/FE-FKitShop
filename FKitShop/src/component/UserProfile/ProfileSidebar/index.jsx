@@ -1,7 +1,8 @@
 // ProfileSidebar.js
 import React from 'react';
 import clsx from 'clsx'; // Using clsx to handle class names
-import './index.module.css';
+import './index.css';
+import userLogo from '../../../assets/images/user.png';
 
 export default function ProfileSidebar({ activeTab, setActiveTab }) {
   const handleOnclick = (id) => () => {
@@ -11,11 +12,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
   return (
     <div className="text-center">
       <h4>My Profile</h4>
-      <img
-        src="./image/user.png" // Replace this with your avatar image path
-        alt="Profile"
-        className="profile-avatar mb-3"
-      />
+      <img src={userLogo} alt="Profile" className="profile-avatar mb-3" />
       <button
         className={clsx('btn btn-outline-dark w-100 mb-2', {
           active: activeTab === 'information'

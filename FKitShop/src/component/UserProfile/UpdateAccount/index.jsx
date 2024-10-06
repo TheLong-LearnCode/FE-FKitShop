@@ -3,7 +3,7 @@ import Validator from "../../Validator";
 import styles from './index.module.css';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import { updateUser } from '../../../service/authUser';
+import { updateUser } from '../../../service/crudUser';
 import Warning from './Warning';
 
 

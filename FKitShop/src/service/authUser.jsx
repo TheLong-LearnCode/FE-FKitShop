@@ -4,17 +4,6 @@ import { GET, POST, PUT } from "../constants/httpMethod.js";
 
 import Cookies from 'js-cookie';
 
-export const updateUser = async (user, id) => {
-  try {
-    const response = await api[PUT](`/accounts/customer/updateinfo/${id}`, user);
-    console.log("response in updateUser: ", response);
-    
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 /**
  * 
  * @param {*} userdata 

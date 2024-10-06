@@ -113,7 +113,16 @@ function SignInSignUp() {
                     }, 'Passwords do not match')
                 ],
                 onSubmit: async (rawData) => {
-                    const { password_confirmation, ...data } = rawData;
+                    const data = {
+                        fullName: rawData.fullName,
+                        dob: new Date(rawData.dob).toISOString().split('T')[0],
+                        phoneNumber: rawData.phoneNumber,
+                        email: rawData.email,
+                        password: rawData.password,
+                        role: "user"
+                    }
+                    console.log("data: ", data);
+                    
                     try {
                         const response = await register(data);
                         console.log("Sign Up Response:", response);

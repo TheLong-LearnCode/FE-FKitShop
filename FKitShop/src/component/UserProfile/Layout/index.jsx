@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { verifyToken } from '../../../service/authUser';
 import { setUser } from '../../../redux/slices/authSlice'; // Import the action to set user info
 import { IDLE } from '../../../redux/constants/status';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function UserProfile() {
     const [activeTab, setActiveTab] = useState('information'); // State to manage the active tab
@@ -16,6 +17,8 @@ export default function UserProfile() {
     const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
     const user = useSelector((state) => state.auth); // Get user state from Redux store
     const dispatch = useDispatch(); // Initialize dispatch
+    const navigate = useNavigate(); // Initialize navigate
+    const location = useLocation(); // Get the current URL location
 
     var userToken;
     var userData;
@@ -43,22 +46,27 @@ export default function UserProfile() {
         }, [user.data]); // user.status and user.data are dependencies
 
     ;
-    console.log("User info in ProfileLayout after render:", user);
-        
+    console.log("User info in ProfileLayout after render:", user);     
     //idle
     //user.data
 
     //success
     //user.data.data
-
     const userFinalInfo = user.data?.accounts || user.data?.data;
 
     // Function to change tab using startTransition
     const handleTabChange = (tabName) => {
         startTransition(() => {
             setActiveTab(tabName);
+            navigate(`/user/${tabName}`); // Update the URL when tab changes
         });
     };
+    
+    // Update the active tab based on the URL path when the component mounts or when the URL changes
+    useEffect(() => {
+        const path = location.pathname.split('/').pop(); // Get the last part of the URL
+        setActiveTab(path || 'information'); // Set the active tab based on the URL
+    }, [location.pathname]); // Run this effect whenever the URL changes
 
     return (
         <div className={styles.ht}>

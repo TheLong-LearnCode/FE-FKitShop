@@ -14,14 +14,25 @@ export default function AdminLayOut() {
     const token = Cookies.get("token");
 
     dispatch(loadUserFromCookie(token));
-
   }, []);
 
   return (
     <>
-      <HeaderLayout />
-      <Outlet />
-      <MenuLayout />
+      <div className="admin-dashboard">
+        {/* Sidebar Menu */}
+        <div className="d-flex">
+          <MenuLayout />
+
+          {/* Main content */}
+          <div className="w-100">
+            {/* Header */}
+            <HeaderLayout />
+
+            {/* Main content layout */}
+            <Outlet />
+          </div>
+        </div>
+      </div>
     </>
   )
 }

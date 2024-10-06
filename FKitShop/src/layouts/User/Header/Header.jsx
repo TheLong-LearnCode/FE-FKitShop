@@ -63,7 +63,7 @@ export default function Header() {
     const handleLogout = () => {
         startTransition(() => {
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
-            navigate('/login');  // Điều hướng về trang đăng nhập
+            navigate('/');  // Điều hướng về trang đăng nhập
         });
     };
 
@@ -106,7 +106,7 @@ export default function Header() {
                                             </>
                                         ) : (
                                             <>
-                                                <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
+                                                <Link to={'/user/information'} className="dropdown-item">My Profile</Link>
                                                 <button onClick={handleLogout} className="dropdown-item">Log Out</button>
                                             </>
                                         )}
