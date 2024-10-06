@@ -4,6 +4,8 @@ import styles from './index.module.css';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { updateUser } from '../../../service/authUser';
+import Warning from './Warning';
+
 
 export default function UpdateAccountForm({ userInfo }) {
     // const [dob, setDob] = useState('');
@@ -63,6 +65,7 @@ export default function UpdateAccountForm({ userInfo }) {
     return (
         <div className={clsx(styles.wd)}>
             <h4 className="text-center"><strong>Update account</strong></h4>
+            <Warning />
             <form id="form-update-account">
                 <div className="form-group row">
                     <label htmlFor="fullname" className="col-md-3 col-form-label">Full Name</label>

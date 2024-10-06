@@ -74,11 +74,11 @@ export default function Dashboard() {
               </Col>
             </Row>
             <Row>
-              <Col sm={8} className="mb-3">
-                <div className="bg-secondary p-5 text-center">Biểu đồ cột/hàng</div>
+              <Col sm={8} className="mb-3 h-3000">
+                <div className="bg-secondary p-5 text-center vh-90">Biểu đồ cột/hàng</div>
               </Col>
-              <Col sm={4} className="mb-3">
-                <div className="bg-secondary p-5 text-center">Biểu đồ tròn</div>
+              <Col sm={4} className="mb-3 h-3000">
+                <div className="bg-secondary p-5 text-center vh-90">Biểu đồ tròn</div>
               </Col>
             </Row>
           </Container>

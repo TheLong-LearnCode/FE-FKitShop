@@ -20,6 +20,8 @@ export default function Header() {
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
     console.log("user in Header: ", user);
+    const userDataStatus = useSelector((state) => state.auth.data);
+    console.log("userStatus: ", userDataStatus);
 
     var userToken;
     var userData;
@@ -27,26 +29,26 @@ export default function Header() {
         console.log("user.data.token: ", user.data?.token);
         if (user.data !== null) {
             userToken = user.data?.token;
-            
-        } if(user.status === IDLE && user.data !== null){
+
+        } if (user.status === IDLE && user.data !== null) {
             userToken = user.data;
         }
         console.log("userToken in Header: ", userToken);
         console.log("user.data: ", user.data);
-        
-        
-            const fetchUserInfo = async () => {
-                try {   
-                    userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
-                    console.log("user after verify token: ", userData);
-                    
-                    setUserInfo(userData); // Lưu thông tin user vào state
-                    console.log("user after verify token2: ", userData);
-                } catch (error) {
-                    console.error("Error verifying token: ", error);
-                }
-            };
-            fetchUserInfo(); // Gọi API lấy thông tin người dùng
+
+
+        const fetchUserInfo = async () => {
+            try {
+                userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
+                console.log("user after verify token: ", userData);
+
+                setUserInfo(userData); // Lưu thông tin user vào state
+                console.log("user after verify token2: ", userData);
+            } catch (error) {
+                console.error("Error verifying token: ", error);
+            }
+        };
+        fetchUserInfo(); // Gọi API lấy thông tin người dùng
     }, [user.data]); //user.data là thông tin người dùng
 
 
@@ -97,15 +99,15 @@ export default function Header() {
                                         <span>Account</span>
                                     </a>
                                     <div className="dropdown-menu">
-                                        {(user.data !== null && userData?.data !== null) ? (
-                                            <>
-                                                <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
-                                                <button onClick={handleLogout} className="dropdown-item">Log Out</button>
-                                            </>
-                                        ) : (
+                                        {(userDataStatus === undefined || userDataStatus === null) ? (
                                             <>
                                                 <Link to={'/login'} className="dropdown-item">Sign In</Link>
                                                 <Link to={'/register'} className="dropdown-item">Sign Up</Link>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
+                                                <button onClick={handleLogout} className="dropdown-item">Log Out</button>
                                             </>
                                         )}
                                         <Link to={'/favoriteList'} className="dropdown-item">Favorite List</Link>
