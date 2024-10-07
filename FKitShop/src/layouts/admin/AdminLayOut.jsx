@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie'
 import { loadUserFromCookie } from '../../service/authUser';
+import { Col, Container, Row } from 'react-bootstrap';
 
 export default function AdminLayOut() {
 
@@ -17,22 +18,17 @@ export default function AdminLayOut() {
   }, []);
 
   return (
-    <>
-      <div className="admin-dashboard">
-        {/* Sidebar Menu */}
-        <div className="d-flex">
+    <Container fluid>
+      <Row>
+        <Col lg={3} className='menu-layout'>
           <MenuLayout />
-
-          {/* Main content */}
-          <div className="w-100">
-            {/* Header */}
-            <HeaderLayout />
-
-            {/* Main content layout */}
-            <Outlet />
-          </div>
-        </div>
-      </div>
-    </>
+        </Col>
+        <Col lg={9}>
+          <HeaderLayout className='content-layout'/>
+          <hr style={{ borderTop: '2px solid black', margin: '20px 0' }} />
+          <Outlet />
+        </Col>
+      </Row>
+    </Container>
   )
 }

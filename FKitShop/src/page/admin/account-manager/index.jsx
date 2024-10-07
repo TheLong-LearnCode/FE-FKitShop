@@ -59,8 +59,7 @@ export default function AccountManager() {
     };
 
     return (
-        <Container>
-            <hr style={{ borderTop: '2px solid black', margin: '20px 0' }} />
+        <Container fluid>
             <h2 className="my-4"><strong>List Users:</strong></h2>
             <InputGroup className="mb-4">
                 <Form.Control
@@ -107,6 +106,7 @@ export default function AccountManager() {
                             <td>{user.role}</td>
                             <td>{user.status}</td>
                             <td>
+                                <Button variant="primary" className="mr-1">View</Button>
                                 <Button variant="warning" className="mr-1">Edit</Button>
                                 <Button variant="danger">Delete</Button>
                             </td>
