@@ -39,6 +39,19 @@ export default function HomePage() {
         setActiveButton(buttonType);
     };
 
+    //trường hợp chưa login
+  useEffect(() => {
+    if (statusData === null || statusData === undefined) {
+      const timer = setTimeout(() => {
+        setShow(true); // Show the modal after 3 seconds
+      }, 3000);
+      return () => clearTimeout(timer); // Clean up the timer when the component unmounts
+    }
+  }, [statusData]);
+
+  console.log('data in homepage: ', data); //-passed:gòm status:success, data.accounts->userdata và error:null
+  //empty: status: idle, data: token, error:null
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -58,18 +71,6 @@ export default function HomePage() {
     if (loading) return <div>Loading...</div>; // Hiển thị loading khi đang tải
     if (error) return <div>Error: {error.message}</div>; // Hiển thị lỗi nếu có
 
-  //trường hợp chưa login
-  useEffect(() => {
-    if (statusData === null || statusData === undefined) {
-      const timer = setTimeout(() => {
-        setShow(true); // Show the modal after 3 seconds
-      }, 3000);
-      return () => clearTimeout(timer); // Clean up the timer when the component unmounts
-    }
-  }, [statusData]);
-
-  console.log('data in homepage: ', data); //-passed:gòm status:success, data.accounts->userdata và error:null
-  //empty: status: idle, data: token, error:null
   return (
     <div>
       <div className="wrapper ">
@@ -177,7 +178,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={handleShow} style={{display:'none'}} >
         Launch demo modal
       </Button>
 
