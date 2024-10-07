@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../config/axios.jsx";
-import { GET, POST } from "../constants/httpMethod.js";
+import { GET, POST, PUT } from "../constants/httpMethod.js";
 
 import Cookies from 'js-cookie';
 
@@ -15,7 +15,7 @@ export const login = createAsyncThunk("auth/login", async (user) => {
     console.log("response::");
     console.log(response);
 
-    Cookies.set("token", JSON.stringify(response.data.data.token));
+    Cookies.set("token", response.data.data.token);
 
     return response.data.data;
   } catch (error) {
@@ -42,17 +42,19 @@ export const register = async (user) => {
  * @returns trả về thông tin chi tiết của user
  */
 export const verifyToken = async (token) => {
+  console.log("Token in verifyToken: ", token);
+  
   try {
     const response = await api[GET]('/accounts/info', {
       headers: {
         Authorization: `Bearer ${token}` // Thêm token vào header
       },
     });
-    console.log("response: ", response);
-    
-
+    console.log("response after verifyToken: ", response);
     return response.data; // Trả về dữ liệu từ phản hồi
   } catch (error) {
+    console.log("error: ", error);  
+    
     throw error; // Xử lý lỗi nếu có
   }
 }

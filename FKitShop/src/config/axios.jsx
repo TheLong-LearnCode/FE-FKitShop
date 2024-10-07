@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import Cookies from 'js-cookie'
 // Define the base URL for the API
 const baseUrl = "http://localhost:8080/fkshop";
 
@@ -12,10 +12,11 @@ const api = axios.create({
 
 // Interceptor to handle the request before sending
 const handleBefore = (config) => {
-  // Retrieve the token from localStorage
-  const token = localStorage.getItem("token")?.replace(/"/g, "");
+//   // Retrieve the token from localStorage
+//const token = localStorage.getItem("token")?.replace(/"/g, "");
+  const token = Cookies.get("token" );
   
-  // Attach the token to the Authorization header if it exists
+//   // Attach the token to the Authorization header if it exists
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }

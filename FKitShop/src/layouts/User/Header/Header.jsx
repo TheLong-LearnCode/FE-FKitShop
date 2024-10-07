@@ -1,38 +1,69 @@
-import React, { useState, useTransition, Suspense, useEffect } from 'react';
+import React, { useState, useTransition, useEffect, Suspense } from 'react';
 import './Header.css';
 import 'boxicons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../redux/slices/authSlice';
+import { verifyToken } from '../../../service/authUser';
+import { IDLE } from '../../../redux/constants/status';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
     const [activeLink, setActiveLink] = useState('');
+    const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
-    //in ra token
-    console.log("user in header: ", user);
+    console.log("user in Header: ", user);
+    const userDataStatus = useSelector((state) => state.auth.data);
+    console.log("userStatus: ", userDataStatus);
+
+    var userToken;
+    var userData;
+    useEffect(() => {
+        console.log("user.data.token: ", user.data?.token);
+        if (user.data !== null) {
+            userToken = user.data?.token;
+
+        } if (user.status === IDLE && user.data !== null) {
+            userToken = user.data;
+        }
+        console.log("userToken in Header: ", userToken);
+        console.log("user.data: ", user.data);
+
+
+        const fetchUserInfo = async () => {
+            try {
+                userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
+                console.log("user after verify token: ", userData);
+
+                setUserInfo(userData); // Lưu thông tin user vào state
+                console.log("user after verify token2: ", userData);
+            } catch (error) {
+                console.error("Error verifying token: ", error);
+            }
+        };
+        fetchUserInfo(); // Gọi API lấy thông tin người dùng
+    }, [user.data]); //user.data là thông tin người dùng
+
+
+    //khi load lại thì user.data là chuỗi token
 
     const handleNavClick = (linkName) => {
         startTransition(() => {
             setActiveLink(linkName);
         });
     };
+
     const handleLogout = () => {
         startTransition(() => {
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
-            navigate('/login');  // Điều hướng về trang đăng nhập
+            navigate('/');  // Điều hướng về trang đăng nhập
         });
     };
-    // Use useEffect to navigate to /login when the user logs out
-    // useEffect(() => {
-    //     if (!user) {
-    //         navigate('/login');
-    //     }
-    // }, [user, navigate]);
 
     const CartProducts = useSelector(state => state.cart.CartArr)
 
@@ -84,15 +115,15 @@ export default function Header() {
                                         <span>Account</span>
                                     </a>
                                     <div className="dropdown-menu">
-                                        {user.data && user.data.token ? (
-                                            <>
-                                                <Link to={'/user/profile'} className="dropdown-item">My Profile</Link>
-                                                <button onClick={handleLogout} className="dropdown-item">Log Out</button>
-                                            </>
-                                        ) : (
+                                        {(userDataStatus === undefined || userDataStatus === null) ? (
                                             <>
                                                 <Link to={'/login'} className="dropdown-item">Sign In</Link>
                                                 <Link to={'/register'} className="dropdown-item">Sign Up</Link>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Link to={'/user/information'} className="dropdown-item">My Profile</Link>
+                                                <button onClick={handleLogout} className="dropdown-item">Log Out</button>
                                             </>
                                         )}
                                         <Link to={'/favoriteList'} className="dropdown-item">Favorite List</Link>

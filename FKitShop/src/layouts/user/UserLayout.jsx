@@ -11,14 +11,11 @@ export default function UserLayout() {
 
   useEffect(() => {
     const token = Cookies.get("token");
-
     dispatch(loadUserFromCookie(token));
     console.log("token in UserLayout");
     console.log(token);
-
   }, []);
-
-
+  
   return (
     <div style={{ width: '100%', height: '100vh' }}>
       <Header />

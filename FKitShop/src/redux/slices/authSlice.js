@@ -12,10 +12,13 @@ const authSlice = createSlice({
         error: null,
     },
     reducers: {
+        setUser: (state, action) => {
+            state.data = action.payload; // Update state with user info
+            state.status = status.SUCCESSFULLY; // Set status to successfully
+        },
         //remove cookies
         logout: (state) => {
             Cookies.remove("token");
-
             state.data = null;
         }
     },
@@ -39,5 +42,5 @@ const authSlice = createSlice({
         })//chỉ riêng trường hợp 
     },
 });
-export const { logout } = authSlice.actions;
+export const { logout, setUser } = authSlice.actions;
 export default authSlice.reducer;

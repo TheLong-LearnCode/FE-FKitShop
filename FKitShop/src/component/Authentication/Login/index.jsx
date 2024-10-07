@@ -5,13 +5,12 @@ import './index.css';
 import SignUpForm from '../SignUp/index.jsx';
 import SignInForm from '../SignIn/index.jsx';
 import Validator from "../../Validator/index.jsx";
-import { message, notification } from 'antd';
+import { message } from 'antd';
 import { register, login, verifyToken } from '../../../service/authUser.jsx';
 import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
-
-const totalDigitsPhoneNumber = 10;
-const passwordLength = 6;
+import { ROLE_ADMIN } from '../../../constants/role.js';
+import { PASSWORD_LENGTH, TOTAL_DIGITS_PHONE_NUMBER } from '../../../constants/fomConstrant.js';
 
 function SignInSignUp() {
     const navigate = useNavigate();
@@ -19,7 +18,6 @@ function SignInSignUp() {
     const [activeTab, setActiveTab] = useState('signin');
     const [isPending, startTransition] = useTransition();
     const dispatch = useDispatch();
-    const [notificationData, setNotificationData] = useState(null);
 
     const handleTabClick = (tab) => {
         startTransition(() => {
@@ -35,15 +33,6 @@ function SignInSignUp() {
             });
         });
     };
-
-    useEffect(() => {
-        if (notificationData) {
-            notification.success({
-                message: "Success!",
-                description: notificationData,
-            });
-        }
-    }, [notificationData]);
 
     useEffect(() => {
         // Set activeTab based on the current path
@@ -72,37 +61,34 @@ function SignInSignUp() {
                             password: data.password,
                         };
                         const resultAction = await dispatch(login(user));
-                        console.log("resultAction:");
-
-                        console.log(resultAction);
+                        console.log("resultAction: ", resultAction);
 
                         const originalPromiseResult = unwrapResult(resultAction);
                         console.log("originalPromiseResult:");
 
                         console.log(originalPromiseResult);
                         if (originalPromiseResult) {
-
-                            //Gọi hàm giải mã token
                             const resultVerify = await verifyToken(originalPromiseResult.token);
+                            console.log("resultVerify: ", resultVerify);
 
-                            //resultVerify là user nhận đc sau khi gửi token cho BACKEND
-                            console.log("resultVerify:");
-                            console.log(resultVerify);
-
-                            if (resultVerify.data.role === 'admin') {
+                            //resultAction.payload.data là lấy ra được user
+                            const userResponse = resultVerify.data;
+                            console.log("userResponse: ", userResponse)
+                            message.success(`Login successfully! 
+                            Welcome ${userResponse.role} ${userResponse.fullName}`);
+                            if (userResponse.role === ROLE_ADMIN) {
                                 //chuyển về dashboard
                                 navigate('/admin');
+                                console.log("đã vào /admin");
+
                             } else {
                                 navigate('/home');
                             }
-
-                            setNotificationData(`Login successfully! 
-                                Welcome ${resultVerify.data.role} ${resultVerify.data.fullName}`);
                         }
                     } catch (error) {
-                        const responseError = error?.response?.data?.error;
-                        message.error(responseError || "An error occurred.");
                         console.log(error);
+                        const responseError = error?.response?.data?.error;
+                        message.error(responseError || error);
                     }
                 },
             });
@@ -116,18 +102,27 @@ function SignInSignUp() {
                     Validator.isRequired('#form-sign-up #dob', 'Please enter date of birth'),
                     Validator.isValidDate('#form-sign-up #dob', ''),
                     Validator.isRequired('#form-sign-up #phoneNumber', 'Please enter phone number'),
-                    Validator.isPhoneNumber('#form-sign-up #phoneNumber', '', totalDigitsPhoneNumber),
+                    Validator.isPhoneNumber('#form-sign-up #phoneNumber', '', TOTAL_DIGITS_PHONE_NUMBER),
                     Validator.isRequired('#form-sign-up #email', 'Please enter email'),
                     Validator.isEmail('#form-sign-up #email'),
                     Validator.isRequired('#form-sign-up #password', 'Please enter password'),
-                    Validator.minLength('#form-sign-up #password', passwordLength),
+                    Validator.minLength('#form-sign-up #password', PASSWORD_LENGTH),
                     Validator.isRequired('#form-sign-up #password_confirmation', 'Please confirm password'),
                     Validator.isConfirmed('#form-sign-up #password_confirmation', function () {
                         return document.querySelector('#form-sign-up #password').value;
                     }, 'Passwords do not match')
                 ],
                 onSubmit: async (rawData) => {
-                    const { password_confirmation, ...data } = rawData;
+                    const data = {
+                        fullName: rawData.fullName,
+                        dob: new Date(rawData.dob).toISOString().split('T')[0],
+                        phoneNumber: rawData.phoneNumber,
+                        email: rawData.email,
+                        password: rawData.password,
+                        role: "user"
+                    }
+                    console.log("data: ", data);
+                    
                     try {
                         const response = await register(data);
                         console.log("Sign Up Response:", response);
@@ -160,7 +155,7 @@ function SignInSignUp() {
                                 style={{ fontSize: '1.5rem', background: 'none', border: 'none', outline: 'none', cursor: 'pointer' }}
                                 disabled={isPending}
                             >
-                                Sign In 
+                                Sign In
                             </button>
                         </li>
                         <li className="nav-item w-50 text-center">
