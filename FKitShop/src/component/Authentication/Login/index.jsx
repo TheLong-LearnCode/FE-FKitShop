@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useTransition } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import './index.css';
 import SignUpForm from '../SignUp/index.jsx';
 import SignInForm from '../SignIn/index.jsx';

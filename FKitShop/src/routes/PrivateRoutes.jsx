@@ -1,8 +1,9 @@
+
 import React from "react";
 import LazyLoader from "../component/LazyLoader/index.jsx";
+import UserLayout from "../layouts/user/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
 import { ROLE_ADMIN } from "../constants/role";
-import UserLayout from "../layouts/user/UserLayout.jsx";
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
@@ -40,7 +41,6 @@ const PrivateRoutes = [
         path: "/user",
         element: <LazyLoader children={<UserLayout />} />,
         children: [
-
             { path: "information", element: <UserProfilePage /> },
             { path: "purchase", element: <UserProfilePage /> },
             { path: "updateAccount", element: <UserProfilePage /> },

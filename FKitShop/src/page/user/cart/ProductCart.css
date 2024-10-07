@@ -1,0 +1,24 @@
+.cart-content{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 20px;
+  }
+  
+  .cart-content h2 {
+    text-align: left;
+    font-weight: bold;
+    padding: 10px 20px;
+    color: var(--primary-color);
+    display: flex;
+  }
+
+  .cart-content h2 span{
+    background-color: var(--primary-color);
+    width: 5px;
+    margin-right: 5px;
+  }
+
+  .cart-content-table thead th{
+    background-color: var(--primary-color);
+    color: var(--background-color);
+  }
+

@@ -1,13 +1,12 @@
 import React from 'react';
 import './Footer.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'boxicons'
 
 export default function Footer() {
     return (
         <>
             <footer>
-                <div className="container-fluid">
+                <div className="container-fluid mt-3">
                     <div className="row">
                         <div className="col-md-3 mt-3">
                             <img src="/img/Logo.png" alt="FPT Kit Shop Logo" className="footer-logo mb-3" />

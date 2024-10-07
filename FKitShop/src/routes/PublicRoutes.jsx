@@ -1,3 +1,4 @@
+
 import React from "react";
 import UserLayout from "../layouts/user/UserLayout.jsx";
 import LazyLoader from "../component/LazyLoader/index.jsx";
@@ -10,7 +11,9 @@ const ContactPage = React.lazy(() => import("../page/user/contact"));
 const LoginPage = React.lazy(() => import("../page/auth/login"));
 const RegisterPage = React.lazy(() => import("../page/auth/login"));
 const ProductListPage = React.lazy(() => import("../page/user/product/list"));
-const ProductCardPage = React.lazy(() => import("../page/user/product/card/CardContent"));
+const ProductCardPage = React.lazy(() => import("../page/user/product/detail/ProductDetail"));
+const ProductCartPage = React.lazy(() => import("../page/user/cart/ProductCart"));
+
 
 
 const PublicRoutes = [
@@ -49,11 +52,17 @@ const PublicRoutes = [
                 element: <LazyLoader children={<ProductListPage />} />,
             },
             {
-                path: "product-card/:productId",
+                path: "detail/:productID",
                 element: <LazyLoader children={<ProductCardPage />} />,
+            },
+            {
+                path: "cart",
+                element: <LazyLoader children={<ProductCartPage />} />,
             },
         ]
     },
 ];
+
+
 
 export default PublicRoutes;
