@@ -11,7 +11,7 @@ export default function ProfileInformation({ userInfo }) {
   return (
     <>
       <div className="col-md-8">
-        <h4 className='text-center'>Information</h4>
+        <h4 className='text-center'><strong>Information</strong></h4>
         <p><strong>Name:</strong> {fullName}</p>
         <p><strong>Age:</strong> {age} {/* Example year of birth */}</p>
         <p><strong>Phone Number:</strong> {phoneNumber}</p>

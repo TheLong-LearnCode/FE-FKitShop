@@ -10,14 +10,15 @@ import Warning from './Warning';
 export default function UpdateAccountForm({ userInfo }) {
     // const [dob, setDob] = useState('');
     const [isDateType, setIsDateType] = useState(false);
-
-    const dobFormat = format(userInfo.dob, 'yyyy-MM-dd');
+    console.log("userInfo in updateAccount: ", userInfo);
+    
+    //const dobFormat = userInfo?.dob ? format(new Date(userInfo?.dob), 'yyyy-MM-dd') : '';
     // console.log("dobFormat", dobFormat);
 
-    const [fullName, setFullName] = useState(userInfo.fullName);
-    const [email, setEmail] = useState(userInfo.email);
-    const [phoneNumber, setPhoneNumber] = useState(userInfo.phoneNumber);
-    const [dob, setDob] = useState(dobFormat);
+    const [fullName, setFullName] = useState(userInfo?.fullName);
+    const [email, setEmail] = useState(userInfo?.email);
+    const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber);
+    const [dob, setDob] = useState(userInfo?.dob);
 
     const handleDobChange = (event) => {
         setDob(event.target.value);
@@ -29,16 +30,16 @@ export default function UpdateAccountForm({ userInfo }) {
             formGroupSelector: '.form-group',
             errorSelector: '.form-message',
             rules: [
-                Validator.updateFullName('#fullName', userInfo.fullName, 'Please enter a valid full name!!'),
+                Validator.updateFullName('#fullName', userInfo?.fullName, 'Please enter a valid full name!!'),
                 Validator.isRequired('#fullName', 'Please enter full name'),
 
-                Validator.updateDateOfBirth('#dob', userInfo.dob, ''),
+                Validator.updateDateOfBirth('#dob', userInfo?.dob, ''),
                 Validator.isValidDate('#dob', ''),
 
-                Validator.updatePhoneNumber('#phoneNumber', userInfo.phoneNumber, ''),
+                Validator.updatePhoneNumber('#phoneNumber', userInfo?.phoneNumber, ''),
                 //k cần isRequire vì nếu để trống thì báo lỗi "Start at 0";
 
-                Validator.updateEmail('#email', userInfo.email, 'Please enter a valid email'),
+                Validator.updateEmail('#email', userInfo?.email, 'Please enter a valid email'),
                 //k cần isRequire vì nếu để trống thì báo lỗi ở dòng text phía trên;
             ],
             onSubmit: async (rawData) => {
@@ -49,7 +50,7 @@ export default function UpdateAccountForm({ userInfo }) {
                     phoneNumber: rawData.phoneNumber || userInfo.phoneNumber,
                     email: rawData.email || userInfo.email
                 };
-                console.log("Data: ", data);
+                console.log("Data in updateAccount: ", data);
                 try {
                     const response = await updateUser(data, userInfo.accountID);
                     console.log("response in updateAccount: ", response);
@@ -60,7 +61,7 @@ export default function UpdateAccountForm({ userInfo }) {
             }
 
         });
-    }, []); // Empty dependency array to run only once
+    }, [userInfo]); // Empty dependency array to run only once
 
     return (
         <div className={clsx(styles.wd)}>
@@ -75,7 +76,6 @@ export default function UpdateAccountForm({ userInfo }) {
                             className="form-control"
                             id="fullName"
                             name="fullName"
-                            placeholder={userInfo.fullName}
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)} // Update state
                         />
@@ -90,15 +90,15 @@ export default function UpdateAccountForm({ userInfo }) {
                             name="dob"
                             type={isDateType || dob ? 'date' : 'text'}
                             className="form-control"
-                            placeholder={dobFormat}
+                            placeholder={userInfo?.dob}
                             onFocus={() => setIsDateType(true)}
                             onBlur={(e) => {
                                 if (!e.target.value) {
                                     setIsDateType(false);
-                                    e.target.placeholder = `${dobFormat}`;
+                                    e.target.placeholder = `${userInfo.dob}`;
                                 }
                             }}
-                            value={dob || dobFormat}
+                            value={dob || userInfo?.dob}
                             onChange={handleDobChange}
                         />
                         <span className="form-message"></span>
@@ -112,7 +112,6 @@ export default function UpdateAccountForm({ userInfo }) {
                             className="form-control"
                             id="phoneNumber"
                             name="phoneNumber"
-                            placeholder={userInfo.phoneNumber}
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
                         />
@@ -127,7 +126,6 @@ export default function UpdateAccountForm({ userInfo }) {
                             className="form-control"
                             id="email"
                             name="email"
-                            placeholder={userInfo.email}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />

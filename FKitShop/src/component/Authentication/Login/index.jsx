@@ -62,31 +62,32 @@ function SignInSignUp() {
                         };
                         const resultAction = await dispatch(login(user));
                         console.log("resultAction: ", resultAction);
-
                         const originalPromiseResult = unwrapResult(resultAction);
-                        console.log("originalPromiseResult:");
-
-                        console.log(originalPromiseResult);
-                        if (originalPromiseResult) {
+                        console.log("originalPromiseResult:", originalPromiseResult);
+                        if (originalPromiseResult.status === 400) {
+                            let responseError = originalPromiseResult.response.data.message;
+                            message.error(responseError);
+                        } else {
                             const resultVerify = await verifyToken(originalPromiseResult.token);
                             console.log("resultVerify: ", resultVerify);
+                                //resultAction.payload.data là lấy ra được user
+                                const userResponse = resultVerify.data;
+                                console.log("userResponse: ", userResponse)
+                                message.success(`Login successfully! 
+                                Welcome ${userResponse.role} ${userResponse.fullName}`);
+                                if (userResponse.role === ROLE_ADMIN) {
+                                    //chuyển về dashboard
+                                    navigate('/admin');
+                                    console.log("đã vào /admin");
 
-                            //resultAction.payload.data là lấy ra được user
-                            const userResponse = resultVerify.data;
-                            console.log("userResponse: ", userResponse)
-                            message.success(`Login successfully! 
-                            Welcome ${userResponse.role} ${userResponse.fullName}`);
-                            if (userResponse.role === ROLE_ADMIN) {
-                                //chuyển về dashboard
-                                navigate('/admin');
-                                console.log("đã vào /admin");
-
-                            } else {
-                                navigate('/home');
-                            }
+                                } else {
+                                    navigate('/home');
+                                }
                         }
                     } catch (error) {
+                        console.log("bắt lỗi: ");
                         console.log(error);
+
                         const responseError = error?.response?.data?.error;
                         message.error(responseError || error);
                     }
@@ -122,7 +123,7 @@ function SignInSignUp() {
                         role: "user"
                     }
                     console.log("data: ", data);
-                    
+
                     try {
                         const response = await register(data);
                         console.log("Sign Up Response:", response);

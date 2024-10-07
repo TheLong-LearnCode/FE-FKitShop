@@ -5,7 +5,7 @@ import './Purchase.css'; // Import a CSS file for custom styles
 const Purchase = () => {
   return (
     <div className="purchase-container">
-      <h4 className='text-center'>Purchase</h4>
+      <h4 className='text-center'><strong>Purchase</strong></h4>
       <div className="table-container">
         <table className="table table-hover">
           <thead className="thead-dark">
