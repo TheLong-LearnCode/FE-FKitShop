@@ -1,5 +1,8 @@
+
 import React from "react";
 import UserLayout from "../layouts/user/UserLayout";
+import ProtectedRoutes from "./ProtectedRoutes";
+import { ROLE_ADMIN } from "../constants/role";
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
@@ -11,7 +14,12 @@ const UserProfilePage = React.lazy(() => import("../page/user/profile"));
 const PrivateRoutes = [
     {
         path: "/admin",
-        element: <AdminLayOut />,
+
+        element: (
+            // <ProtectedRoutes allowedRoles={['ROLE_ADMIN']}>
+                <AdminLayOut />
+            // </ProtectedRoutes>
+        ),
         children: [
             {
                 index: true,
@@ -23,18 +31,24 @@ const PrivateRoutes = [
             },
             {
                 path: "category-manager",
-                element: <CategoryPage  />
+                element: <CategoryPage />
             },
 
         ]
     },
     {
         path: "/user",
-        element: <UserLayout />,
+        element: (
+            <UserLayout />
+        ),
         children: [
             {
                 path: "profile",
-                element: <UserProfilePage />
+                element: (
+                    // <ProtectedRoutes allowedRoles={'ROLE_USER'}>
+                        <UserProfilePage />
+                    // </ProtectedRoutes >
+                )
             },
 
         ]

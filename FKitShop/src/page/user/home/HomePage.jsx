@@ -1,14 +1,45 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './HomePage.css'
-import CardMainContent from '../product/card/CardMainContent';
 import { useSelector } from 'react-redux';
-
 import { Link } from 'react-router-dom';
+import CardContent from '../product/card/CardContent';
+import { GET } from '../../../constants/httpMethod';
+import api from '../../../config/axios';
 export default function HomePage() {
   const data = useSelector(state => state.auth);
   console.log("data in homepage: ");
   console.log(data);
 
+  const [products, setProducts] = useState([]); // Trạng thái để lưu danh sách sản phẩm
+    const [loading, setLoading] = useState(true); // Trạng thái để theo dõi quá trình tải dữ liệu
+    const [error, setError] = useState(null); // Trạng thái để lưu lỗi nếu có
+
+    const [activeButton, setActiveButton] = useState('new');
+
+    const handleButtonClick = (buttonType) => {
+        setActiveButton(buttonType);
+    };
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await api[GET]("product/products");
+                setProducts(response.data.data); // Lưu dữ liệu vào trạng thái
+
+            } catch (err) {
+                setError(err); // Lưu lỗi nếu có
+            } finally {
+                setLoading(false); // Đặt loading thành false sau khi hoàn thành
+            }
+        };
+
+        fetchProducts(); // Gọi hàm để lấy dữ liệu
+    }, []); // Chạy một lần khi component được mount
+
+    if (loading) return <div>Loading...</div>; // Hiển thị loading khi đang tải
+    if (error) return <div>Error: {error.message}</div>; // Hiển thị lỗi nếu có
+
+    
 
 
   return (
@@ -34,8 +65,36 @@ export default function HomePage() {
             <span className="carousel-control-next-icon" aria-hidden="true"></span>
           </button>
         </div>
-        
-        <CardMainContent />
+
+        <div className='container mt-4 main-content'>
+          <div className="product-buttons">
+            <button
+              className={`btn ${activeButton === 'new' ? 'active' : ''}`}
+              onClick={() => handleButtonClick('new')}
+            >
+              ⏰ New product
+            </button>
+            <button
+              className={`btn ${activeButton === 'hot' ? 'active' : ''}`}
+              onClick={() => handleButtonClick('hot')}
+            >
+              🔥 Hot product
+            </button>
+            <button
+              className={`btn ${activeButton === 'highlyRated' ? 'active' : ''}`}
+              onClick={() => handleButtonClick('highlyRated')}
+            >
+              🌟 Highly rated
+            </button>
+          </div>
+
+          <div className="row">
+          {products.map((product) => (
+              <CardContent product={product}/>
+          ))}
+          </div>
+
+        </div>
 
         <div className="container mt-4">
           <div className="row">
@@ -49,7 +108,8 @@ export default function HomePage() {
         </div>
         <div className="container mt-5 featured-content">
           <h2 >
-            <span></span>Featured Categories</h2>
+            <span></span>Featured Categories
+          </h2>
           <div className="row">
 
             <div className="col-md-3">

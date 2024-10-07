@@ -6,7 +6,7 @@ export default function Footer() {
     return (
         <>
             <footer>
-                <div className="container-fluid">
+                <div className="container-fluid mt-3">
                     <div className="row">
                         <div className="col-md-3 mt-3">
                             <img src="/img/Logo.png" alt="FPT Kit Shop Logo" className="footer-logo mb-3" />
