@@ -11,23 +11,23 @@ const useAuthen = () => {
   console.log("user data in useAuthen:", userData);
   
   useEffect(() => {
-    // If there's no user data in the state, try loading from cookie
-    if (!userData) {
+    // Load user data from cookie if it's not available and status is idle
+    if (!userData && status === IDLE) {
+      setLoading(true);
       dispatch(loadUserFromCookie());
-    } else {
-      setLoading(false);
     }
-  }, [dispatch, userData]);
+  }, [dispatch, userData, status]);
 
   useEffect(() => {
-    if (status === IDLE || status === PENDING) {
+    // Set loading based on status changes
+    if (status === PENDING || !userData) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [status]);
+  }, [status, userData]);
 
-  const userRole = userData ? userData.role : null; // Assuming `userData` contains a `role` field
+  const userRole = userData?.data?.accounts?.role || null;
 
   return { userRole, loading };
 };
