@@ -16,10 +16,9 @@ export const login = createAsyncThunk("auth/login", async (user) => {
     console.log(response);
 
     Cookies.set("token", response.data.data.token);
-
     return response.data.data;
   } catch (error) {
-    throw error;
+    return error;
   }
 });
 
@@ -30,7 +29,7 @@ export const login = createAsyncThunk("auth/login", async (user) => {
  */
 export const register = async (user) => {
   try {
-    const response = await api[POST]("/auth/register", user);
+    const response = await api[POST]("/accounts/register", user);
     return response.data;
   } catch (error) {
     throw error;
@@ -54,8 +53,7 @@ export const verifyToken = async (token) => {
     return response.data; // Trả về dữ liệu từ phản hồi
   } catch (error) {
     console.log("error: ", error);  
-    
-    throw error; // Xử lý lỗi nếu có
+    return error; // Xử lý lỗi nếu có
   }
 }
 
