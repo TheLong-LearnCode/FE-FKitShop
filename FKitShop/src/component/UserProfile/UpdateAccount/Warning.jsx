@@ -20,7 +20,7 @@ function AlertDismissible() {
         </div>
       </Alert>
 
-      {!show && <Button onClick={() => setShow(true)}>Show Alert</Button>}
+      {!show && <Button onClick={() => setShow(true)}>Pay Attention!!</Button>}
     </>
   );
 }

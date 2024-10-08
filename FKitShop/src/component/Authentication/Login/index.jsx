@@ -101,7 +101,7 @@ function SignInSignUp() {
                 rules: [
                     Validator.isRequired('#form-sign-up #fullName', 'Please enter full name'),
                     Validator.isRequired('#form-sign-up #dob', 'Please enter date of birth'),
-                    Validator.isValidDate('#form-sign-up #dob', ''),
+                    Validator.isValidDate('#form-sign-up #dob', "create", ''),
                     Validator.isRequired('#form-sign-up #phoneNumber', 'Please enter phone number'),
                     Validator.isPhoneNumber('#form-sign-up #phoneNumber', '', TOTAL_DIGITS_PHONE_NUMBER),
                     Validator.isRequired('#form-sign-up #email', 'Please enter email'),

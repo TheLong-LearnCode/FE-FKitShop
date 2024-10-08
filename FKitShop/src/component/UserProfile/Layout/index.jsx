@@ -36,7 +36,7 @@ export default function UserProfile() {
                         userData = await verifyToken(userToken); // Call verifyToken to get user data
                         dispatch(setUser(userData));
                         console.log("user in ProfileeLayoutt: ", userData);
-
+                        setUserInfo(userData);
                     } catch (error) {
                         console.error("Error verifying token: ", error);
                     }
@@ -46,13 +46,15 @@ export default function UserProfile() {
         }, [user.data]); // user.status and user.data are dependencies
 
     ;
-    console.log("User info in ProfileLayout after render:", user);     
+    console.log("User info in ProfileLayout after render:", user);  
+    console.log("UserInfo in profilelayout after render: ", userInfo);
+       
     //idle
     //user.data
 
     //success
     //user.data.data
-    const userFinalInfo = user.data?.accounts || user.data?.data;
+    const userFinalInfo = user.data?.accounts || userInfo?.data;
 
     // Function to change tab using startTransition
     const handleTabChange = (tabName) => {

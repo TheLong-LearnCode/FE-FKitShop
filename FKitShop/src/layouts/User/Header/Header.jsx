@@ -39,9 +39,7 @@ export default function Header() {
             try {
                 userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
                 console.log("user after verify token: ", userData);
-
                 setUserInfo(userData); // Lưu thông tin user vào state
-                console.log("user after verify token2: ", userData);
             } catch (error) {
                 console.error("Error verifying token: ", error);
             }

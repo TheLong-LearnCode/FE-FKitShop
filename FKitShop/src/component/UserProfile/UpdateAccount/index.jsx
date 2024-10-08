@@ -5,15 +5,23 @@ import clsx from 'clsx';
 import { format } from 'date-fns';
 import { updateUser } from '../../../service/crudUser';
 import Warning from './Warning';
-
+import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 export default function UpdateAccountForm({ userInfo }) {
-    // const [dob, setDob] = useState('');
+    const navigate = useNavigate();
     const [isDateType, setIsDateType] = useState(false);
+    //info cũ của user
+    const oldUserInfo = {
+        fullName: userInfo?.fullName,
+        email: userInfo?.email,
+        phoneNumber: userInfo?.phoneNumber,
+        dob: userInfo?.dob,
+    }
     console.log("userInfo in updateAccount: ", userInfo);
-    
-    //const dobFormat = userInfo?.dob ? format(new Date(userInfo?.dob), 'yyyy-MM-dd') : '';
-    // console.log("dobFormat", dobFormat);
+
+    const dobFormat = userInfo?.dob ? format(new Date(userInfo?.dob), 'yyyy-MM-dd') : '';
+    console.log("dobFormat", dobFormat);
 
     const [fullName, setFullName] = useState(userInfo?.fullName);
     const [email, setEmail] = useState(userInfo?.email);
@@ -34,7 +42,7 @@ export default function UpdateAccountForm({ userInfo }) {
                 Validator.isRequired('#fullName', 'Please enter full name'),
 
                 Validator.updateDateOfBirth('#dob', userInfo?.dob, ''),
-                Validator.isValidDate('#dob', ''),
+                Validator.isValidDate('#dob', "update", ''),
 
                 Validator.updatePhoneNumber('#phoneNumber', userInfo?.phoneNumber, ''),
                 //k cần isRequire vì nếu để trống thì báo lỗi "Start at 0";
@@ -46,7 +54,7 @@ export default function UpdateAccountForm({ userInfo }) {
                 console.log("rawData: ", rawData);
                 const data = {
                     fullName: rawData.fullName || userInfo.fullName,
-                    dob: rawData.dob  || userInfo.dob,
+                    dob: rawData.dob || userInfo.dob,
                     phoneNumber: rawData.phoneNumber || userInfo.phoneNumber,
                     email: rawData.email || userInfo.email
                 };
@@ -54,9 +62,10 @@ export default function UpdateAccountForm({ userInfo }) {
                 try {
                     const response = await updateUser(data, userInfo.accountID);
                     console.log("response in updateAccount: ", response);
-                    
+                    message.success("Updated successfully!!");
+                    navigate('/user');
                 } catch (error) {
-                    
+
                 }
             }
 
@@ -88,22 +97,23 @@ export default function UpdateAccountForm({ userInfo }) {
                         <input
                             id="dob"
                             name="dob"
-                            type={isDateType || dob ? 'date' : 'text'}
+                            type={isDateType ? "date" : "text"} // Switch between date and text type
                             className="form-control"
-                            placeholder={userInfo?.dob}
-                            onFocus={() => setIsDateType(true)}
+                            value={isDateType ? dob : dobFormat} // Show formatted dob when not in focus, actual dob when focused
+                            onFocus={(e) => setIsDateType(true)} // Switch to date input on focus
                             onBlur={(e) => {
+                                // If the value is empty after blur, set it back to the formatted old value
                                 if (!e.target.value) {
-                                    setIsDateType(false);
-                                    e.target.placeholder = `${userInfo.dob}`;
+                                    setDob(userInfo.dob); // Revert to original dob if no new value
                                 }
+                                setIsDateType(false); // Switch back to text input on blur
                             }}
-                            value={dob || userInfo?.dob}
-                            onChange={handleDobChange}
+                            onChange={handleDobChange} // Handle value change
                         />
                         <span className="form-message"></span>
                     </div>
                 </div>
+
                 <div className="form-group row">
                     <label htmlFor="phone" className="col-md-3 col-form-label">Phone number</label>
                     <div className="col-md-5">

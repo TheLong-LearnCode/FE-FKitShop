@@ -43,6 +43,7 @@ const PrivateRoutes = [
         path: "/user",
         element: <LazyLoader children={<UserLayout />} />,
         children: [
+            { indexed: true, element: <UserProfilePage /> },
             { path: "information", element: <UserProfilePage /> },
             { path: "purchase", element: <UserProfilePage /> },
             { path: "updateAccount", element: <UserProfilePage /> },
