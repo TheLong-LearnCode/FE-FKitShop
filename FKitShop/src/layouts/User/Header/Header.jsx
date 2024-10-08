@@ -17,28 +17,28 @@ export default function Header() {
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
-    console.log("user in Header: ", user);
+    //console.log("user in Header: ", user);
     const userDataStatus = useSelector((state) => state.auth.data);
-    console.log("userStatus: ", userDataStatus);
+    //console.log("userStatus: ", userDataStatus);
 
     var userToken;
     var userData;
     useEffect(() => {
-        console.log("user.data.token: ", user.data?.token);
+        //console.log("user.data.token: ", user.data?.token);
         if (user.data !== null) {
             userToken = user.data?.token;
 
         } if (user.status === IDLE && user.data !== null) {
             userToken = user.data;
         }
-        console.log("userToken in Header: ", userToken);
-        console.log("user.data: ", user.data);
+        //console.log("userToken in Header: ", userToken);
+        //console.log("user.data: ", user.data);
 
 
         const fetchUserInfo = async () => {
             try {
                 userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
-                console.log("user after verify token: ", userData);
+                //console.log("user after verify token: ", userData);
                 setUserInfo(userData); // Lưu thông tin user vào state
             } catch (error) {
                 console.error("Error verifying token: ", error);
@@ -46,9 +46,6 @@ export default function Header() {
         };
         fetchUserInfo(); // Gọi API lấy thông tin người dùng
     }, [user.data]); //user.data là thông tin người dùng
-
-
-    //khi load lại thì user.data là chuỗi token
 
     const handleNavClick = (linkName) => {
         startTransition(() => {

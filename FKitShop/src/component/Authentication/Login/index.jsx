@@ -114,9 +114,11 @@ function SignInSignUp() {
                     }, 'Passwords do not match')
                 ],
                 onSubmit: async (rawData) => {
+                    console.log("RAWDATA DOB: ", rawData.dob);
+                    
                     const data = {
                         fullName: rawData.fullName,
-                        dob: new Date(rawData.dob).toISOString().split('T')[0],
+                        dob: rawData.dob,
                         phoneNumber: rawData.phoneNumber,
                         email: rawData.email,
                         password: rawData.password,

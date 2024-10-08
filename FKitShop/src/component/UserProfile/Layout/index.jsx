@@ -8,13 +8,15 @@ import ChangePassword from '../ChangePassword';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyToken } from '../../../service/authUser';
 import { setUser } from '../../../redux/slices/authSlice'; // Import the action to set user info
-import { IDLE } from '../../../redux/constants/status';
+import { IDLE, SUCCESSFULLY } from '../../../redux/constants/status';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getUserByAccountID } from '../../../service/crudUser';
 
 export default function UserProfile() {
     const [activeTab, setActiveTab] = useState('information'); // State to manage the active tab
     const [isPending, startTransition] = useTransition();
     const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
+
     const user = useSelector((state) => state.auth); // Get user state from Redux store
     const dispatch = useDispatch(); // Initialize dispatch
     const navigate = useNavigate(); // Initialize navigate
@@ -22,7 +24,7 @@ export default function UserProfile() {
 
     var userToken;
     var userData;
-    
+
 
     console.log("User info in ProfileLayout be4 render:", user);
     useEffect(() => {
@@ -30,31 +32,44 @@ export default function UserProfile() {
         if (user.data !== null) { //user đang truy cập--successfully
             userToken = user.data?.token;
         } if (user.status === IDLE && user.data !== null) {
-                userToken = user.data;
-                const fetchUserInfo = async () => {
-                    try {
-                        userData = await verifyToken(userToken); // Call verifyToken to get user data
-                        dispatch(setUser(userData));
-                        console.log("user in ProfileeLayoutt: ", userData);
-                        setUserInfo(userData);
-                    } catch (error) {
-                        console.error("Error verifying token: ", error);
-                    }
-                };
-                fetchUserInfo(); // Fetch user info
-            }
-        }, [user.data]); // user.status and user.data are dependencies
+            userToken = user.data;
+            const fetchUserInfoByToken = async () => {
+                try {
+                    console.log("userDataaaa: ", userData);
+                    userData = await verifyToken(userToken); // Call verifyToken to get user data
+                    dispatch(setUser(userData));
+
+                    setUserInfo(userData);
+                } catch (error) {
+                    console.error("Error verifying token: ", error);
+                }
+            };
+            fetchUserInfoByToken(); // Fetch user info
+        }
+    }, [user.data]); // user.data are dependencies
 
     ;
-    console.log("User info in ProfileLayout after render:", user);  
+    console.log("User info in ProfileLayout after render:", user);
     console.log("UserInfo in profilelayout after render: ", userInfo);
-       
+    var userFinalInfo;
+    if(userInfo === null && user.data?.accounts !== null) {
+        userFinalInfo = user.data?.accounts;
+    } else if(userInfo === undefined && user.data?.data !== null) {
+        userFinalInfo = user.data?.data;
+    } else if(user.data.data !== null && userInfo.data !== null && user.status === SUCCESSFULLY){
+        userFinalInfo = user.data.data;
+    } else {
+        userFinalInfo = userInfo.data;
+    }
+
+
     //idle
     //user.data
 
     //success
     //user.data.data
-    const userFinalInfo = user.data?.accounts || userInfo?.data;
+    // const userFinalInfo = user.data?.data || userInfo;
+    
 
     // Function to change tab using startTransition
     const handleTabChange = (tabName) => {
@@ -63,7 +78,6 @@ export default function UserProfile() {
             navigate(`/user/${tabName}`); // Update the URL when tab changes
         });
     };
-    
     // Update the active tab based on the URL path when the component mounts or when the URL changes
     useEffect(() => {
         const path = location.pathname.split('/').pop(); // Get the last part of the URL
@@ -81,12 +95,13 @@ export default function UserProfile() {
                                 <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
                             </div>
                             <div className='col-md-9'>
+                                {/* Show a dismissible alert if showMessage is true */}
                                 {/* Render the content based on the activeTab */}
                                 {/* lần đầu vào -> user.data?.accounts , khi load lại trang -> user.data?.data */}
                                 {activeTab === 'information' && <ProfileInformation userInfo={userFinalInfo} />}
-                                {activeTab === 'purchase' && <Purchase userInfo={userFinalInfo}/>}
-                                {activeTab === 'updateAccount' && <UpdateAccount userInfo={userFinalInfo}/>}
-                                {activeTab === 'changePassword' && <ChangePassword userInfo={userFinalInfo}/>}
+                                {activeTab === 'purchase' && <Purchase userInfo={userFinalInfo} />}
+                                {activeTab === 'updateAccount' && <UpdateAccount userInfo={userFinalInfo} />}
+                                {activeTab === 'changePassword' && <ChangePassword id={userFinalInfo?.accountID} />}
                             </div>
                         </div>
                     </div>

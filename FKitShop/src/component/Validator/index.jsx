@@ -307,5 +307,15 @@ Validator.updateConfirmPassword = function (selector, getConfirmPasswordValue, m
     };
 };
 
+//--------------------------------Change password----------------------------
+Validator.isMatch = function (selector, getPassword, message) {
+    return {
+        selector: selector,
+        test: function (value) {
+            return getPassword === value? undefined : message || 'Incorrect password';
+        }
+    };
+};
+
 //---------------------------------------------------------------------------
 export default Validator;
