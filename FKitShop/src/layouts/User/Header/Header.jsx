@@ -17,31 +17,31 @@ export default function Header() {
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
-    console.log("user in Header: ", user);
+    //console.log("user in Header: ", user);
     const userDataStatus = useSelector((state) => state.auth.data);
-    console.log("userStatus: ", userDataStatus);
+    //console.log("userStatus: ", userDataStatus);
 
     var userToken;
     var userData;
     useEffect(() => {
-        console.log("user.data.token: ", user.data?.token);
+        //console.log("user.data.token: ", user.data?.token);
         if (user.data !== null) {
             userToken = user.data?.token;
 
         } if (user.status === IDLE && user.data !== null) {
             userToken = user.data;
         }
-        console.log("userToken in Header: ", userToken);
-        console.log("user.data: ", user.data);
+        //console.log("userToken in Header: ", userToken);
+        //console.log("user.data: ", user.data);
 
 
         const fetchUserInfo = async () => {
             try {
                 userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
-                console.log("user after verify token: ", userData);
+                //console.log("user after verify token: ", userData);
 
                 setUserInfo(userData); // Lưu thông tin user vào state
-                console.log("user after verify token2: ", userData);
+                //console.log("user after verify token2: ", userData);
             } catch (error) {
                 console.error("Error verifying token: ", error);
             }
@@ -80,7 +80,7 @@ export default function Header() {
         { name: 'STEM Programming', categories: ['Raspberry Pi', 'BBC Micro:Bit Programming'] },
         { name: 'STEM Toy', categories: ['Preschool STEM', 'Primary STEM', 'Secondary STEM', 'High School STEM'] },
         { name: 'Functional Module', categories: ['Control & Keyboard & Joystick', 'LCD Screen & HMI'] },
-        
+
     ];
 
     return (
@@ -158,10 +158,10 @@ export default function Header() {
                                         <div className="tags-list">
                                             {productTags.map((tag) => (
                                                 <Link to={'/product'}
-                                                     key={tag.name}
-                                                     className="tag-item"
-                                                     onMouseEnter={() => setActiveTag(tag.name)}
-                                                     onMouseLeave={() => setActiveTag(null)}>
+                                                    key={tag.name}
+                                                    className="tag-item"
+                                                    onMouseEnter={() => setActiveTag(tag.name)}
+                                                    onMouseLeave={() => setActiveTag(null)}>
                                                     {tag.name}
                                                     {activeTag === tag.name && (
                                                         <div className="categories-list">
@@ -203,7 +203,7 @@ export default function Header() {
                         </ul>
                     </nav>
                 </header>
-                
+
                 {showProductMenu && <div className="overlay"></div>}
             </Suspense>
         </div>
