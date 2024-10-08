@@ -25,42 +25,48 @@ export default function UserProfile() {
     var userToken;
     var userData;
 
-
-    console.log("User info in ProfileLayout be4 render:", user);
     useEffect(() => {
-        // Check if user status is idle and fetch user info if necessary
-        if (user.data !== null) { //user đang truy cập--successfully
+        console.log("user.data.token: ", user.data?.token);
+        if (user.data !== null) {
             userToken = user.data?.token;
+
         } if (user.status === IDLE && user.data !== null) {
             userToken = user.data;
-            const fetchUserInfoByToken = async () => {
-                try {
-                    console.log("userDataaaa: ", userData);
-                    userData = await verifyToken(userToken); // Call verifyToken to get user data
-                    dispatch(setUser(userData));
-
-                    setUserInfo(userData);
-                } catch (error) {
-                    console.error("Error verifying token: ", error);
-                }
-            };
-            fetchUserInfoByToken(); // Fetch user info
         }
-    }, [user.data]); // user.data are dependencies
+        console.log("userToken in PRODUCTDETAIL: ", userToken);
+        console.log("user.data in PRODUCTDETAIL: ", user.data);
 
-    ;
+
+        const fetchUserInfo = async () => {
+            try {
+                userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
+                console.log("userData after verify token: ", userData);
+                const userFF = await getUserByAccountID(userData.data.accountID);
+                console.log("userFF after RENDER: ", userFF);
+                setUserInfo(userFF); // Lưu thông tin user vào state
+                console.log("userData after SETUSERINFO: ", userData);
+                //userData.data -> lấy ra userInfo
+            } catch (error) {
+                console.error("Error verifying token: ", error);
+            }
+        };
+        fetchUserInfo(); // Gọi API lấy thông tin người dùng
+    }, [user.data]); //user.data là thông tin người dùng
     console.log("User info in ProfileLayout after render:", user);
-    console.log("UserInfo in profilelayout after render: ", userInfo);
-    var userFinalInfo;
-    if(userInfo === null && user.data?.accounts !== null) {
-        userFinalInfo = user.data?.accounts;
-    } else if(userInfo === undefined && user.data?.data !== null) {
-        userFinalInfo = user.data?.data;
-    } else if(user.data.data !== null && userInfo.data !== null && user.status === SUCCESSFULLY){
-        userFinalInfo = user.data.data;
-    } else {
-        userFinalInfo = userInfo.data;
-    }
+    //--------------------------------------------------------------------------
+    console.log("USSEERR: ", userInfo?.data); //->.accountID
+    //lần đầu & sau khi load lại trang: thông tin user -> userInfo?.data
+    
+    const userFinalInfo = userInfo?.data;
+    // if(userInfo === null && user.data?.accounts !== null) {
+    //     userFinalInfo = user.data?.accounts;
+    // } else if(userInfo === undefined && user.data?.data !== null) {
+    //     userFinalInfo = user.data?.data;
+    // } else if(user.data.data !== null && userInfo.data !== null && user.status === SUCCESSFULLY){
+    //     userFinalInfo = user.data.data;
+    // } else {
+    //     userFinalInfo = userInfo.data;
+    // }
 
 
     //idle
@@ -68,8 +74,6 @@ export default function UserProfile() {
 
     //success
     //user.data.data
-    // const userFinalInfo = user.data?.data || userInfo;
-    
 
     // Function to change tab using startTransition
     const handleTabChange = (tabName) => {

@@ -3,32 +3,33 @@ import React, { useEffect } from 'react';
 import styles from './index.module.css';
 import Validator from '../../Validator'; // Ensure this import points to the correct path
 import { PASSWORD_LENGTH } from '../../../constants/fomConstrant';
+import { updatePassword } from '../../../service/crudUser';
+import { Notification } from '../UpdateAccount/Notification';
 
 export default function ChangePassword({ id }) {
-    const passwordLength = 6; // Example password length, adjust if necessary
-
+    
     useEffect(() => {
         Validator({
             form: '#form-change-password',
             formGroupSelector: '.form-group',
             errorSelector: '.form-message',
             rules: [
-                Validator.minLength('#currentPassword', PASSWORD_LENGTH, ''),
-                Validator.minLength('#newPassword', PASSWORD_LENGTH, ''),
-                Validator.isConfirmed('#password_confirmation', function () {
+                Validator.minLength('#form-change-password #currentPassword', PASSWORD_LENGTH, ''),
+                Validator.minLength('#form-change-password #newPassword', PASSWORD_LENGTH, ''),
+                Validator.isConfirmed('#form-change-password #password_confirmation', function () {
                     return document.querySelector('#form-change-password #newPassword').value;
                 }, 'Passwords do not match')
             ],
-            onSubmit: function (data) {
-                console.log('Change Password Data:', data);
-                fetch('/api/change-password', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                })
-                    .then((response) => response.json())
-                    .then((result) => console.log('Success:', result))
-                    .catch((error) => console.error('Error:', error));
+            onSubmit: async (rawData) => {
+                const updatedPassword = {
+                    password: rawData.newPassword
+                }
+                console.log("updatedPassword: ", updatedPassword);
+                
+                const response = await updatePassword(id, updatedPassword);
+                console.log("response in updatePassword: ", response);
+                Notification(response.message, '', 2, "info");
+                
             },
         });
     }, []);
@@ -45,6 +46,7 @@ export default function ChangePassword({ id }) {
                             type="password"
                             className="form-control"
                             id="currentPassword"
+                            name="currentPassword"
                             placeholder="Enter your current password"
                         />
                         <span className="form-message"></span>
@@ -59,6 +61,7 @@ export default function ChangePassword({ id }) {
                             type="password"
                             className="form-control"
                             id="newPassword"
+                            name="newPassword"
                             placeholder="Enter your new password"
                         />
                         <span className="form-message"></span>
@@ -73,6 +76,7 @@ export default function ChangePassword({ id }) {
                             type="password"
                             className="form-control"
                             id="password_confirmation"
+                            name="password_confirmation"
                             placeholder="Confirm your new password"
                         />
                         <span className="form-message"></span>
