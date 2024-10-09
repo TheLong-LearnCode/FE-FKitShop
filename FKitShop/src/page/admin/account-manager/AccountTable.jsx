@@ -71,7 +71,15 @@ export default function AccountTable({
               <td>{user.fullName}</td>
               <td>{user.email}</td>
               <td>{user.role}</td>
-              <td>{user.status}</td>
+              <td>
+                {user.status === 0
+                  ? "Inactive"
+                  : user.status === 1
+                  ? "Active"
+                  : user.status === 2
+                  ? "Banned"
+                  : "Unknown"}
+              </td>
               <td>
                 <Button
                   variant="primary"
@@ -87,10 +95,7 @@ export default function AccountTable({
                 >
                   Edit
                 </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(user)}
-                >
+                <Button variant="danger" onClick={() => handleDelete(user)}>
                   Delete
                 </Button>
               </td>

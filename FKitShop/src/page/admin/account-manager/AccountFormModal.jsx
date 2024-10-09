@@ -4,6 +4,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 export default function AccountFormModal({
   mode,
   selectedUser,
+  admins,
   showModal,
   showDeleteModal, // Trạng thái hiển thị modal xóa
   handleCloseModal,
@@ -33,6 +34,20 @@ export default function AccountFormModal({
                 defaultValue={selectedUser?.accountID}
                 readOnly
               />
+            </Form.Group>
+            <Form.Group controlId="formAdminID">
+              <Form.Label>Admin ID</Form.Label>
+              <Form.Control
+                as="select"
+                defaultValue={selectedUser?.adminID ?? ""}
+              >
+                <option value="">Select Admin</option>
+                {admins.map((admin) => (
+                  <option key={admin.accountID} value={admin.accountID}>
+                    {admin.fullName} ({admin.email})
+                  </option>
+                ))}
+              </Form.Control>
             </Form.Group>
             <Form.Group controlId="formFullName">
               <Form.Label>Full Name</Form.Label>

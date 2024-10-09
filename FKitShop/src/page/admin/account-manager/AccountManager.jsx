@@ -13,6 +13,7 @@ import { Notification } from "../../../component/UserProfile/UpdateAccount/Notif
 
 export default function AccountManager() {
   const [users, setUsers] = useState([]);
+  const [admins, setAdmins] = useState([]); // List of admin accounts for dropdown
   const [currentPage, setCurrentPage] = useState(1);
   const [mode, setMode] = useState("list"); // 'list', 'add', 'view', 'edit'
   const [selectedUser, setSelectedUser] = useState(null); // To store selected user data for view/edit
@@ -33,6 +34,18 @@ export default function AccountManager() {
     fetchAllAccounts();
   }, []);
 
+  const fetchAdmins = async () => {
+    try {
+      const response = await getAllAccounts(); // Gọi API để lấy danh sách tất cả accounts
+      const adminAccounts = response.data.filter(
+        (account) => account.role === "admin"
+      );
+      setAdmins(adminAccounts); // Lưu danh sách các admin vào state
+    } catch (error) {
+      console.error("Error fetching admins:", error);
+    }
+  };
+
   const handleNext = () => {
     if (currentPage < Math.ceil(users.length / usersPerPage)) {
       setCurrentPage(currentPage + 1);
@@ -46,6 +59,7 @@ export default function AccountManager() {
   };
 
   const handleAddNew = () => {
+    fetchAdmins(); // Gọi API để lấy danh sách admin
     setSelectedUser(null); // Clear selected user for new addition
     setMode("add");
     setShowModal(true); // Show modal
@@ -58,6 +72,7 @@ export default function AccountManager() {
   };
 
   const handleEdit = (user) => {
+    fetchAdmins(); // Gọi API để lấy danh sách admin
     setSelectedUser(user); // Set user for editing
     setMode("edit");
     setShowModal(true); // Show modal
@@ -73,13 +88,15 @@ export default function AccountManager() {
   const confirmDelete = async () => {
     try {
       const response = await deleteAccount(userToDelete.accountID); // Gọi API xóa
-      Notification(response.message, '', 4, "info");
+      Notification(response.message, "", 4, "info");
       // Cập nhật lại danh sách người dùng
-      const updatedUsers = users.filter(user => user.accountID !== userToDelete.accountID);
+      const updatedUsers = users.filter(
+        (user) => user.accountID !== userToDelete.accountID
+      );
       setUsers(updatedUsers);
     } catch (error) {
       console.error("Error deleting user:", error);
-      Notification(response.message, '', 4, "warning");
+      Notification(response.message, "", 4, "warning");
     } finally {
       setShowDeleteModal(false); // Đóng modal sau khi xóa
     }
@@ -102,18 +119,20 @@ export default function AccountManager() {
       email: e.target.formEmail.value,
       password: e.target.formPassword.value,
       dob: e.target.formDateOfBirth.value,
+      image: e.target.formImage.value,
       phoneNumber: e.target.formPhonenumber.value,
       role: e.target.formRole.value,
       status: e.target.formStatus.value,
+      adminID: e.target.formAdminID.value,
     };
 
     try {
       if (mode === "add") {
         const response = await createAccount(formData);
-        Notification(response.message, '', 4, "success");
+        Notification(response.message, "", 4, "success");
       } else if (mode === "edit") {
         const response = await updateAccount(formData, selectedUser.accountID);
-        Notification(response.message, '', 4, "success");
+        Notification(response.message, "", 4, "success");
       }
       setShowModal(false); // Close modal after success
       setMode("list");
@@ -157,6 +176,7 @@ export default function AccountManager() {
         mode={mode}
         selectedUser={selectedUser}
         showModal={showModal}
+        admins={admins} // Truyền danh sách admin xuống modal
         showDeleteModal={showDeleteModal} // Trạng thái hiển thị modal xóa
         handleCloseModal={handleCloseModal}
         handleCloseDeleteModal={handleCloseDeleteModal} // Đóng modal xóa
