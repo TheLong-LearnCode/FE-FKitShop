@@ -1,6 +1,6 @@
 /* font chữ cho các tab bên side bar */
 .size-nav-item {
-    font-size: 1.25rem; 
+    font-size: 1.7rem; 
     font-weight: bold;
     background: linear-gradient(to right, blue, purple); /* Màu gradient từ trái sang phải */
     background-clip: text; /* Clip để chỉ áp dụng gradient cho chữ */

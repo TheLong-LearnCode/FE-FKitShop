@@ -85,7 +85,7 @@ export const updateAccount = async (user, id) => {
 //delete an account by ADMIN
 export const deleteAccount = async (id) => {
   try {
-    const response = await api[DELETE](`/accounts/deleteAccount/${id}`);
+    const response = await api[DELETE](`/accounts/${id}`);
     console.log("response in deleteAccount: ", response);
 
     // Check if the response is successful

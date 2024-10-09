@@ -28,10 +28,10 @@ export default function UpdateAccountForm({ userInfo }) {
 
     //const dobFormat = userInfo?.dob ? format(new Date(userInfo?.dob), 'yyyy-MM-dd') : '';
 
-    const [fullName, setFullName] = useState(userInfo?.fullName);
-    const [email, setEmail] = useState(userInfo?.email);
-    const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber);
-    const [dob, setDob] = useState(userInfo?.dob);
+    var [fullName = userInfo?.fullName, setFullName] = useState();
+    var [email = userInfo?.email, setEmail] = useState();
+    var [phoneNumber = userInfo?.phoneNumber, setPhoneNumber] = useState();
+    var [dob = userInfo?.dob, setDob] = useState();
 
     const handleDobChange = (event) => {
         setDob(event.target.value);
