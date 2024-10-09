@@ -12,7 +12,7 @@ const AccountPage = React.lazy(() =>
 const CategoryPage = React.lazy(() => import("../page/admin/category-manager"));
 const ProductPage = React.lazy(() => import("../page/admin/product-manager"));
 const DeliveryPage = React.lazy(() => import("../page/admin/delivery-manager"));
-const OrderPage = React.lazy(() => import("../page/admin/order-manager"));
+const OrderPage = React.lazy(() => import("../page/admin/order-manager/OrderManager.jsx"));
 const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
 const LabGuidePage = React.lazy(() => import("../page/admin/labGuide-manager"));
 const FeedbackPage = React.lazy(() => import("../page/admin/feedback-manager"));

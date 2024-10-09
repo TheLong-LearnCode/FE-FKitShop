@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Button } from "react-bootstrap";
 
-export default function AccountTable({
+export default function OrderTable({
   users,
   currentPage,
   usersPerPage,
@@ -26,7 +26,8 @@ export default function AccountTable({
   };
 
   // Hàm sắp xếp theo cột và thứ tự
-  const sortedUsers = [...users].sort((a, b) => {
+  // const sortedUsers = [...users].sort((a, b) => {
+  const sortedUsers = [null].sort((a, b) => {
     let aValue = a[sortColumn]?.toLowerCase() || ""; // Giả sử `fullName` và `email` đều là chuỗi
     let bValue = b[sortColumn]?.toLowerCase() || "";
 
@@ -41,44 +42,47 @@ export default function AccountTable({
 
   return (
     <>
+    {/* NO OrderID CustomerName TotalPrice(*) OrderDate(*) Status , thanh sort by date*/}
       <Table striped bordered hover responsive>
         <thead style={{ backgroundColor: "var(--forth-color)" }}>
           <tr>
             <th>No</th>
+            <th>Order ID</th>
+            <th>Customer Name</th>
             <th
               onClick={() => handleSort("fullName")}
               style={{ cursor: "pointer" }}
             >
-              Full Name{" "}
+              Total Price{" "}
               {sortColumn === "fullName" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
             <th
               onClick={() => handleSort("email")}
               style={{ cursor: "pointer" }}
             >
-              Email{" "}
+              Order Date{" "}
               {sortColumn === "email" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
-            <th>Role</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {currentUsers.map((user, index) => (
-            <tr key={user.id}>
+            <tr key={user?.ordersID}>
               <td>{indexOfFirstUser + index + 1}</td>
-              <td>{user.fullName}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
+              <td>{user?.accountID}</td>
+              <td>{user?.totalPrice}</td>
+              <td>{user?.orderDate}</td>
+              <td>{user?.status}</td>
               <td>
-                {user.status === 0
+                {/* {user.status === 0
                   ? "Inactive"
                   : user.status === 1
                   ? "Active"
                   : user.status === 2
                   ? "Banned"
-                  : "Unknown"}
+                  : "Unknown"} */}
               </td>
               <td>
                 <Button
@@ -88,15 +92,15 @@ export default function AccountTable({
                 >
                   View
                 </Button>
-                <Button
+                {/* <Button
                   variant="warning"
                   className="mr-1"
                   onClick={() => handleEdit(user)}
                 >
                   Edit
-                </Button>
+                </Button> */}
                 <Button variant="danger" onClick={() => handleDelete(user)}>
-                  Delete
+                  Cancel
                 </Button>
               </td>
             </tr>
@@ -115,7 +119,7 @@ export default function AccountTable({
         <Button
           variant="secondary"
           onClick={handleNext}
-          disabled={currentPage >= Math.ceil(users.length / usersPerPage)}
+          disabled={currentPage >= Math.ceil(users?.length / usersPerPage)}
         >
           Next
         </Button>

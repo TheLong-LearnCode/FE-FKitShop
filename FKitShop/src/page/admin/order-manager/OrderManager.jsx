@@ -7,11 +7,11 @@ import {
   updateAccount,
   deleteAccount,
 } from "../../../service/crudUser";
-import AccountTable from "./AccountTable";
-import AccountFormModal from "./AccountFormModal";
+import AccountTable from "./OrderTable";
+import AccountFormModal from "./OrderFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
 
-export default function AccountManager() {
+export default function OrderManager() {
   const [users, setUsers] = useState([]);
   const [admins, setAdmins] = useState([]); // List of admin accounts for dropdown
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,13 +89,14 @@ export default function AccountManager() {
     try {
       const response = await deleteAccount(userToDelete.accountID); // Gọi API xóa
       Notification(response.message, "", 4, "info");
-
-      // Gọi lại API để lấy danh sách người dùng mới nhất
-      const updatedResponse = await getAllAccounts();
-      setUsers(updatedResponse.data); // Cập nhật lại danh sách người dùng sau khi xóa
+      // Cập nhật lại danh sách người dùng
+      const updatedUsers = users.filter(
+        (user) => user.accountID !== userToDelete.accountID
+      );
+      setUsers(updatedUsers);
     } catch (error) {
       console.error("Error deleting user:", error);
-      Notification("Error deleting user", "", 4, "warning");
+      Notification(response.message, "", 4, "warning");
     } finally {
       setShowDeleteModal(false); // Đóng modal sau khi xóa
     }
@@ -147,16 +148,18 @@ export default function AccountManager() {
   return (
     <Container fluid>
       <h2 className="my-4">
-        <strong>List Users:</strong>
+        <strong>Order:</strong>
       </h2>
       <Row className="mb-3">
         <Col className="d-flex justify-content-end">
-          <Button variant="success" className="mr-1">
+          {/* filter by Date Order */}
+
+          {/* <Button variant="success" className="mr-1">
             <box-icon name="export"></box-icon> Export
           </Button>
           <Button variant="info" onClick={handleAddNew}>
             <box-icon name="plus"></box-icon> Add New
-          </Button>
+          </Button> */}
         </Col>
       </Row>
 

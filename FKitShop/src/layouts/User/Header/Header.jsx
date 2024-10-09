@@ -7,6 +7,7 @@ import { logout } from '../../../redux/slices/authSlice';
 import { verifyToken } from '../../../service/authUser';
 import { IDLE } from '../../../redux/constants/status';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { Notification } from '../../../component/UserProfile/UpdateAccount/Notification';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
@@ -56,6 +57,7 @@ export default function Header() {
     const handleLogout = () => {
         startTransition(() => {
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
+            Notification("Notification", "LOG OUT SUCCESSFULLY", 3, "success")
             navigate('/');  // Điều hướng về trang đăng nhập
         });
     };

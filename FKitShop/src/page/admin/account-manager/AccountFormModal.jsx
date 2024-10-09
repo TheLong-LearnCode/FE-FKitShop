@@ -24,6 +24,9 @@ export default function AccountFormModal({
               ? `Editing User: ${selectedUser?.fullName}`
               : "Add New User"}
           </Modal.Title>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -57,14 +60,16 @@ export default function AccountFormModal({
                 readOnly={mode === "view"}
               />
             </Form.Group>
-            <Form.Group controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="text"
-                defaultValue={selectedUser?.password}
-                readOnly={mode === "view"}
-              />
-            </Form.Group>
+            {mode !== "view" && mode !== "edit" && (
+              <Form.Group controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="text"
+                  defaultValue={selectedUser?.password}
+                  readOnly={mode === "view"}
+                />
+              </Form.Group>
+            )}  
             <Form.Group controlId="formDateOfBirth">
               <Form.Label>Date of birth</Form.Label>
               <Form.Control
@@ -130,11 +135,7 @@ export default function AccountFormModal({
             )}
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
+        <Modal.Footer></Modal.Footer>
       </Modal>
 
       {/* Modal Delete */}
