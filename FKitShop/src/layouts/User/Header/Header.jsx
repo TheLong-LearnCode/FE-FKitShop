@@ -65,7 +65,7 @@ export default function Header() {
         });
     };
 
-    const CartProducts = useSelector(state => state.cart.CartArr)
+    const cartProducts = useSelector(state => state.cart.products);
 
     // Thêm state cho menu product
     const [showProductMenu, setShowProductMenu] = useState(false);
@@ -106,7 +106,7 @@ export default function Header() {
                             <div className='upper-nav-user-actions'>
                                 <Link to={'/cart'} className='upper-nav-item'>
                                     <box-icon name='cart' color='#ffffff'></box-icon>
-                                    <span>Cart ({CartProducts.length})</span>
+                                    <span>Cart ({cartProducts.length})</span>
                                 </Link>
 
                                 <div className="dropdown">

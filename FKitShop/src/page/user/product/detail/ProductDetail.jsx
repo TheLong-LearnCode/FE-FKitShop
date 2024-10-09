@@ -5,9 +5,9 @@ import { GET } from '../../../../constants/httpMethod';
 import api from '../../../../config/axios';
 import './ProductDetail.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { addProduct } from '../../../../redux/slices/cartSlice'
 import { IDLE } from '../../../../redux/constants/status';
 import { verifyToken } from '../../../../service/authUser';
+import { addProductToCart } from '../../../../redux/slices/cartSlice';
 
 export default function ProductDetail() {
     const [product, setProduct] = useState(null); // Khởi tạo là null thay vì mảng rỗng
@@ -15,6 +15,7 @@ export default function ProductDetail() {
     const [error, setError] = useState(null);
     const [activeButton, setActiveButton] = useState('descript');
     const [selectedImage, setSelectedImage] = useState('');
+    const [quantity, setQuantity] = useState(1);
 
     const { productID } = useParams()
     const dispatch = useDispatch()
@@ -90,6 +91,27 @@ export default function ProductDetail() {
         }).format(amount);
     };
 
+    const handleIncreaseQuantity = () => {
+        setQuantity(prevQuantity => prevQuantity + 1);
+    };
+
+    const handleDecreaseQuantity = () => {
+        setQuantity(prevQuantity => prevQuantity > 1 ? prevQuantity - 1 : 1);
+    };
+
+    const handleAddToCart = () => {
+        if (userInfo?.data?.accountID && product.productID) {
+            dispatch(addProductToCart({
+                accountID: userInfo.data.accountID,
+                productID: product.productID,
+                quantity: quantity
+            }));
+        } else {
+            console.error("Missing accountID or productID");
+            // Có thể thêm thông báo lỗi cho người dùng ở đây
+        }
+    };
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!product) return <div>Product not found</div>;
@@ -129,7 +151,7 @@ export default function ProductDetail() {
                                     <button
                                         className="btn btn-outline-secondary"
                                         type="button"
-
+                                        onClick={handleDecreaseQuantity}
                                     >
                                         -
                                     </button>
@@ -138,13 +160,14 @@ export default function ProductDetail() {
                                     type="text"
                                     className="form-control text-center"
                                     style={{ backgroundColor: 'white' }}
-                                    value='1'
+                                    value={quantity}
                                     readOnly
                                 />
                                 <div className="input-group-append">
                                     <button
                                         className="btn btn-outline-secondary"
                                         type="button"
+                                        onClick={handleIncreaseQuantity}
                                     >
                                         +
                                     </button>
@@ -152,7 +175,12 @@ export default function ProductDetail() {
                             </div>
                         </div>
 
-                        <button className="btn btn-block mb-2 atc-btn" onClick={() => dispatch(addProduct(product))}>Add to cart</button>
+                        <button 
+                            className="btn btn-block mb-2 atc-btn" 
+                            onClick={handleAddToCart}
+                        >
+                            Add to cart
+                        </button>
                     </div>
                 </div>
             </div>
