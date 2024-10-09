@@ -175,7 +175,7 @@ function SignInSignUp() {
             );
             navigate("/login"); // Điều hướng sau khi đăng ký thành công
           } catch (error) {
-            console.error("Sign Up Error:", error.response.data.message);
+            console.error("Sign Up Error:", error);
             const ErrorMessage = error?.response?.data?.message;
             message.error(ErrorMessage);
           }

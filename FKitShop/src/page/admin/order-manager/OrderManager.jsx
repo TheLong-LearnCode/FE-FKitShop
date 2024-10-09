@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Container, Button, Row, Col } from "react-bootstrap";
-import "boxicons";
 import {
-  createAccount,
   getAllAccounts,
-  updateAccount,
-  deleteAccount,
+  getOrdersByAccountID,
 } from "../../../service/crudUser";
 import AccountTable from "./OrderTable";
 import AccountFormModal from "./OrderFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
+import { cancelOrder } from "../../../service/crudOrder"; // Thêm phương thức gọi API cancel order
 
 export default function OrderManager() {
   const [users, setUsers] = useState([]);
@@ -23,28 +21,29 @@ export default function OrderManager() {
   const usersPerPage = 5;
 
   useEffect(() => {
-    const fetchAllAccounts = async () => {
+    const fetchAllOrdersByAccounts = async () => {
       try {
         const response = await getAllAccounts();
-        setUsers(response.data);
+        const users = response.data;
+
+        const ordersPromises = users.map((user) =>
+          getOrdersByAccountID(user.accountID)
+        );
+        const ordersResults = await Promise.all(ordersPromises);
+
+        const allOrders = users.map((user, index) => ({
+          ...user,
+          orders: ordersResults[index].data,
+        }));
+
+        setUsers(allOrders); // Save to state for displaying in table
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching orders:", error);
       }
     };
-    fetchAllAccounts();
-  }, []);
 
-  const fetchAdmins = async () => {
-    try {
-      const response = await getAllAccounts(); // Gọi API để lấy danh sách tất cả accounts
-      const adminAccounts = response.data.filter(
-        (account) => account.role === "admin"
-      );
-      setAdmins(adminAccounts); // Lưu danh sách các admin vào state
-    } catch (error) {
-      console.error("Error fetching admins:", error);
-    }
-  };
+    fetchAllOrdersByAccounts();
+  }, []);
 
   const handleNext = () => {
     if (currentPage < Math.ceil(users.length / usersPerPage)) {
@@ -58,91 +57,40 @@ export default function OrderManager() {
     }
   };
 
-  const handleAddNew = () => {
-    fetchAdmins(); // Gọi API để lấy danh sách admin
-    setSelectedUser(null); // Clear selected user for new addition
-    setMode("add");
-    setShowModal(true); // Show modal
-  };
-
   const handleView = (user) => {
-    setSelectedUser(user); // Set user for viewing
+    setSelectedUser(user);
     setMode("view");
-    setShowModal(true); // Show modal
+    setShowModal(true);
   };
 
-  const handleEdit = (user) => {
-    fetchAdmins(); // Gọi API để lấy danh sách admin
-    setSelectedUser(user); // Set user for editing
-    setMode("edit");
-    setShowModal(true); // Show modal
-  };
-
-  // Hàm này sẽ mở modal xác nhận xóa
-  const handleDelete = (user) => {
-    setUserToDelete(user); // Lưu thông tin user cần xóa
-    setShowDeleteModal(true); // Hiển thị modal xác nhận
-  };
-
-  // Xử lý xóa sau khi người dùng xác nhận
-  const confirmDelete = async () => {
+  const handleDelete = async (order) => {
     try {
-      const response = await deleteAccount(userToDelete.accountID); // Gọi API xóa
-      Notification(response.message, "", 4, "info");
-      // Cập nhật lại danh sách người dùng
-      const updatedUsers = users.filter(
-        (user) => user.accountID !== userToDelete.accountID
-      );
+      // Gọi API hủy đơn hàng
+      await cancelOrder(order.ordersID);
+
+      // Cập nhật lại danh sách order
+      const updatedUsers = users.map((user) => {
+        return {
+          ...user,
+          orders: user.orders.map((o) =>
+            o.ordersID === order.ordersID
+              ? { ...o, status: "Canceled" } // Cập nhật trạng thái order thành "Canceled"
+              : o
+          ),
+        };
+      });
+
       setUsers(updatedUsers);
+      Notification("Order canceled successfully", "", 4, "success");
     } catch (error) {
-      console.error("Error deleting user:", error);
-      Notification(response.message, "", 4, "warning");
-    } finally {
-      setShowDeleteModal(false); // Đóng modal sau khi xóa
+      console.error("Error canceling order:", error);
+      Notification("Error canceling order", "", 4, "warning");
     }
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setMode("list"); // Go back to list view
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false); // Đóng modal xác nhận xóa
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Ngăn việc reload lại trang khi submit form
-
-    const formData = {
-      fullName: e.target.formFullName.value,
-      email: e.target.formEmail.value,
-      password: e.target.formPassword.value,
-      dob: e.target.formDateOfBirth.value,
-      image: e.target.formImage.value,
-      phoneNumber: e.target.formPhonenumber.value,
-      role: e.target.formRole.value,
-      status: e.target.formStatus.value,
-      adminID: e.target.formAdminID.value,
-    };
-
-    try {
-      if (mode === "add") {
-        const response = await createAccount(formData);
-        Notification(response.message, "", 4, "success");
-      } else if (mode === "edit") {
-        const response = await updateAccount(formData, selectedUser.accountID);
-        Notification(response.message, "", 4, "success");
-      }
-      setShowModal(false); // Close modal after success
-      setMode("list");
-      // Fetch lại danh sách người dùng sau khi thêm/sửa
-      const response = await getAllAccounts();
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error saving user:", error);
-      alert("Error saving user");
-    }
+    setMode("list");
   };
 
   return (
@@ -151,16 +99,7 @@ export default function OrderManager() {
         <strong>Order:</strong>
       </h2>
       <Row className="mb-3">
-        <Col className="d-flex justify-content-end">
-          {/* filter by Date Order */}
-
-          {/* <Button variant="success" className="mr-1">
-            <box-icon name="export"></box-icon> Export
-          </Button>
-          <Button variant="info" onClick={handleAddNew}>
-            <box-icon name="plus"></box-icon> Add New
-          </Button> */}
-        </Col>
+        <Col className="d-flex justify-content-end"></Col>
       </Row>
 
       <AccountTable
@@ -168,8 +107,7 @@ export default function OrderManager() {
         currentPage={currentPage}
         usersPerPage={usersPerPage}
         handleView={handleView}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
+        handleDelete={handleDelete} // Thêm handleDelete
         handleNext={handleNext}
         handlePrevious={handlePrevious}
       />
@@ -178,12 +116,7 @@ export default function OrderManager() {
         mode={mode}
         selectedUser={selectedUser}
         showModal={showModal}
-        admins={admins} // Truyền danh sách admin xuống modal
-        showDeleteModal={showDeleteModal} // Trạng thái hiển thị modal xóa
         handleCloseModal={handleCloseModal}
-        handleCloseDeleteModal={handleCloseDeleteModal} // Đóng modal xóa
-        handleSubmit={handleSubmit}
-        handleConfirmDelete={confirmDelete} // Xử lý xóa
       />
     </Container>
   );
