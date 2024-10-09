@@ -74,21 +74,39 @@ export default function AccountFormModal({
                 readOnly={mode === "view"}
               />
             </Form.Group>
-            <Form.Group controlId="formRole">
-              <Form.Label>Role</Form.Label>
+            <Form.Group controlId="formImage">
+              <Form.Label>Image</Form.Label>
               <Form.Control
-                type="text"
-                defaultValue={selectedUser?.role}
+                type="file"
+                defaultValue={selectedUser?.image}
                 readOnly={mode === "view"}
               />
             </Form.Group>
+            <Form.Group controlId="formRole">
+              <Form.Label>Role</Form.Label>
+              <Form.Control
+                as="select"
+                defaultValue={selectedUser?.role ?? "user"} // Mặc định chọn "user" nếu không có giá trị
+                readOnly={mode === "view"} // Không cho phép chỉnh sửa khi ở chế độ "view"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="staff">Staff</option>
+                <option value="manager">Manager</option>
+              </Form.Control>
+            </Form.Group>
+
             <Form.Group controlId="formStatus">
               <Form.Label>Status</Form.Label>
               <Form.Control
-                type="int"
-                defaultValue={selectedUser?.status}
-                readOnly={mode === "view"}
-              />
+                as="select"
+                defaultValue={selectedUser?.status ?? 0} // Mặc định chọn giá trị 0 nếu không có giá trị
+                readOnly={mode === "view"} // Không cho phép chỉnh sửa khi ở chế độ "view"
+              >
+                <option value={0}>Inactive</option>
+                <option value={1}>Active</option>
+                <option value={2}>Banned</option>
+              </Form.Control>
             </Form.Group>
             {mode !== "view" && (
               <Button variant="primary" type="submit">
