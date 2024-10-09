@@ -5,7 +5,6 @@ import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
 
 export default function OrderView() {
     const [formData, setFormData] = useState({
-        email: '',
         fullName: '',
         phoneNumber: '',
         address: '',
@@ -73,7 +72,6 @@ export default function OrderView() {
 
     const validateForm = () => {
         let tempErrors = {};
-        tempErrors.email = formData.email ? "" : "Email is required";
         tempErrors.fullName = formData.fullName ? "" : "Full name is required";
         tempErrors.phoneNumber = formData.phoneNumber ? "" : "Phone number is required";
         tempErrors.address = formData.address ? "" : "Address is required";
