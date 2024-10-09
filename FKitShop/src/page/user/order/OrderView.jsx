@@ -2,72 +2,101 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
+import { getProvinces, getDistricts, getWards, calculateShippingFee } from '../../../service/ghnApi';
 
 export default function OrderView() {
     const [formData, setFormData] = useState({
         fullName: '',
         phoneNumber: '',
         address: '',
-        province: '',
-        district: '',
-        ward: '',
+        provinceId: '',
+        districtId: '',
+        wardCode: '',
         note: ''
     });
     const [errors, setErrors] = useState({});
     const cartProducts = useSelector(state => state.cart.products);
     const navigate = useNavigate();
 
-    // Giả sử bạn có các danh sách này từ API hoặc một nguồn dữ liệu khác
-    const provinces = ['Hà Nội', 'TP.HCM', 'Đà Nẵng']; // Thêm các tỉnh/thành phố khác
+    const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
+    const [shippingFee, setShippingFee] = useState(0);
 
     useEffect(() => {
         if (cartProducts.length === 0) {
             navigate('/cart');
         }
+        fetchProvinces();
     }, [cartProducts, navigate]);
 
-    const handleChange = (e) => {
+    const fetchProvinces = async () => {
+        try {
+            const data = await getProvinces();
+            setProvinces(data);
+        } catch (error) {
+            console.error('Failed to fetch provinces:', error);
+        }
+    };
+
+    const handleChange = async (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
             ...prevState,
             [name]: value
         }));
 
-        // Reset district và ward khi thay đổi province
-        if (name === 'province') {
-            setFormData(prevState => ({
-                ...prevState,
-                district: '',
-                ward: ''
-            }));
-            // Cập nhật danh sách quận/huyện dựa trên tỉnh/thành phố được chọn
-            setDistricts(getDistrictsForProvince(value));
-            setWards([]);
+        if (name === 'provinceId') {
+            setFormData(prevState => ({ ...prevState, districtId: '', wardCode: '' }));
+            fetchDistricts(value);
+        } else if (name === 'districtId') {
+            setFormData(prevState => ({ ...prevState, wardCode: '' }));
+            fetchWards(value);
         }
 
-        // Reset ward khi thay đổi district
-        if (name === 'district') {
-            setFormData(prevState => ({
-                ...prevState,
-                ward: ''
-            }));
-            // Cập nhật danh sách phường/xã dựa trên quận/huyện được chọn
-            setWards(getWardsForDistrict(value));
+        if (name === 'wardCode') {
+            calculateShipping(formData.districtId, value);
         }
     };
 
-    // Hàm giả định để lấy danh sách quận/huyện cho tỉnh/thành phố
-    const getDistrictsForProvince = (province) => {
-        // Thay thế bằng logic thực tế để lấy danh sách quận/huyện
-        return ['Quận 1', 'Quận 2', 'Quận 3'];
+    const fetchDistricts = async (provinceId) => {
+        try {
+            const data = await getDistricts(provinceId);
+            setDistricts(data);
+        } catch (error) {
+            console.error('Failed to fetch districts:', error);
+        }
     };
 
-    // Hàm giả định để lấy danh sách phường/xã cho quận/huyện
-    const getWardsForDistrict = (district) => {
-        // Thay thế bằng logic thực tế để lấy danh sách phường/xã
-        return ['Phường 1', 'Phường 2', 'Phường 3'];
+    const fetchWards = async (districtId) => {
+        try {
+            const data = await getWards(districtId);
+            setWards(data);
+        } catch (error) {
+            console.error('Failed to fetch wards:', error);
+        }
+    };
+
+    const calculateShipping = async (districtId, wardCode) => {
+        try {
+            const shippingData = {
+                from_district_id: 3694, // ID quận/huyện của shop (ví dụ)
+                from_ward_code: '800325', // Mã phường/xã của shop (ví dụ)
+                to_district_id: parseInt(districtId),
+                to_ward_code: wardCode,
+                height: 10, // Chiều cao của gói hàng (cm)
+                length: 10, // Chiều dài của gói hàng (cm)
+                weight: 1000, // Trọng lượng của gói hàng (gram)
+                width: 10, // Chiều rộng của gói hàng (cm)
+                insurance_value: cartProducts.reduce((total, product) => total + (product.price * product.quantity), 0), // Giá trị đơn hàng
+                service_id: 53320 // ID dịch vụ vận chuyển (có thể thay đổi)
+            };
+            const fee = await calculateShippingFee(shippingData);
+            console.log(fee);
+            setShippingFee(fee);
+        } catch (error) {
+            console.error('Failed to calculate shipping fee:', error);
+        }
     };
 
     const validateForm = () => {
@@ -75,9 +104,9 @@ export default function OrderView() {
         tempErrors.fullName = formData.fullName ? "" : "Full name is required";
         tempErrors.phoneNumber = formData.phoneNumber ? "" : "Phone number is required";
         tempErrors.address = formData.address ? "" : "Address is required";
-        tempErrors.province = formData.province ? "" : "Province is required";
-        tempErrors.district = formData.district ? "" : "District is required";
-        tempErrors.ward = formData.ward ? "" : "Ward is required";
+        tempErrors.provinceId = formData.provinceId ? "" : "Province is required";
+        tempErrors.districtId = formData.districtId ? "" : "District is required";
+        tempErrors.wardCode = formData.wardCode ? "" : "Ward is required";
         setErrors(tempErrors);
         return Object.values(tempErrors).every(x => x === "");
     };
@@ -101,8 +130,7 @@ export default function OrderView() {
     };
 
     const subtotal = cartProducts.reduce((total, product) => total + (product.price * product.quantity), 0);
-    const shipping = 35000; // Assuming fixed shipping cost
-    const total = subtotal + shipping;
+    const total = subtotal + shippingFee;
 
     return (
         <div className="container mt-2">
@@ -152,50 +180,56 @@ export default function OrderView() {
                         <div className="row mb-3">
                             <div className="col-md-4">
                                 <select
-                                    className={`form-control ${errors.province ? 'is-invalid' : ''}`}
-                                    name="province"
-                                    value={formData.province}
+                                    className={`form-control ${errors.provinceId ? 'is-invalid' : ''}`}
+                                    name="provinceId"
+                                    value={formData.provinceId}
                                     onChange={handleChange}
                                     required
                                 >
                                     <option value="">Select Province</option>
-                                    {provinces.map((province, index) => (
-                                        <option key={index} value={province}>{province}</option>
+                                    {provinces.map((province) => (
+                                        <option key={province.ProvinceID} value={province.ProvinceID}>
+                                            {province.ProvinceName}
+                                        </option>
                                     ))}
                                 </select>
-                                {errors.province && <div className="invalid-feedback">{errors.province}</div>}
+                                {errors.provinceId && <div className="invalid-feedback">{errors.provinceId}</div>}
                             </div>
                             <div className="col-md-4">
                                 <select
-                                    className={`form-control ${errors.district ? 'is-invalid' : ''}`}
-                                    name="district"
-                                    value={formData.district}
+                                    className={`form-control ${errors.districtId ? 'is-invalid' : ''}`}
+                                    name="districtId"
+                                    value={formData.districtId}
                                     onChange={handleChange}
                                     required
-                                    disabled={!formData.province}
+                                    disabled={!formData.provinceId}
                                 >
                                     <option value="">Select District</option>
-                                    {districts.map((district, index) => (
-                                        <option key={index} value={district}>{district}</option>
+                                    {districts.map((district) => (
+                                        <option key={district.DistrictID} value={district.DistrictID}>
+                                            {district.DistrictName}
+                                        </option>
                                     ))}
                                 </select>
-                                {errors.district && <div className="invalid-feedback">{errors.district}</div>}
+                                {errors.districtId && <div className="invalid-feedback">{errors.districtId}</div>}
                             </div>
                             <div className="col-md-4">
                                 <select
-                                    className={`form-control ${errors.ward ? 'is-invalid' : ''}`}
-                                    name="ward"
-                                    value={formData.ward}
+                                    className={`form-control ${errors.wardCode ? 'is-invalid' : ''}`}
+                                    name="wardCode"
+                                    value={formData.wardCode}
                                     onChange={handleChange}
                                     required
-                                    disabled={!formData.district}
+                                    disabled={!formData.districtId}
                                 >
                                     <option value="">Select Ward</option>
-                                    {wards.map((ward, index) => (
-                                        <option key={index} value={ward}>{ward}</option>
+                                    {wards.map((ward) => (
+                                        <option key={ward.WardCode} value={ward.WardCode}>
+                                            {ward.WardName}
+                                        </option>
                                     ))}
                                 </select>
-                                {errors.ward && <div className="invalid-feedback">{errors.ward}</div>}
+                                {errors.wardCode && <div className="invalid-feedback">{errors.wardCode}</div>}
                             </div>
                         </div>
                         <div className="mb-3">
@@ -248,7 +282,7 @@ export default function OrderView() {
                         </div>
                         <div className="d-flex justify-content-between">
                             <span>Shipping</span>
-                            <span>{formatCurrency(shipping)}</span>
+                            <span>{formatCurrency(shippingFee)}</span>
                         </div>
                         <hr />
                         <div className="d-flex justify-content-between">
