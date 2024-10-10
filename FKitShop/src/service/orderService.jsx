@@ -9,7 +9,8 @@ export const getAllOrders = async() =>{
         return response.data;
     } catch (error) {
         console.log("Error: " + error);
-
+    }
+}
 export const checkOutOrder = async (ordersRequest, orderDetailsRequest) => {
     try {
         const response = await api[POST]('/orders/checkout', { ordersRequest, orderDetailsRequest });
