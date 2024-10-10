@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const GHN_API_URL = 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data';
 const GHN_TOKEN = '4acfbf67-8331-11ef-8e53-0a00184fe694'; // Thay thế bằng token thực của bạn
+const GHN_FEE_URL = 'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
 
 const ghnApi = axios.create({
   baseURL: GHN_API_URL,
@@ -43,7 +44,12 @@ export const getWards = async (districtId) => {
 
 export const calculateShippingFee = async (data) => {
   try {
-    const response = await ghnApi.post('/calculate-fee', data);
+    const response = await axios.post(GHN_FEE_URL, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Token': GHN_TOKEN
+      }
+    });
     return response.data.data.total;
   } catch (error) {
     console.error('Error calculating shipping fee:', error);

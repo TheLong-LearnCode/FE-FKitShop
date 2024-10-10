@@ -1,27 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useTransition } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
-import { getProvinces, getDistricts, getWards, calculateShippingFee } from '../../../service/ghnApi';
+import { getProvinces, getDistricts, getWards, calculateShippingFee } from '../../../service/ghnApi.jsx';
+import { IDLE } from '../../../redux/constants/status.js';
+import { checkOutOrder } from '../../../service/orderService.jsx';
+import { log } from 'react-modal/lib/helpers/ariaAppHider.js';
+import { verifyToken } from '../../../service/authUser.jsx';
 
 export default function OrderView() {
-    const [formData, setFormData] = useState({
-        fullName: '',
-        phoneNumber: '',
-        address: '',
-        provinceId: '',
-        districtId: '',
-        wardCode: '',
-        note: ''
-    });
+    const dispatch = useDispatch();
+    const [isPending, startTransition] = useTransition();
+    const [activeLink, setActiveLink] = useState('');
+    const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
     const [errors, setErrors] = useState({});
     const cartProducts = useSelector(state => state.cart.products);
     const navigate = useNavigate();
-
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [shippingFee, setShippingFee] = useState(0);
+    const [error, setError] = useState('');
+
+    // Lấy thông tin người dùng từ Redux Store
+    const user = useSelector((state) => state.auth);
+    console.log("user in PRODUCTDETAIL: ", user);
+    const userDataStatus = useSelector((state) => state.auth.data);
+
+    var userToken;
+    var userData;
+    useEffect(() => {
+        console.log("user.data.token: ", user.data?.token);
+        if (user.data !== null) {
+            userToken = user.data?.token;
+
+        } if (user.status === IDLE && user.data !== null) {
+            userToken = user.data;
+        }
+        console.log("userToken in PRODUCTDETAIL: ", userToken);
+        console.log("user.data in PRODUCTDETAIL: ", user.data);
+
+
+        const fetchUserInfo = async () => {
+            try {
+                userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
+                console.log("userData after verify token: ", userData);
+
+                setUserInfo(userData); // Lưu thông tin user vào state
+                console.log("userData after SETUSERINFO: ", userData);
+                //userData.data -> lấy ra userInfo
+            } catch (error) {
+                console.error("Error verifying token: ", error);
+            }
+        };
+        fetchUserInfo(); // Gọi API lấy thông tin người dùng
+    }, [user.data]); //user.data là thông tin người dùng
+
+    const [formData, setFormData] = useState({
+        fullName: '',
+        phoneNumber: '',
+        address: '',
+        province: '',
+        district: '',
+        ward: '',
+        shippingPrice: '',
+        payingMethod: '',
+        note: ''
+    });
 
     useEffect(() => {
         if (cartProducts.length === 0) {
@@ -52,10 +97,8 @@ export default function OrderView() {
         } else if (name === 'districtId') {
             setFormData(prevState => ({ ...prevState, wardCode: '' }));
             fetchWards(value);
-        }
-
-        if (name === 'wardCode') {
-            calculateShipping(formData.districtId, value);
+        } else if (name === 'wardCode') {
+            calculateShipping(formData.provinceId);
         }
     };
 
@@ -77,26 +120,16 @@ export default function OrderView() {
         }
     };
 
-    const calculateShipping = async (districtId, wardCode) => {
-        try {
-            const shippingData = {
-                from_district_id: 3694, // ID quận/huyện của shop (ví dụ)
-                from_ward_code: '800325', // Mã phường/xã của shop (ví dụ)
-                to_district_id: parseInt(districtId),
-                to_ward_code: wardCode,
-                height: 10, // Chiều cao của gói hàng (cm)
-                length: 10, // Chiều dài của gói hàng (cm)
-                weight: 1000, // Trọng lượng của gói hàng (gram)
-                width: 10, // Chiều rộng của gói hàng (cm)
-                insurance_value: cartProducts.reduce((total, product) => total + (product.price * product.quantity), 0), // Giá trị đơn hàng
-                service_id: 53320 // ID dịch vụ vận chuyển (có thể thay đổi)
-            };
-            const fee = await calculateShippingFee(shippingData);
-            console.log(fee);
-            setShippingFee(fee);
-        } catch (error) {
-            console.error('Failed to calculate shipping fee:', error);
-        }
+
+    const subtotal = cartProducts.reduce((total, product) => total + (product.price * product.quantity), 0);
+    const total = subtotal + shippingFee;
+
+    const calculateShipping = (provinceId) => {
+        // ID của Thành phố Hồ Chí Minh (có thể cần điều chỉnh nếu khác)
+        const hcmCityId = "202";
+        const shippingFee = provinceId === hcmCityId ? 25000 : 35000;
+        setShippingFee(shippingFee);
+
     };
 
     const validateForm = () => {
@@ -114,8 +147,33 @@ export default function OrderView() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
-            console.log('Form is valid', formData);
-            // Proceed with order submission
+            console.log('Form is valid');
+            console.log("USERINFO: " + userInfo);
+            const formData2 = {
+                accountID: userInfo?.data.accountID,
+                name: formData.fullName,
+                province: formData.provinceId,
+                district: formData.districtId,
+                ward: formData.wardCode,
+                address: formData.address,
+                payingMethod: formData.payingMethod,
+                phoneNumber: formData.phoneNumber,
+                shippingPrice: shippingFee,
+                note: formData.note
+            };
+            console.log("formData2: ", formData2);
+            const orderDetailsRequest = cartProducts.map(cartProduct => ({
+                productID: cartProduct.productID,
+                quantity: cartProduct.quantity,
+            }));
+            console.log("cartProducts: ", cartProducts);
+            console.log("orderDetailsRequest: ", orderDetailsRequest);
+            const fetchOrder = async () => {
+                const response = await checkOutOrder(formData2, orderDetailsRequest);
+                console.log("RESPONSE.DATAAA: ");
+                console.log(response);
+            };
+            fetchOrder();
         } else {
             console.log('Form is invalid');
         }
@@ -129,12 +187,9 @@ export default function OrderView() {
         }).format(amount);
     };
 
-    const subtotal = cartProducts.reduce((total, product) => total + (product.price * product.quantity), 0);
-    const total = subtotal + shippingFee;
-
     return (
         <div className="container mt-2">
-            <div className='text-center' style={{width:'100%', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)'}}>
+            <div className='text-center' style={{ width: '100%', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
                 <h1 className="mb-4">YOUR ORDER</h1>
             </div>
             <div className="row">
@@ -247,7 +302,7 @@ export default function OrderView() {
                             <div className="form-check">
                                 <input className="form-check-input" type="radio" name="paymentMethod" id="onlineBanking" checked />
                                 <label className="form-check-label" htmlFor="onlineBanking">
-                                    VNPAY 
+                                    VNPAY
                                 </label>
                             </div>
                             <div className="form-check">
@@ -257,7 +312,12 @@ export default function OrderView() {
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" className="btn btn-dark w-100">Pay Now</button>
+                        <button
+                            type="submit"
+                            className="btn btn-dark w-100"
+                        //onClick={handlePayNow}
+                        >Pay Now
+                        </button>
                     </form>
                 </div>
                 <div className="col-md-5">
@@ -292,6 +352,7 @@ export default function OrderView() {
                     </div>
                 </div>
             </div>
+            {error && <div className="alert alert-danger">{error}</div>}
         </div>
     );
 }
