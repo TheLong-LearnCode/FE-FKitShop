@@ -57,9 +57,9 @@ function Validator(options) {
 
         formElement.onsubmit = async function (e) { // Add 'async' here
             e.preventDefault();
-        
+
             var isFormValid = true;
-        
+
             // Lặp qua từng rules và validate
             options.rules.forEach(function (rule) {
                 var inputElement = formElement.querySelector(rule.selector);
@@ -68,10 +68,10 @@ function Validator(options) {
                     isFormValid = false;
                 }
             });
-        
+
             if (isFormValid) {
                 var enableInputs = formElement.querySelectorAll('[name]');
-        
+
                 var formValues = Array.from(enableInputs).reduce(function (values, input) {
                     switch (input.type) {
                         case 'radio':
@@ -95,7 +95,7 @@ function Validator(options) {
                     }
                     return values;
                 }, {});
-        
+
                 // If there's an options.onSubmit, call it
                 if (typeof options.onSubmit === 'function') {
                     try {
@@ -175,14 +175,15 @@ Validator.isConfirmed = function (selector, getConfirmValue, message) {
     };
 };
 
-Validator.isValidDate = function (selector, message) {
+Validator.isValidDate = function (selector, type, message) {
     return {
         selector: selector,
         test: function (value) {
-            if (!value) {
-                return message || 'Invalid date';
+            if (type === "create") {
+                if (!value) {
+                    return message || 'Invalid date';
+                }
             }
-
             const selectedDate = new Date(value);
             const today = new Date();
 
@@ -228,7 +229,7 @@ Validator.updateFullName = function (selector, getFullName, message) {
         selector: selector,
         test: function (value) {
             // Get the current full name value
-            const currentFullName = getFullName; 
+            const currentFullName = getFullName;
 
             // Check if the value is empty or unchanged
             if (value === currentFullName) {
@@ -238,7 +239,7 @@ Validator.updateFullName = function (selector, getFullName, message) {
             const nameRegex = /^[a-zA-Z\s]+$/;
 
             // Validate the new value
-            return nameRegex.test(value) ? undefined : message ||'Invalid full name';
+            return nameRegex.test(value) ? undefined : message || 'Invalid full name';
         }
     };
 };
@@ -305,6 +306,8 @@ Validator.updateConfirmPassword = function (selector, getConfirmPasswordValue, m
         }
     };
 };
+
+//--------------------------------Change password----------------------------
 
 //---------------------------------------------------------------------------
 export default Validator;

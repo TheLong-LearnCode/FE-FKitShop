@@ -28,6 +28,8 @@ const useAuthen = () => {
   }, [status, userData]);
 
   const userRole = userData?.data?.accounts?.role || null;
+  console.log("userData in useAuthen: ", userData);
+  
 
   return { userRole, loading };
 };

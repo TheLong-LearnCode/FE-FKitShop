@@ -7,6 +7,7 @@ import { logout } from '../../../redux/slices/authSlice';
 import { verifyToken } from '../../../service/authUser';
 import { IDLE } from '../../../redux/constants/status';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { Notification } from '../../../component/UserProfile/UpdateAccount/Notification';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
@@ -39,18 +40,14 @@ export default function Header() {
             try {
                 userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
                 //console.log("user after verify token: ", userData);
-
                 setUserInfo(userData); // Lưu thông tin user vào state
-                //console.log("user after verify token2: ", userData);
+
             } catch (error) {
                 console.error("Error verifying token: ", error);
             }
         };
         fetchUserInfo(); // Gọi API lấy thông tin người dùng
     }, [user.data]); //user.data là thông tin người dùng
-
-
-    //khi load lại thì user.data là chuỗi token
 
     const handleNavClick = (linkName) => {
         startTransition(() => {
@@ -61,6 +58,7 @@ export default function Header() {
     const handleLogout = () => {
         startTransition(() => {
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
+            Notification("Notification", "LOG OUT SUCCESSFULLY", 3, "success")
             navigate('/');  // Điều hướng về trang đăng nhập
         });
     };

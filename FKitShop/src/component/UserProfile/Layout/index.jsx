@@ -9,13 +9,15 @@ import MyLab from '../MyLab';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyToken } from '../../../service/authUser';
 import { setUser } from '../../../redux/slices/authSlice'; // Import the action to set user info
-import { IDLE } from '../../../redux/constants/status';
+import { IDLE, SUCCESSFULLY } from '../../../redux/constants/status';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getUserByAccountID } from '../../../service/crudUser';
 
 export default function UserProfile() {
     const [activeTab, setActiveTab] = useState('information'); // State to manage the active tab
     const [isPending, startTransition] = useTransition();
     const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
+
     const user = useSelector((state) => state.auth); // Get user state from Redux store
     const dispatch = useDispatch(); // Initialize dispatch
     const navigate = useNavigate(); // Initialize navigate
@@ -23,37 +25,56 @@ export default function UserProfile() {
 
     var userToken;
     var userData;
-    
 
-    console.log("User info in ProfileLayout be4 render:", user);
     useEffect(() => {
-        // Check if user status is idle and fetch user info if necessary
-        if (user.data !== null) { //user đang truy cập--successfully
+        console.log("user.data.token: ", user.data?.token);
+        if (user.data !== null) {
             userToken = user.data?.token;
+
         } if (user.status === IDLE && user.data !== null) {
-                userToken = user.data;
-                const fetchUserInfo = async () => {
-                    try {
-                        userData = await verifyToken(userToken); // Call verifyToken to get user data
-                        dispatch(setUser(userData));
-                        console.log("user in ProfileeLayoutt: ", userData);
+            userToken = user.data;
+        }
+        console.log("userToken in PRODUCTDETAIL: ", userToken);
+        console.log("user.data in PRODUCTDETAIL: ", user.data);
 
-                    } catch (error) {
-                        console.error("Error verifying token: ", error);
-                    }
-                };
-                fetchUserInfo(); // Fetch user info
+
+        const fetchUserInfo = async () => {
+            try {
+                userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
+                console.log("userData after verify token: ", userData);
+                const userFF = await getUserByAccountID(userData.data.accountID);
+                console.log("userFF after RENDER: ", userFF);
+                setUserInfo(userFF); // Lưu thông tin user vào state
+                console.log("userData after SETUSERINFO: ", userData);
+                //userData.data -> lấy ra userInfo
+            } catch (error) {
+                console.error("Error verifying token: ", error);
             }
-        }, [user.data]); // user.status and user.data are dependencies
+        };
+        fetchUserInfo(); // Gọi API lấy thông tin người dùng
+    }, [user.data]); //user.data là thông tin người dùng
+    console.log("User info in ProfileLayout after render:", user);
+    //--------------------------------------------------------------------------
+    console.log("USSEERR: ", userInfo?.data); //->.accountID
+    //lần đầu & sau khi load lại trang: thông tin user -> userInfo?.data
+    
+    const userFinalInfo = userInfo?.data;
+    // if(userInfo === null && user.data?.accounts !== null) {
+    //     userFinalInfo = user.data?.accounts;
+    // } else if(userInfo === undefined && user.data?.data !== null) {
+    //     userFinalInfo = user.data?.data;
+    // } else if(user.data.data !== null && userInfo.data !== null && user.status === SUCCESSFULLY){
+    //     userFinalInfo = user.data.data;
+    // } else {
+    //     userFinalInfo = userInfo.data;
+    // }
 
-    ;
-    console.log("User info in ProfileLayout after render:", user);     
+
     //idle
     //user.data
 
     //success
     //user.data.data
-    const userFinalInfo = user.data?.accounts || user.data?.data;
 
     // Function to change tab using startTransition
     const handleTabChange = (tabName) => {
@@ -62,7 +83,6 @@ export default function UserProfile() {
             navigate(`/user/${tabName}`); // Update the URL when tab changes
         });
     };
-    
     // Update the active tab based on the URL path when the component mounts or when the URL changes
     useEffect(() => {
         const path = location.pathname.split('/').pop(); // Get the last part of the URL
@@ -80,6 +100,7 @@ export default function UserProfile() {
                                 <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
                             </div>
                             <div className='col-md-9'>
+                                {/* Show a dismissible alert if showMessage is true */}
                                 {/* Render the content based on the activeTab */}
                                 {/* lần đầu vào -> user.data?.accounts , khi load lại trang -> user.data?.data */}
                                 {activeTab === 'information' && <ProfileInformation userInfo={userFinalInfo} />}

@@ -1,0 +1,37 @@
+/* font chữ cho các tab bên side bar */
+.size-nav-item {
+    font-size: 1.7rem; 
+    font-weight: bold;
+    background: linear-gradient(to right, blue, purple); /* Màu gradient từ trái sang phải */
+    background-clip: text; /* Clip để chỉ áp dụng gradient cho chữ */
+    -webkit-background-clip: text; /* Duy trì cho trình duyệt Webkit */
+    color: transparent; /* Làm cho màu chữ trong suốt để hiển thị gradient */
+  }
+  /* css cho cả khối nav bên ngoài */
+  .nav-container {
+    border: 2px solid #ddd;  /* Đường viền */
+    border-radius: 10px; /* Độ bo tròn
+    /*padding: 1px; /* Khoảng cách bên trong */
+    background-color: gray  ; /*Màu nền*/
+    /*margin-bottom: 10px; /* Khoảng cách giữa các khung */
+    /*max-height: 100vh; /* Chiều cao tối thiểu là 100% chiều cao viewport */
+    /* overflow-x: auto;  */
+    width: auto;
+  }
+  
+/* css cho mỗi nav-link */
+  .nav-link-item {
+    border: 1px solid #ddd; /* Đường viền */
+    border-radius: 10px; /* Độ bo tròn */
+    padding: 5px 5px; /* Khoảng cách bên trong */
+    background-color: #f8f9fa; /* Màu nền */
+    margin: 3px 0; /* Khoảng cách giữa các khung */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển đổi màu nền */
+  }
+  
+  .nav-link-item:hover {
+    background-color: #9b9fa2; /* Màu nền khi hover */
+  }
+  
+
+  

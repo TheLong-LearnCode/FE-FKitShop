@@ -3,25 +3,65 @@ import Validator from "../../Validator";
 import styles from './index.module.css';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import { updateUser } from '../../../service/crudUser';
+import { getUserByAccountID, updateUser } from '../../../service/crudUser';
 import Warning from './Warning';
-
+import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Notification } from './Notification';
+import { setUser } from '../../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import '../../../util/GlobalStyle/GlobalStyle.css'
 
 export default function UpdateAccountForm({ userInfo }) {
-    // const [dob, setDob] = useState('');
+    const navigate = useNavigate();
+    const dispatch = useDispatch(); // Initialize dispatch
     const [isDateType, setIsDateType] = useState(false);
-    console.log("userInfo in updateAccount: ", userInfo);
-    
-    //const dobFormat = userInfo?.dob ? format(new Date(userInfo?.dob), 'yyyy-MM-dd') : '';
-    // console.log("dobFormat", dobFormat);
+    console.log("userInfo in update account: ", userInfo);
 
-    const [fullName, setFullName] = useState(userInfo?.fullName);
-    const [email, setEmail] = useState(userInfo?.email);
-    const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber);
-    const [dob, setDob] = useState(userInfo?.dob);
+    // Thông tin cũ của user
+    const oldUserInfo = {
+        fullName: userInfo?.fullName,
+        email: userInfo?.email,
+        phoneNumber: userInfo?.phoneNumber,
+        dob: userInfo?.dob,
+    }
+
+    //const dobFormat = userInfo?.dob ? format(new Date(userInfo?.dob), 'yyyy-MM-dd') : '';
+
+    var [fullName = userInfo?.fullName, setFullName] = useState();
+    var [email = userInfo?.email, setEmail] = useState();
+    var [phoneNumber = userInfo?.phoneNumber, setPhoneNumber] = useState();
+    var [dob = userInfo?.dob, setDob] = useState();
 
     const handleDobChange = (event) => {
         setDob(event.target.value);
+    };
+
+    // Hàm so sánh các trường và hiển thị thông báo
+    const compareFields = (oldData, newData, response) => {
+        let changes = [];
+        if (oldData.fullName !== newData.fullName) {
+            changes.push(`FullName: ${oldData.fullName} -> ${newData.fullName}`);
+        }
+        if (oldData.dob !== newData.dob) {
+            changes.push(`Date of Birth: ${oldData.dob} -> ${newData.dob}`);
+        }
+        if (oldData.phoneNumber !== newData.phoneNumber) {
+            changes.push(`Phone Number: ${oldData.phoneNumber} -> ${newData.phoneNumber}`);
+        }
+        if (oldData.email !== newData.email) {
+            changes.push(`Email: ${oldData.email} -> ${newData.email}`);
+        }
+
+        // Hiển thị các thay đổi nếu có
+        if (changes.length > 0) {
+            changes.forEach(change => {
+                Notification("Notice:", change, 5, "info");
+            });
+            Notification(response.message, '', 2, "success");
+        } else {
+            message.info("No changes were made.");
+        }
     };
 
     useEffect(() => {
@@ -34,34 +74,32 @@ export default function UpdateAccountForm({ userInfo }) {
                 Validator.isRequired('#fullName', 'Please enter full name'),
 
                 Validator.updateDateOfBirth('#dob', userInfo?.dob, ''),
-                Validator.isValidDate('#dob', ''),
+                Validator.isValidDate('#dob', "update", ''),
 
                 Validator.updatePhoneNumber('#phoneNumber', userInfo?.phoneNumber, ''),
-                //k cần isRequire vì nếu để trống thì báo lỗi "Start at 0";
-
                 Validator.updateEmail('#email', userInfo?.email, 'Please enter a valid email'),
-                //k cần isRequire vì nếu để trống thì báo lỗi ở dòng text phía trên;
             ],
             onSubmit: async (rawData) => {
-                console.log("rawData: ", rawData);
                 const data = {
                     fullName: rawData.fullName || userInfo.fullName,
-                    dob: rawData.dob  || userInfo.dob,
+                    dob: rawData.dob || userInfo.dob,
                     phoneNumber: rawData.phoneNumber || userInfo.phoneNumber,
                     email: rawData.email || userInfo.email
                 };
-                console.log("Data in updateAccount: ", data);
+
                 try {
                     const response = await updateUser(data, userInfo.accountID);
-                    console.log("response in updateAccount: ", response);
-                    
+                    compareFields(oldUserInfo, data, response); // Gọi hàm so sánh các trường sau khi cập nhật
+                    const updatedUserData = await getUserByAccountID(userInfo.accountID);
+                    // Update the Redux store with the new user data
+                    dispatch(setUser(updatedUserData));
+                    navigate('/user/information');
                 } catch (error) {
-                    
+                    message.error(error);
                 }
             }
-
         });
-    }, [userInfo]); // Empty dependency array to run only once
+    }, [userInfo]);
 
     return (
         <div className={clsx(styles.wd)}>
@@ -77,7 +115,7 @@ export default function UpdateAccountForm({ userInfo }) {
                             id="fullName"
                             name="fullName"
                             value={fullName}
-                            onChange={(e) => setFullName(e.target.value)} // Update state
+                            onChange={(e) => setFullName(e.target.value)}
                         />
                         <span className="form-message"></span>
                     </div>
@@ -88,18 +126,22 @@ export default function UpdateAccountForm({ userInfo }) {
                         <input
                             id="dob"
                             name="dob"
-                            type={isDateType || dob ? 'date' : 'text'}
+                            type={isDateType ? "date" : "text"} // Switch between date and text field
                             className="form-control"
-                            placeholder={userInfo?.dob}
-                            onFocus={() => setIsDateType(true)}
+                            value={isDateType ? dob : userInfo?.dob} // Show formatted dob or date input
+                            placeholder={dob || userInfo?.dob} // Use formatted date as a placeholder
+                            onFocus={() => setIsDateType(true)} // Switch to date input on focus
                             onBlur={(e) => {
                                 if (!e.target.value) {
-                                    setIsDateType(false);
-                                    e.target.placeholder = `${userInfo.dob}`;
+                                    setDob(dobFormat); // If value is empty, reset it to the original format
+                                    setIsDateType(false);// Switch back to text input on blur
+                                } else {
+                                    setDob(dob);
+                                    setIsDateType(true);// Switch back to text input on
                                 }
+
                             }}
-                            value={dob || userInfo?.dob}
-                            onChange={handleDobChange}
+                            onChange={handleDobChange} // Update dob state on change
                         />
                         <span className="form-message"></span>
                     </div>

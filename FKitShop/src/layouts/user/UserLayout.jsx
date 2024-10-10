@@ -12,8 +12,7 @@ export default function UserLayout() {
   useEffect(() => {
     const token = Cookies.get("token");
     dispatch(loadUserFromCookie(token));
-    console.log("token in UserLayout");
-    console.log(token);
+    console.log("token in UserLayout",token);
   }, []);
   
   return (

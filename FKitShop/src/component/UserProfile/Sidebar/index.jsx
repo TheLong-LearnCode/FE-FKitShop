@@ -10,7 +10,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
 
   return (
     <div className="text-center">
-      <h4>My Profile</h4>
+      <h4><strong>My Profile</strong></h4>
       <img
         src="/img/user.png" // Replace this with your avatar image path
         alt="Profile"

@@ -49,7 +49,7 @@ export default function HomePage() {
     }
   }, [statusData]);
 
-  console.log('data in homepage: ', data); //-passed:gòm status:success, data.accounts->userdata và error:null
+  //console.log('data in homepage: ', data); //-passed:gòm status:success, data.accounts->userdata và error:null
   //empty: status: idle, data: token, error:null
 
     useEffect(() => {
@@ -183,7 +183,7 @@ export default function HomePage() {
       </Button>
 
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>5 Cây Cơ xin kính chào quý kháchhhh =))))</Modal.Title>
         </Modal.Header>
         <Modal.Body>Có vẻ như bạn chưa đăng nhập nhỉ??</Modal.Body>

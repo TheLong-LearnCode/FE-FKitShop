@@ -29,7 +29,7 @@ export const login = createAsyncThunk("auth/login", async (user) => {
  */
 export const register = async (user) => {
   try {
-    const response = await api[POST]("/accounts/register", user);
+    const response = await api[POST]("/auth/register", user);
     return response.data;
   } catch (error) {
     throw error;
