@@ -5,7 +5,6 @@ import Validator from '../../Validator'; // Ensure this import points to the cor
 
 export default function ChangePassword() {
     const passwordLength = 6; // Example password length, adjust if necessary
-
     useEffect(() => {
         Validator({
             form: '#form-change-password',
@@ -61,6 +60,6 @@ export default function ChangePassword() {
                     </button>
                 </div>
             </form>
-        </div>
+        </div >
     );
 }

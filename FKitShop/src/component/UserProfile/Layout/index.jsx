@@ -5,6 +5,7 @@ import ProfileInformation from '../Information';
 import Purchase from '../Purchase';
 import UpdateAccount from '../UpdateAccount';
 import ChangePassword from '../ChangePassword';
+import MyLab from '../MyLab';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyToken } from '../../../service/authUser';
 import { setUser } from '../../../redux/slices/authSlice'; // Import the action to set user info
@@ -85,6 +86,7 @@ export default function UserProfile() {
                                 {activeTab === 'purchase' && <Purchase userInfo={userFinalInfo}/>}
                                 {activeTab === 'updateAccount' && <UpdateAccount userInfo={userFinalInfo}/>}
                                 {activeTab === 'changePassword' && <ChangePassword userInfo={userFinalInfo}/>}
+                                {activeTab === 'myLab' && <MyLab userInfo={userFinalInfo}/>}
                             </div>
                         </div>
                     </div>
