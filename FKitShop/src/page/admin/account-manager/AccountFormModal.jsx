@@ -6,11 +6,14 @@ export default function AccountFormModal({
   selectedUser,
   admins,
   showModal,
-  showDeleteModal, // Trạng thái hiển thị modal xóa
+  showDeleteModal,
+  showActivateModal, // Trạng thái hiển thị modal xóa
   handleCloseModal,
   handleCloseDeleteModal, // Đóng modal xóa
+  handleCloseActivateModal,
   handleSubmit,
-  handleConfirmDelete, // Xử lý xác nhận xóa
+  handleConfirmDelete,
+  confirmActivate // Xử lý xác nhận xóa
 }) {
   return (
     <>
@@ -69,7 +72,7 @@ export default function AccountFormModal({
                   readOnly={mode === "view"}
                 />
               </Form.Group>
-            )}  
+            )}
             <Form.Group controlId="formDateOfBirth">
               <Form.Label>Date of birth</Form.Label>
               <Form.Control
@@ -150,6 +153,21 @@ export default function AccountFormModal({
           </Button>
           <Button variant="danger" onClick={handleConfirmDelete}>
             Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showActivateModal} onHide={handleCloseActivateModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Activate Account</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to activate this account?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseActivateModal}>
+            Cancel
+          </Button>
+          <Button variant="success" onClick={confirmActivate}>
+            Activate
           </Button>
         </Modal.Footer>
       </Modal>

@@ -8,6 +8,7 @@ export default function AccountTable({
   handleView,
   handleEdit,
   handleDelete,
+  handleActivate,
   handlePrevious,
   handleNext,
 }) {
@@ -95,9 +96,18 @@ export default function AccountTable({
                 >
                   Edit
                 </Button>
-                <Button variant="danger" onClick={() => handleDelete(user)}>
-                  Delete
-                </Button>
+                {user.status === 1 ? (
+                  <Button variant="danger" onClick={() => handleActivate(user)}>
+                    Delete
+                  </Button>
+                ) : (
+                  <Button
+                    variant="success"
+                    onClick={() => handleDelete(user)}
+                  >
+                    Activate
+                  </Button>
+                )}
               </td>
             </tr>
           ))}

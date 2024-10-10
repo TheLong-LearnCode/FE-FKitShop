@@ -6,6 +6,7 @@ import {
   getAllAccounts,
   updateAccount,
   deleteAccount,
+  activateAccount
 } from "../../../service/crudUser";
 import AccountTable from "./AccountTable";
 import AccountFormModal from "./AccountFormModal";
@@ -84,6 +85,25 @@ export default function AccountManager() {
     setShowDeleteModal(true); // Hiển thị modal xác nhận
   };
 
+  const handleActivate = (user) => {
+    setUserToActivate(user); // Store user to be activated
+    setShowActivateModal(true); // Show confirmation modal for activation
+  };
+
+  const confirmActivate = async () => {
+    try {
+      const response = await activateAccount(userToActivate.accountID);
+      Notification("User has been activated", "", 4, "success");
+      const updatedResponse = await getAllAccounts();
+      setUsers(updatedResponse.data);
+    } catch (error) {
+      console.error("Error activating user:", error);
+      Notification("Error activating user", "", 4, "warning");
+    } finally {
+      setShowActivateModal(false); // Close the modal after activation
+    }
+  };
+
   // Xử lý xóa sau khi người dùng xác nhận
   const confirmDelete = async () => {
     try {
@@ -116,21 +136,25 @@ export default function AccountManager() {
     const formData = {
       fullName: e.target.formFullName.value,
       email: e.target.formEmail.value,
-      password: e.target.formPassword.value,
+      password: e.target.formPassword?.value,
       dob: e.target.formDateOfBirth.value,
       image: e.target.formImage.value,
       phoneNumber: e.target.formPhonenumber.value,
       role: e.target.formRole.value,
       status: e.target.formStatus.value,
       adminID: e.target.formAdminID.value,
-    };
+    };   
 
     try {
       if (mode === "add") {
         const response = await createAccount(formData);
         Notification(response.message, "", 4, "success");
       } else if (mode === "edit") {
-        const response = await updateAccount(formData, selectedUser.accountID);
+        //let formData2;
+        const { password, ...formData2 } = formData;
+        console.log("formData2: ", formData2);
+        
+        const response = await updateAccount(formData2, selectedUser.accountID);
         Notification(response.message, "", 4, "success");
       }
       setShowModal(false); // Close modal after success
