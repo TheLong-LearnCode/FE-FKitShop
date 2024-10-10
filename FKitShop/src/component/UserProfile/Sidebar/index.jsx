@@ -44,12 +44,21 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
       </button>
 
       <button
-        className={clsx('btn btn-outline-dark w-100', {
+        className={clsx('btn btn-outline-dark w-100 mb-2', {
           active: activeTab === 'changePassword'
         })}
         onClick={handleOnclick('changePassword')}
       >
         Change Password
+      </button>
+
+      <button
+        className={clsx('btn btn-outline-dark w-100', {
+          active: activeTab === 'myLab'
+        })}
+        onClick={handleOnclick('myLab')}
+      >
+        My Lab
       </button>
     </div>
   );

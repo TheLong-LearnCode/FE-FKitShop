@@ -3,16 +3,19 @@ import LazyLoader from "../component/LazyLoader/index.jsx";
 import UserLayout from "../layouts/user/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
 import { ROLE_ADMIN } from "../constants/role";
+import OrderView from "../page/user/order/OrderView.jsx";
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
+
 const AccountPage = React.lazy(() =>
   import("../page/admin/account-manager/AccountManager.jsx")
 );
+const OrderPage = React.lazy(() => import("../page/admin/order-manager/OrderManager.jsx"));
+
 const CategoryPage = React.lazy(() => import("../page/admin/category-manager"));
 const ProductPage = React.lazy(() => import("../page/admin/product-manager"));
 const DeliveryPage = React.lazy(() => import("../page/admin/delivery-manager"));
-const OrderPage = React.lazy(() => import("../page/admin/order-manager/OrderManager.jsx"));
 const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
 const LabGuidePage = React.lazy(() => import("../page/admin/labGuide-manager"));
 const FeedbackPage = React.lazy(() => import("../page/admin/feedback-manager"));
@@ -72,8 +75,13 @@ const PrivateRoutes = [
       { path: "purchase", element: <UserProfilePage /> },
       { path: "updateAccount", element: <UserProfilePage /> },
       { path: "changePassword", element: <UserProfilePage /> },
+      { path: "myLab", element: <UserProfilePage /> },
     ],
   },
+    {
+        path: "/order",
+        element: <OrderView/>,
+    },
 ];
 
 export default PrivateRoutes;

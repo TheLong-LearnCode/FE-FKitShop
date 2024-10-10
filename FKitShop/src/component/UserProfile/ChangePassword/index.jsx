@@ -6,8 +6,8 @@ import { PASSWORD_LENGTH } from '../../../constants/fomConstrant';
 import { updatePassword } from '../../../service/crudUser';
 import { Notification } from '../UpdateAccount/Notification';
 
+
 export default function ChangePassword({ id }) {
-    
     useEffect(() => {
         Validator({
             form: '#form-change-password',
@@ -88,7 +88,6 @@ export default function ChangePassword({ id }) {
                     </button>
                 </div>
             </form>
-
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import api from "../config/axios";
-import { GET, PUT } from "../constants/httpMethod";
+
+import { GET, PUT, POST } from "../constants/httpMethod";
 
 export const getAllOrders = async() =>{
     try {
@@ -8,6 +9,13 @@ export const getAllOrders = async() =>{
         return response.data;
     } catch (error) {
         console.log("Error: " + error);
+
+export const checkOutOrder = async (ordersRequest, orderDetailsRequest) => {
+    try {
+        const response = await api[POST]('/orders/checkout', { ordersRequest, orderDetailsRequest });
+        console.log("RESPONSE: ", response);
+        return response.data;
+    } catch (error) {
         throw error;
     }
 }
@@ -35,3 +43,4 @@ export const cancelOrder = async(id) =>{
         throw error;
     }
 }
+

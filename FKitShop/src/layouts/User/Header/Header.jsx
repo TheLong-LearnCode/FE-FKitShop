@@ -41,6 +41,7 @@ export default function Header() {
                 userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
                 //console.log("user after verify token: ", userData);
                 setUserInfo(userData); // Lưu thông tin user vào state
+
             } catch (error) {
                 console.error("Error verifying token: ", error);
             }
@@ -62,7 +63,7 @@ export default function Header() {
         });
     };
 
-    const CartProducts = useSelector(state => state.cart.CartArr)
+    const cartProducts = useSelector(state => state.cart.products);
 
     // Thêm state cho menu product
     const [showProductMenu, setShowProductMenu] = useState(false);
@@ -77,7 +78,7 @@ export default function Header() {
         { name: 'STEM Programming', categories: ['Raspberry Pi', 'BBC Micro:Bit Programming'] },
         { name: 'STEM Toy', categories: ['Preschool STEM', 'Primary STEM', 'Secondary STEM', 'High School STEM'] },
         { name: 'Functional Module', categories: ['Control & Keyboard & Joystick', 'LCD Screen & HMI'] },
-        
+
     ];
 
     return (
@@ -103,7 +104,7 @@ export default function Header() {
                             <div className='upper-nav-user-actions'>
                                 <Link to={'/cart'} className='upper-nav-item'>
                                     <box-icon name='cart' color='#ffffff'></box-icon>
-                                    <span>Cart ({CartProducts.length})</span>
+                                    <span>Cart ({cartProducts.length})</span>
                                 </Link>
 
                                 <div className="dropdown">
@@ -155,10 +156,10 @@ export default function Header() {
                                         <div className="tags-list">
                                             {productTags.map((tag) => (
                                                 <Link to={'/product'}
-                                                     key={tag.name}
-                                                     className="tag-item"
-                                                     onMouseEnter={() => setActiveTag(tag.name)}
-                                                     onMouseLeave={() => setActiveTag(null)}>
+                                                    key={tag.name}
+                                                    className="tag-item"
+                                                    onMouseEnter={() => setActiveTag(tag.name)}
+                                                    onMouseLeave={() => setActiveTag(null)}>
                                                     {tag.name}
                                                     {activeTag === tag.name && (
                                                         <div className="categories-list">
@@ -200,7 +201,7 @@ export default function Header() {
                         </ul>
                     </nav>
                 </header>
-                
+
                 {showProductMenu && <div className="overlay"></div>}
             </Suspense>
         </div>

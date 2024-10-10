@@ -1,7 +1,7 @@
-
 import React from "react";
 import UserLayout from "../layouts/user/UserLayout.jsx";
 import LazyLoader from "../component/LazyLoader/index.jsx";
+
 
 const HomePage = React.lazy(() => import("../page/user/home/HomePage.jsx"));
 const AboutPage = React.lazy(() => import("../page/user/about"));

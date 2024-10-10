@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useTransition } from 'react'
 import '../../../../util/GlobalStyle/GlobalStyle.css'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { GET } from '../../../../constants/httpMethod';
 import api from '../../../../config/axios';
 import './ProductDetail.css'
-import { useDispatch } from 'react-redux'
-import { addProduct } from '../../../../redux/slices/cartSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { IDLE } from '../../../../redux/constants/status';
+import { verifyToken } from '../../../../service/authUser';
+import { addProductToCart } from '../../../../redux/slices/cartSlice';
 
 export default function ProductDetail() {
     const [product, setProduct] = useState(null); // Khởi tạo là null thay vì mảng rỗng
@@ -13,9 +15,53 @@ export default function ProductDetail() {
     const [error, setError] = useState(null);
     const [activeButton, setActiveButton] = useState('descript');
     const [selectedImage, setSelectedImage] = useState('');
+    const [quantity, setQuantity] = useState(1);
 
     const { productID } = useParams()
     const dispatch = useDispatch()
+    //--------------------------------------------------------------------------
+    const [isPending, startTransition] = useTransition();
+    const [activeLink, setActiveLink] = useState('');
+    const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
+    const navigate = useNavigate();
+    //const dispatch = useDispatch()
+
+    // Lấy thông tin người dùng từ Redux Store
+    const user = useSelector((state) => state.auth);
+    console.log("user in PRODUCTDETAIL: ", user);
+    const userDataStatus = useSelector((state) => state.auth.data);
+
+    var userToken;
+    var userData;
+    useEffect(() => {
+        console.log("user.data.token: ", user.data?.token);
+        if (user.data !== null) {
+            userToken = user.data?.token;
+
+        } if (user.status === IDLE && user.data !== null) {
+            userToken = user.data;
+        }
+        console.log("userToken in PRODUCTDETAIL: ", userToken);
+        console.log("user.data in PRODUCTDETAIL: ", user.data);
+
+
+        const fetchUserInfo = async () => {
+            try {
+                userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
+                console.log("userData after verify token: ", userData);
+
+                setUserInfo(userData); // Lưu thông tin user vào state
+                console.log("userData after SETUSERINFO: ", userData);
+                //userData.data -> lấy ra userInfo
+            } catch (error) {
+                console.error("Error verifying token: ", error);
+            }
+        };
+        fetchUserInfo(); // Gọi API lấy thông tin người dùng
+    }, [user.data]); //user.data là thông tin người dùng
+    //--------------------------------------------------------------------------
+    console.log("USSEERR: ", userInfo?.data); //->.accountID
+    //lần đầu & sau khi load lại trang: thông tin user -> userInfo?.data
 
     useEffect(() => {
         const fetchProductDetail = async () => {
@@ -45,6 +91,27 @@ export default function ProductDetail() {
         }).format(amount);
     };
 
+    const handleIncreaseQuantity = () => {
+        setQuantity(prevQuantity => prevQuantity + 1);
+    };
+
+    const handleDecreaseQuantity = () => {
+        setQuantity(prevQuantity => prevQuantity > 1 ? prevQuantity - 1 : 1);
+    };
+
+    const handleAddToCart = () => {
+        if (userInfo?.data?.accountID && product.productID) {
+            dispatch(addProductToCart({
+                accountID: userInfo.data.accountID,
+                productID: product.productID,
+                quantity: quantity
+            }));
+        } else {
+            console.error("Missing accountID or productID");
+            // Có thể thêm thông báo lỗi cho người dùng ở đây
+        }
+    };
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!product) return <div>Product not found</div>;
@@ -54,11 +121,11 @@ export default function ProductDetail() {
             <div className="container mt-4 pb-4" style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
                 <div className="row">
                     <div className="col-md-6 mt-4 " key={product.productID}>
-                        <img style={{ objectFit: 'contain', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', borderRadius: '10px', height:'300px', width:'100%' }} src={selectedImage} alt={product.name} className="img-fluid" />
+                        <img style={{ objectFit: 'contain', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', borderRadius: '10px', height: '300px', width: '100%' }} src={selectedImage} alt={product.name} className="img-fluid" />
                         <div className="row mt-4">
                             {product.images.map((image, index) => (
                                 <div className="col-3 pr-0 mb-2 product-detail-subimg" key={index}>
-                                    <img src={image.url} alt={`Image ${index + 1}`} className="img-fluid" style={{ objectFit: 'contain', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', borderRadius: '10px', height:'150px', width:'100%' }} onClick={() => setSelectedImage(image.url)} />
+                                    <img src={image.url} alt={`Image ${index + 1}`} className="img-fluid" style={{ objectFit: 'contain', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', borderRadius: '10px', height: '150px', width: '100%' }} onClick={() => setSelectedImage(image.url)} />
                                 </div>
                             ))}
                         </div>
@@ -76,7 +143,44 @@ export default function ProductDetail() {
                             </div>
                         </div>
                         <h3 style={{ color: '#B43F3F' }}>{formatCurrency(product.price)}</h3>
-                        <button className="btn btn-block mb-2 atc-btn" onClick={() => dispatch(addProduct(product))}>Add to cart</button>
+
+                        <div className="form-group">
+                            <label htmlFor="quantity">Quantity:</label>
+                            <div className="input-group" style={{ width: '150px' }}>
+                                <div className="input-group-prepend">
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        type="button"
+                                        onClick={handleDecreaseQuantity}
+                                    >
+                                        -
+                                    </button>
+                                </div>
+                                <input
+                                    type="text"
+                                    className="form-control text-center"
+                                    style={{ backgroundColor: 'white' }}
+                                    value={quantity}
+                                    readOnly
+                                />
+                                <div className="input-group-append">
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        type="button"
+                                        onClick={handleIncreaseQuantity}
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button 
+                            className="btn btn-block mb-2 atc-btn" 
+                            onClick={handleAddToCart}
+                        >
+                            Add to cart
+                        </button>
                     </div>
                 </div>
             </div>
