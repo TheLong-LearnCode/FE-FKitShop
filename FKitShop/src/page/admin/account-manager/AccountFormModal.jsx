@@ -13,7 +13,7 @@ export default function AccountFormModal({
   handleCloseActivateModal,
   handleSubmit,
   handleConfirmDelete,
-  confirmActivate // Xử lý xác nhận xóa
+  handleConfirmActivate,
 }) {
   return (
     <>
@@ -166,7 +166,7 @@ export default function AccountFormModal({
           <Button variant="secondary" onClick={handleCloseActivateModal}>
             Cancel
           </Button>
-          <Button variant="success" onClick={confirmActivate}>
+          <Button variant="success" onClick={handleConfirmActivate}>
             Activate
           </Button>
         </Modal.Footer>

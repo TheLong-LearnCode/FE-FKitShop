@@ -7,10 +7,10 @@ import {
   updateAccount,
   deleteAccount,
   activateAccount
-} from "../../../service/crudUser";
+} from "../../../service/userService";
 import AccountTable from "./AccountTable";
 import AccountFormModal from "./AccountFormModal";
-import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
+import { Notification } from "../../../util/Notification";
 
 export default function AccountManager() {
   const [users, setUsers] = useState([]);
@@ -20,7 +20,9 @@ export default function AccountManager() {
   const [selectedUser, setSelectedUser] = useState(null); // To store selected user data for view/edit
   const [showModal, setShowModal] = useState(false); // Control modal visibility for form
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Control modal visibility for delete
+  const [showActivateModal, setShowActivateModal] = useState(false); // Control modal visibility for activate
   const [userToDelete, setUserToDelete] = useState(null); // Store user to be deleted
+  const [userToActivate, setUserToActivate] = useState(null); // Store user to be activated
   const usersPerPage = 5;
 
   useEffect(() => {
@@ -101,6 +103,7 @@ export default function AccountManager() {
       Notification("Error activating user", "", 4, "warning");
     } finally {
       setShowActivateModal(false); // Close the modal after activation
+      setUserToActivate(null); // Clear the user to be activated
     }
   };
 
@@ -124,6 +127,10 @@ export default function AccountManager() {
   const handleCloseModal = () => {
     setShowModal(false);
     setMode("list"); // Go back to list view
+  };
+
+  const handleCloseActivateModal = () => {
+    setShowActivateModal(false);
   };
 
   const handleCloseDeleteModal = () => {
@@ -191,6 +198,7 @@ export default function AccountManager() {
         handleView={handleView}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
+        handleActivate={handleActivate}
         handleNext={handleNext}
         handlePrevious={handlePrevious}
       />
@@ -201,10 +209,13 @@ export default function AccountManager() {
         showModal={showModal}
         admins={admins} // Truyền danh sách admin xuống modal
         showDeleteModal={showDeleteModal} // Trạng thái hiển thị modal xóa
+        showActivateModal={showActivateModal}
         handleCloseModal={handleCloseModal}
         handleCloseDeleteModal={handleCloseDeleteModal} // Đóng modal xóa
+        handleCloseActivateModal={handleCloseActivateModal}
         handleSubmit={handleSubmit}
         handleConfirmDelete={confirmDelete} // Xử lý xóa
+        handleConfirmActivate={confirmActivate}
       />
     </Container>
   );

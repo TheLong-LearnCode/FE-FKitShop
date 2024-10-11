@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import styles from './index.module.css';
 import Validator from '../../Validator'; // Ensure this import points to the correct path
 import { PASSWORD_LENGTH } from '../../../constants/fomConstrant';
-import { updatePassword } from '../../../service/crudUser';
+import { updatePassword } from '../../../service/userService';
 import { Notification } from '../UpdateAccount/Notification';
 
 

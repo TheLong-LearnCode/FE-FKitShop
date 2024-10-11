@@ -3,7 +3,7 @@ import Validator from "../../Validator";
 import styles from './index.module.css';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import { getUserByAccountID, updateUser } from '../../../service/crudUser';
+import { getUserByAccountID, updateUser } from '../../../service/userService';
 import Warning from './Warning';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
