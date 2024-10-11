@@ -97,13 +97,13 @@ export default function AccountTable({
                   Edit
                 </Button>
                 {user.status === 1 ? (
-                  <Button variant="danger" onClick={() => handleActivate(user)}>
+                  <Button variant="danger" onClick={() => handleDelete(user)}>
                     Delete
                   </Button>
                 ) : (
                   <Button
                     variant="success"
-                    onClick={() => handleDelete(user)}
+                    onClick={() => handleActivate(user)}
                   >
                     Activate
                   </Button>

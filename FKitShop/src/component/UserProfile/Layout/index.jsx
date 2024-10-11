@@ -11,7 +11,7 @@ import { verifyToken } from '../../../service/authUser';
 import { setUser } from '../../../redux/slices/authSlice'; // Import the action to set user info
 import { IDLE, SUCCESSFULLY } from '../../../redux/constants/status';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getUserByAccountID } from '../../../service/crudUser';
+import { getUserByAccountID } from '../../../service/userService';
 
 export default function UserProfile() {
     const [activeTab, setActiveTab] = useState('information'); // State to manage the active tab
