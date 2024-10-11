@@ -96,6 +96,7 @@ export default function AccountManager() {
     try {
       const response = await activateAccount(userToActivate.accountID);
       Notification("User has been activated", "", 4, "success");
+      //Notification("response.message", "", 4, "success");
       const updatedResponse = await getAllAccounts();
       setUsers(updatedResponse.data);
     } catch (error) {
