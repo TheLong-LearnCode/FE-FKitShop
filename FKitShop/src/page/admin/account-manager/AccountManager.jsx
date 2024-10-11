@@ -175,6 +175,10 @@ export default function AccountManager() {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   return (
     <Container fluid>
       <h2 className="my-4">
@@ -182,10 +186,10 @@ export default function AccountManager() {
       </h2>
       <Row className="mb-3">
         <Col className="d-flex justify-content-end">
-          <Button variant="success" className="mr-1">
+          <Button variant="outline-success" className="mr-1">
             <box-icon name="export"></box-icon> Export
           </Button>
-          <Button variant="info" onClick={handleAddNew}>
+          <Button variant="outline-info" onClick={handleAddNew}>
             <box-icon name="plus"></box-icon> Add New
           </Button>
         </Col>
@@ -201,6 +205,7 @@ export default function AccountManager() {
         handleActivate={handleActivate}
         handleNext={handleNext}
         handlePrevious={handlePrevious}
+        onPageChange={handlePageChange}
       />
 
       <AccountFormModal

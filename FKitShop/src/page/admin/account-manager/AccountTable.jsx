@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Table, Button } from "react-bootstrap";
+import Pagination from "../../../util/Pagination";
 
 export default function AccountTable({
   users,
@@ -9,26 +10,22 @@ export default function AccountTable({
   handleEdit,
   handleDelete,
   handleActivate,
-  handlePrevious,
-  handleNext,
+  onPageChange,
 }) {
-  const [sortColumn, setSortColumn] = useState("fullName"); // Cột đang được sắp xếp
-  const [sortOrder, setSortOrder] = useState("asc"); // Thứ tự sắp xếp ('asc' hoặc 'desc')
+  const [sortColumn, setSortColumn] = useState("fullName");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
 
-  // Hàm xử lý việc sắp xếp
   const handleSort = (column) => {
-    const newSortOrder =
-      sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
+    const newSortOrder = sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
     setSortColumn(column);
     setSortOrder(newSortOrder);
   };
 
-  // Hàm sắp xếp theo cột và thứ tự
   const sortedUsers = [...users].sort((a, b) => {
-    let aValue = a[sortColumn]?.toLowerCase() || ""; // Giả sử `fullName` và `email` đều là chuỗi
+    let aValue = a[sortColumn]?.toLowerCase() || "";
     let bValue = b[sortColumn]?.toLowerCase() || "";
 
     if (sortOrder === "asc") {
@@ -40,25 +37,20 @@ export default function AccountTable({
 
   const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
 
+  // Tạo một mảng các item trống để điền vào trang cuối cùng nếu cần
+  const emptyItems = Array(Math.max(0, usersPerPage - currentUsers.length)).fill(null);
+
   return (
     <>
       <Table striped bordered hover responsive>
         <thead style={{ backgroundColor: "var(--forth-color)" }}>
           <tr>
             <th>No</th>
-            <th
-              onClick={() => handleSort("fullName")}
-              style={{ cursor: "pointer" }}
-            >
-              Full Name{" "}
-              {sortColumn === "fullName" && (sortOrder === "asc" ? "▲" : "▼")}
+            <th onClick={() => handleSort("fullName")} style={{ cursor: "pointer" }}>
+              Full Name {sortColumn === "fullName" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
-            <th
-              onClick={() => handleSort("email")}
-              style={{ cursor: "pointer" }}
-            >
-              Email{" "}
-              {sortColumn === "email" && (sortOrder === "asc" ? "▲" : "▼")}
+            <th onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
+              Email {sortColumn === "email" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
             <th>Role</th>
             <th>Status</th>
@@ -82,54 +74,37 @@ export default function AccountTable({
                   : "Unknown"}
               </td>
               <td>
-                <Button
-                  variant="primary"
-                  className="mr-1"
-                  onClick={() => handleView(user)}
-                >
+                <Button variant="outline-primary" className="mr-1" onClick={() => handleView(user)}>
                   View
                 </Button>
-                <Button
-                  variant="warning"
-                  className="mr-1"
-                  onClick={() => handleEdit(user)}
-                >
+                <Button variant="outline-warning" className="mr-1" onClick={() => handleEdit(user)}>
                   Edit
                 </Button>
                 {user.status === 1 ? (
-                  <Button variant="danger" onClick={() => handleDelete(user)}>
+                  <Button variant="outline-danger" onClick={() => handleDelete(user)}>
                     Delete
                   </Button>
                 ) : (
-                  <Button
-                    variant="success"
-                    onClick={() => handleActivate(user)}
-                  >
+                  <Button variant="outline-success" onClick={() => handleActivate(user)}>
                     Activate
                   </Button>
                 )}
               </td>
             </tr>
           ))}
+          {emptyItems.map((_, index) => (
+            <tr key={`empty-${index}`}>
+              <td colSpan="6">&nbsp;</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
-      <div className="d-flex justify-content-end">
-        <Button
-          variant="secondary"
-          onClick={handlePrevious}
-          disabled={currentPage === 1}
-          className="mr-1"
-        >
-          Previous
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={handleNext}
-          disabled={currentPage >= Math.ceil(users.length / usersPerPage)}
-        >
-          Next
-        </Button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={users.length}
+        itemsPerPage={usersPerPage}
+        onPageChange={onPageChange}
+      />
     </>
   );
 }

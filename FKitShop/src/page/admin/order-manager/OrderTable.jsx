@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Table, Button } from "react-bootstrap";
+import { formatCurrency } from "../../../util/CurrencyUnit";
+import Pagination from "../../../util/Pagination";
 
 export default function OrderTable({
   orders,
+  orderDetails,
   currentPage,
   ordersPerPage,
-  handleViewOrder,
+  handleViewOrderDetails,
   handleDelete,
-  handlePrevious,
-  handleNext,
+  onPageChange,
 }) {
   const [sortColumn, setSortColumn] = useState("orderDate");
   const [sortOrder, setSortOrder] = useState("desc");
@@ -21,7 +23,7 @@ export default function OrderTable({
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
   };
 
-  const sortedOrders = Array.isArray(orders) 
+  const sortedOrders = Array.isArray(orders)
     ? [...orders].sort((a, b) => {
         const aValue = a[sortColumn];
         const bValue = b[sortColumn];
@@ -38,6 +40,9 @@ export default function OrderTable({
 
   const currentOrders = sortedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
 
+  // Tạo một mảng các item trống để điền vào trang cuối cùng nếu cần
+  const emptyItems = Array(Math.max(0, ordersPerPage - currentOrders.length)).fill(null);
+
   if (!Array.isArray(orders) || orders.length === 0) {
     return <p>No orders available.</p>;
   }
@@ -49,15 +54,27 @@ export default function OrderTable({
           <tr>
             <th>No</th>
             <th>Order ID</th>
-            <th>Customer ID</th>
-            <th onClick={() => handleSort("totalPrice")} style={{ cursor: "pointer" }}>
-              Total Price {sortColumn === "totalPrice" && (sortOrder === "asc" ? "▲" : "▼")}
+            <th>Customer Name</th>
+            <th
+              onClick={() => handleSort("totalPrice")}
+              style={{ cursor: "pointer" }}
+            >
+              Total Price{" "}
+              {sortColumn === "totalPrice" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
-            <th onClick={() => handleSort("orderDate")} style={{ cursor: "pointer" }}>
-              Order Date {sortColumn === "orderDate" && (sortOrder === "asc" ? "▲" : "▼")}
+            <th
+              onClick={() => handleSort("orderDate")}
+              style={{ cursor: "pointer" }}
+            >
+              Order Date{" "}
+              {sortColumn === "orderDate" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
-            <th onClick={() => handleSort("status")} style={{ cursor: "pointer" }}>
-              Status {sortColumn === "status" && (sortOrder === "asc" ? "▲" : "▼")}
+            <th
+              onClick={() => handleSort("status")}
+              style={{ cursor: "pointer" }}
+            >
+              Status{" "}
+              {sortColumn === "status" && (sortOrder === "asc" ? "▲" : "▼")}
             </th>
             <th>Actions</th>
           </tr>
@@ -67,16 +84,20 @@ export default function OrderTable({
             <tr key={order.ordersID}>
               <td>{indexOfFirstOrder + index + 1}</td>
               <td>{order.ordersID}</td>
-              <td>{order.accountID}</td>
-              <td>{order.totalPrice}</td>
+              <td>{order.name}</td>
+              <td>{formatCurrency(order.totalPrice)}</td>
               <td>{new Date(order.orderDate).toLocaleDateString()}</td>
               <td>{order.status}</td>
               <td>
-                <Button variant="primary" onClick={() => handleViewOrder(order)}>
+                <Button
+                  variant="outline-info"
+                  onClick={() => handleViewOrderDetails(order, orderDetails)}
+                  className="mr-1"
+                >
                   View
                 </Button>
                 <Button
-                  variant="danger"
+                  variant="outline-danger"
                   onClick={() => handleDelete(order)}
                   disabled={order.status === "Canceled"}
                 >
@@ -85,16 +106,19 @@ export default function OrderTable({
               </td>
             </tr>
           ))}
+          {emptyItems.map((_, index) => (
+            <tr key={`empty-${index}`}>
+              <td colSpan="7">&nbsp;</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
-      <div className="d-flex justify-content-between">
-        <Button onClick={handlePrevious} disabled={currentPage === 1}>
-          Previous
-        </Button>
-        <Button onClick={handleNext} disabled={indexOfLastOrder >= orders.length}>
-          Next
-        </Button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={orders.length}
+        itemsPerPage={ordersPerPage}
+        onPageChange={onPageChange}
+      />
     </>
   );
 }

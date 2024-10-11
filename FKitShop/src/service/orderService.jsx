@@ -25,8 +25,7 @@ export const checkOutOrder = async (ordersRequest, orderDetailsRequest) => {
 export const getOrdersByAccountID = async(id) =>{
     try {
         const response = await api[GET](`/orders/find/${id}`);
-        console.log("response: ", response);
-        return response.data.orderDetails;
+        return response.data;
     } catch (error) {
         console.log("Error: " + error);
         
