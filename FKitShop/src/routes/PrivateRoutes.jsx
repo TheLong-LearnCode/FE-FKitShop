@@ -2,7 +2,7 @@ import React from "react";
 import LazyLoader from "../component/LazyLoader/index.jsx";
 import UserLayout from "../layouts/user/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
-import { ROLE_ADMIN } from "../constants/role";
+//import { ROLE_ADMIN } from "../constants/role";
 import OrderView from "../page/user/order/OrderView.jsx";
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
@@ -11,12 +11,14 @@ const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
 const AccountPage = React.lazy(() =>
   import("../page/admin/account-manager/AccountManager.jsx")
 );
-const OrderPage = React.lazy(() => import("../page/admin/order-manager/OrderManager.jsx"));
+const OrderPage = React.lazy(() =>
+  import("../page/admin/order-manager/OrderManager.jsx")
+);
 
 const CategoryPage = React.lazy(() => import("../page/admin/category-manager"));
 const ProductPage = React.lazy(() => import("../page/admin/product-manager"));
 const DeliveryPage = React.lazy(() => import("../page/admin/delivery-manager"));
-const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
+const LabPage = React.lazy(() => import("../page/admin/Support/SupportManager.jsx"));
 const LabGuidePage = React.lazy(() => import("../page/admin/labGuide-manager"));
 const FeedbackPage = React.lazy(() => import("../page/admin/feedback-manager"));
 
@@ -41,22 +43,36 @@ const PrivateRoutes = [
         element: <LazyLoader children={<AccountPage />} />,
       },
       {
-        path: "category-manager",
-        element: <LazyLoader children={<CategoryPage />} />,
+        path: "order-manager",
+        element: <LazyLoader children={<OrderPage />} />,
       },
-      {
-        path: "product-manager",
-        element: <LazyLoader children={<ProductPage />} />,
+      // Thay đổi đường dẫn cho product và category
+      { //all kit lab component
+        path: "overall-manager",
+        children: [
+          {
+            path: "product-manager",
+            element: <LazyLoader children={<ProductPage />} />,
+          },
+          {
+            path: "category-manager",
+            element: <LazyLoader children={<CategoryPage />} />,
+          },
+          {
+            path: "category-manager",
+            element: <LazyLoader children={<CategoryPage />} />,
+          },
+          {
+            path: "category-manager",
+            element: <LazyLoader children={<CategoryPage />} />,
+          },
+        ],
       },
       {
         path: "delivery-manager",
         element: <LazyLoader children={<DeliveryPage />} />,
       },
-      {
-        path: "order-manager",
-        element: <LazyLoader children={<OrderPage />} />,
-      },
-      { path: "lab-manager", element: <LazyLoader children={<LabPage />} /> },
+      { path: "lab-support", element: <LazyLoader children={<LabPage />} /> },
       {
         path: "labGuide-manager",
         element: <LazyLoader children={<LabGuidePage />} />,
@@ -78,10 +94,10 @@ const PrivateRoutes = [
       { path: "myLab", element: <UserProfilePage /> },
     ],
   },
-    {
-        path: "/order",
-        element: <OrderView/>,
-    },
+  {
+    path: "/order",
+    element: <OrderView />,
+  },
 ];
 
 export default PrivateRoutes;

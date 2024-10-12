@@ -82,6 +82,7 @@ export default function AccountManager() {
   };
 
   // Hàm này sẽ mở modal xác nhận xóa
+  
   const handleDelete = (user) => {
     setUserToDelete(user); // Lưu thông tin user cần xóa
     setShowDeleteModal(true); // Hiển thị modal xác nhận
@@ -109,6 +110,7 @@ export default function AccountManager() {
   };
 
   // Xử lý xóa sau khi người dùng xác nhận
+
   const confirmDelete = async () => {
     try {
       const response = await deleteAccount(userToDelete.accountID); // Gọi API xóa
@@ -214,14 +216,16 @@ export default function AccountManager() {
         selectedUser={selectedUser}
         showModal={showModal}
         admins={admins} // Truyền danh sách admin xuống modal
-        showDeleteModal={showDeleteModal} // Trạng thái hiển thị modal xóa
+        showDeleteModal={showDeleteModal}
+        userToDelete={userToDelete}
+        handleCloseDeleteModal={handleCloseDeleteModal}
+        handleConfirmDelete={confirmDelete}
         showActivateModal={showActivateModal}
+        handleConfirmActivate={confirmActivate}
+        userToActivate={userToActivate}
         handleCloseModal={handleCloseModal}
-        handleCloseDeleteModal={handleCloseDeleteModal} // Đóng modal xóa
         handleCloseActivateModal={handleCloseActivateModal}
         handleSubmit={handleSubmit}
-        handleConfirmDelete={confirmDelete} // Xử lý xóa
-        handleConfirmActivate={confirmActivate}
       />
     </Container>
   );

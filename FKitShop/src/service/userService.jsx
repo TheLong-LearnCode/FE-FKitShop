@@ -26,7 +26,6 @@ export const updateUser = async (user, id) => {
       throw new Error("Failed to update account");
     }
   } catch (error) {
-    console.log("error in updateUser: ", error);
     throw error;
   }
 };

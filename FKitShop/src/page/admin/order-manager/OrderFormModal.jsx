@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Modal, Button, Table, Row, Col } from "react-bootstrap";
 import { formatCurrency } from "../../../util/CurrencyUnit";
 import { getModalHeaderMode } from "../../../util/GetModalHeaderMode";
-import Pagination from "../../../util/Pagination";
 
 export default function OrderFormModal({
   mode,
@@ -38,8 +37,8 @@ export default function OrderFormModal({
   const currentItems = selectedOrderDetails.slice(indexOfFirstItem, indexOfLastItem);
   const emptyItems = Array(Math.max(0, itemsPerPage - currentItems.length)).fill(null);
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+  const onPageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -71,7 +70,6 @@ export default function OrderFormModal({
             <p><strong>Customer ID:</strong> {accountID}</p>
             <p><strong>Name:</strong> {name}</p>
             <p><strong>Phone Number:</strong> {phoneNumber}</p>
-            
           </Col>
         </Row>
 
@@ -109,11 +107,13 @@ export default function OrderFormModal({
         </Table>
       </Modal.Body>
       <Modal.Footer>
-        <Pagination
-          currentPage={currentPage}
-          totalItems={selectedOrderDetails.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
+        <Table
+          pagination={{
+            current: currentPage,
+            pageSize: itemsPerPage,
+            total: selectedOrderDetails.length,
+            onChange: onPageChange,
+          }}
         />
       </Modal.Footer>
     </Modal>

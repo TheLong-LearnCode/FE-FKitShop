@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { cancelOrder, getAllOrders, getOrdersByAccountID } from "../../../service/orderService";
+import {
+  cancelOrder,
+  getAllOrders,
+  getOrderDetailsByOrderID,
+  //getOrdersByAccountID,
+  updateOrderStatus,
+} from "../../../service/orderService";
 import OrderTable from "./OrderTable";
 import OrderFormModal from "./OrderFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
-import { getUserByAccountID } from "../../../service/userService";
+//import { getUserByAccountID } from "../../../service/userService";
 
 export default function OrderManager() {
   const [orders, setOrders] = useState([]);
@@ -55,17 +61,25 @@ export default function OrderManager() {
     setSelectedOrderDetails([]);
   };
 
+  const handleUpdateOrderStatus = async (order, status) => {
+    try {
+      const response = await updateOrderStatus(order.ordersID, status);
+      console.log("RESPONSE", response);
+      Notification(response.message, "", 4, "success");
+      fetchAllOrders();
+    } catch (error) {
+      console.log("ERROR", error);
+      Notification(error.response.data.message, "", 4, "warning");
+    }
+  };
+
   const handleViewOrderDetails = (order, orderDetails) => {
     const accID = order.accountID;
     const fetchOrderDetails = async () => {
       try {
-        const response = await getOrdersByAccountID(accID);
-        const array_Order_OrderDetails = response.data;
-        array_Order_OrderDetails.forEach(item => {
-          item.orderDetails.forEach(orderDetail => {
-            orderDetails.push(orderDetail);
-          })
-        })
+        //BY ORDER ID
+        const response = await getOrderDetailsByOrderID(order.ordersID);
+        orderDetails = response.data;
         setSelectedOrderDetails(orderDetails);
         setSelectedOrder(order);
       } catch (error) {
@@ -107,6 +121,7 @@ export default function OrderManager() {
         currentPage={currentPage}
         ordersPerPage={ordersPerPage}
         handleViewOrderDetails={handleViewOrderDetails}
+        handleUpdateOrderStatus={handleUpdateOrderStatus}
         handleDelete={handleDelete}
         handleNext={handleNext}
         handlePrevious={handlePrevious}

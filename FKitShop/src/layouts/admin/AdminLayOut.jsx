@@ -1,45 +1,39 @@
-import React, { useEffect } from "react";
-import HeaderLayout from "./header";
-import MenuLayout from "./menu";
+import React, { useState } from "react";
+import { Layout, Button } from "antd";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import Menu from "./menu";
 import { Outlet } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
-import { loadUserFromCookie, verifyToken } from "../../service/authUser";
-import { Col, Container, Row } from "react-bootstrap";
 
-export default function AdminLayOut() {
-  const dispatch = useDispatch();
+const { Header, Sider, Content } = Layout;
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = Cookies.get("token");
-      dispatch(loadUserFromCookie(token));
-      console.log("token in UserLayout", token);
-      try {
-        const response = await verifyToken(token);
-        console.log("RESULTT IN USERLAYOUT: ", response);
-        const userRole = response.data.role;
-        console.log("USERROLE IN USERLAYOUT: ", userRole);
-      } catch (error) {
-        console.error("Error verifying token:", error);
-      }
-    };
+const AdminLayout = () => {
+  const [collapsed, setCollapsed] = useState(false);
 
-    fetchUserData();
-  }, [dispatch]);
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
 
   return (
-    <Container fluid>
-      <Row>
-        <Col lg={3} className="menu-layout">
-          <MenuLayout />
-        </Col>
-        <Col lg={9}>
-          <HeaderLayout className="content-layout" />
-          <hr style={{ borderTop: "2px solid black", margin: "20px 0" }} />
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
+        <div className="logo" style={{ height: "32px", margin: "16px", background: "rgba(255, 255, 255, 0.3)" }} />
+        <Menu />
+      </Sider>
+      <Layout>
+        <Header style={{ padding: 0, background: "#fff" }}>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={toggleCollapsed}
+            style={{ fontSize: "16px", width: 64, height: 64 }}
+          />
+        </Header>
+        <Content style={{ margin: "24px 16px", padding: 24, minHeight: 280, background: "#fff" }}>
           <Outlet />
-        </Col>
-      </Row>
-    </Container>
+        </Content>
+      </Layout>
+    </Layout>
   );
-}
+};
+
+export default AdminLayout;

@@ -43,7 +43,8 @@ export default function AccountTable({
   return (
     <>
       <Table striped bordered hover responsive>
-        <thead style={{ backgroundColor: "var(--forth-color)" }}>
+        {/* <thead style={{ backgroundColor: "var(--forth-color)" }}> */}
+        <thead>
           <tr>
             <th>No</th>
             <th onClick={() => handleSort("fullName")} style={{ cursor: "pointer" }}>

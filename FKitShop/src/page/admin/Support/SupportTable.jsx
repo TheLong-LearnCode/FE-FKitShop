@@ -1,49 +1,46 @@
 import React from "react";
 import { Table, Button, Dropdown, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { formatCurrency } from "../../../util/CurrencyUnit";
 
-export default function OrderTable({
-  orders,
+export default function SupportTable({
+  supports,
   currentPage,
-  ordersPerPage,
-  handleViewOrderDetails,
-  handleUpdateOrderStatus,
+  supportsPerPage,
+  handleViewSupportDetails,
+  handleUpdateSupportStatus,
   handleDelete,
   onPageChange,
 }) {
-  const statusOptions = ["pending", "in-progress", "delivering", "delivered", "canceled"];
+  const statusOptions = ["pending", "in-progress", "resolved", "closed"];
 
   const columns = [
     {
       title: "No",
       dataIndex: "index",
       key: "index",
-      render: (_, __, index) => (currentPage - 1) * ordersPerPage + index + 1,
+      render: (_, __, index) => (currentPage - 1) * supportsPerPage + index + 1,
     },
     {
-      title: "Order ID",
-      dataIndex: "ordersID",
-      key: "ordersID",
+      title: "Support ID",
+      dataIndex: "supportID",
+      key: "supportID",
     },
     {
       title: "Customer Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "customerName",
+      key: "customerName",
     },
     {
-      title: "Total Price",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-      render: (price) => formatCurrency(price),
-      sorter: (a, b) => a.totalPrice - b.totalPrice,
+      title: "Support Type",
+      dataIndex: "supportType",
+      key: "supportType",
     },
     {
-      title: "Order Date",
-      dataIndex: "orderDate",
-      key: "orderDate",
+      title: "Request Date",
+      dataIndex: "requestDate",
+      key: "requestDate",
       render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) => new Date(a.orderDate) - new Date(b.orderDate),
+      sorter: (a, b) => new Date(a.requestDate) - new Date(b.requestDate),
     },
     {
       title: "Status",
@@ -56,7 +53,7 @@ export default function OrderTable({
       key: "actions",
       render: (_, record) => (
         <>
-          <Button type="primary" onClick={() => handleViewOrderDetails(record)} style={{ marginRight: 8 }}>
+          <Button type="primary" onClick={() => handleViewSupportDetails(record)} style={{ marginRight: 8 }}>
             View
           </Button>
           <Dropdown
@@ -65,7 +62,7 @@ export default function OrderTable({
                 {statusOptions.map((status) => (
                   <Menu.Item
                     key={status}
-                    onClick={() => handleUpdateOrderStatus(record, status)}
+                    onClick={() => handleUpdateSupportStatus(record, status)}
                     disabled={record.status === status}
                   >
                     {status}
@@ -78,8 +75,8 @@ export default function OrderTable({
               Set Status <DownOutlined />
             </Button>
           </Dropdown>
-          <Button danger onClick={() => handleDelete(record)} disabled={record.status === "canceled"} style={{ marginLeft: 8 }}>
-            Cancel
+          <Button danger onClick={() => handleDelete(record)} disabled={record.status === "closed"} style={{ marginLeft: 8 }}>
+            Delete
           </Button>
         </>
       ),
@@ -89,12 +86,12 @@ export default function OrderTable({
   return (
     <Table
       columns={columns}
-      dataSource={orders}
-      rowKey="ordersID"
+      dataSource={supports}
+      rowKey="supportID"
       pagination={{
         current: currentPage,
-        pageSize: ordersPerPage,
-        total: orders.length,
+        pageSize: supportsPerPage,
+        total: supports.length,
         onChange: onPageChange,
       }}
     />
