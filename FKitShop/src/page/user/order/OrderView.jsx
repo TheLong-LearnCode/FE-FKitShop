@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useTransition } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
 import { getProvinces, getDistricts, getWards, calculateShippingFee } from '../../../service/ghnApi.jsx';
 import { IDLE } from '../../../redux/constants/status.js';
@@ -349,6 +349,7 @@ export default function OrderView() {
                             <strong>Total</strong>
                             <strong>{formatCurrency(total)}</strong>
                         </div>
+                        <Link to={"/cart"}><box-icon name='chevrons-left' color='#a49898' ></box-icon> Back to your shopping cart</Link>
                     </div>
                 </div>
             </div>

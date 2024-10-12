@@ -22,7 +22,10 @@
 
 .card-title{
     color: #000F8F;
-    font-size: 0.9rem
+    white-space: nowrap;       
+    overflow: hidden;         
+    text-overflow: ellipsis;  
+    width: 200px; 
 }
 
 .card .price{
