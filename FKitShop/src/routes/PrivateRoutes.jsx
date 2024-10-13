@@ -4,6 +4,7 @@ import UserLayout from "../layouts/user/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
 import { ROLE_ADMIN } from "../constants/role";
 import OrderView from "../page/user/order/OrderView.jsx";
+import OrderSuccess from "../page/user/order/OrderSuccess.jsx";
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
@@ -78,10 +79,15 @@ const PrivateRoutes = [
       { path: "myLab", element: <UserProfilePage /> },
     ],
   },
-    {
-        path: "/order",
-        element: <OrderView/>,
-    },
+  {
+    path: "/order",
+    element: <OrderView />,
+  },
+
+  {
+    path: "/order-success",
+    element: <OrderSuccess />,
+  },
 ];
 
 export default PrivateRoutes;

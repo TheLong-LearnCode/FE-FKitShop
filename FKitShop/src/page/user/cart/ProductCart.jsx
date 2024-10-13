@@ -125,7 +125,7 @@ export default function ProductCart() {
                 <h2 className="mb-4 text-center">Your Shopping Cart</h2>
                 {cartProducts.length === 0 ? (
                     <div className="text-center py-5 empty-cart">
-                        <h3>Your cart is empty</h3>
+                        <h3 style={{opacity:'0.5'}}>Your cart is empty</h3>
                         <Link to="/" className="btn mt-3">Continue Shopping</Link>
                     </div>
                 ) : (
@@ -145,7 +145,7 @@ export default function ProductCart() {
                                     {cartProducts.map((product) => (
                                         <tr key={product.productID} className='text-center'>
                                             <td>
-                                                <div className='d-flex align-items-center'>
+                                                <div className='d-flex'>
                                                     <img src={product.image} alt={product.name} className='img-thumbnail mr-3' style={{ maxWidth: '100px' }} />
                                                     <h5>{product.name}</h5>
                                                 </div>
