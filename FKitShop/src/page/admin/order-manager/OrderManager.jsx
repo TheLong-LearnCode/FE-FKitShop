@@ -74,7 +74,7 @@ export default function OrderManager() {
   };
 
   const handleViewOrderDetails = (order, orderDetails) => {
-    const accID = order.accountID;
+    //const accID = order.accountID;
     const fetchOrderDetails = async () => {
       try {
         //BY ORDER ID

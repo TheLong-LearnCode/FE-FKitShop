@@ -11,7 +11,7 @@ export default function SupportTable({
   handleDelete,
   onPageChange,
 }) {
-  const statusOptions = ["pending", "in-progress", "resolved", "closed"];
+  const statusOptions = ["received", "approved", "done"];
 
   const columns = [
     {
@@ -21,9 +21,9 @@ export default function SupportTable({
       render: (_, __, index) => (currentPage - 1) * supportsPerPage + index + 1,
     },
     {
-      title: "Support ID",
-      dataIndex: "supportID",
-      key: "supportID",
+      title: "Lab Name",
+      dataIndex: "labName",
+      key: "labName",
     },
     {
       title: "Customer Name",
@@ -31,22 +31,34 @@ export default function SupportTable({
       key: "customerName",
     },
     {
-      title: "Support Type",
-      dataIndex: "supportType",
-      key: "supportType",
+      title: "Available Support",
+      dataIndex: ["supporting", "countSupport"],
+      key: "availableSupport",
     },
     {
       title: "Request Date",
-      dataIndex: "requestDate",
+      dataIndex: ["supporting", "postDate"],
       key: "requestDate",
       render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) => new Date(a.requestDate) - new Date(b.requestDate),
+      sorter: (a, b) => new Date(a.supporting.postDate) - new Date(b.supporting.postDate),
+    },
+    {
+      title: "Expected Date",
+      dataIndex: ["supporting", "expectedSpDate"],
+      key: "expectedDate",
+      render: (date) => date ? new Date(date).toLocaleDateString() : 'N/A',
+      sorter: (a, b) => {
+        if (!a.supporting.expectedSpDate) return -1;
+        if (!b.supporting.expectedSpDate) return 1;
+        return new Date(a.supporting.expectedSpDate) - new Date(b.supporting.expectedSpDate);
+      },
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: ["supporting", "status"],
       key: "status",
-      sorter: (a, b) => a.status.localeCompare(b.status),
+      render: (status) => statusOptions[status] || 'Unknown',
+      sorter: (a, b) => a.supporting.status - b.supporting.status,
     },
     {
       title: "Actions",
@@ -59,11 +71,11 @@ export default function SupportTable({
           <Dropdown
             overlay={
               <Menu>
-                {statusOptions.map((status) => (
+                {statusOptions.map((status, index) => (
                   <Menu.Item
                     key={status}
-                    onClick={() => handleUpdateSupportStatus(record, status)}
-                    disabled={record.status === status}
+                    onClick={() => handleUpdateSupportStatus(record, index)}
+                    disabled={record.supporting.status === index}
                   >
                     {status}
                   </Menu.Item>
@@ -75,7 +87,7 @@ export default function SupportTable({
               Set Status <DownOutlined />
             </Button>
           </Dropdown>
-          <Button danger onClick={() => handleDelete(record)} disabled={record.status === "closed"} style={{ marginLeft: 8 }}>
+          <Button danger onClick={() => handleDelete(record)} disabled={record.supporting.status === 2} style={{ marginLeft: 8 }}>
             Delete
           </Button>
         </>
@@ -87,7 +99,7 @@ export default function SupportTable({
     <Table
       columns={columns}
       dataSource={supports}
-      rowKey="supportID"
+      rowKey={(record) => record.supporting.supportingID}
       pagination={{
         current: currentPage,
         pageSize: supportsPerPage,

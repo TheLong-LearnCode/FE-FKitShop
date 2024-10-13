@@ -1,37 +1,84 @@
-import React, { startTransition } from 'react'
-import { Container, Row, Col, Form, InputGroup, Nav } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import '@fortawesome/fontawesome-free/css/all.min.css'; // Import FontAwesome
-import { logout } from '../../../redux/slices/authSlice';
-import { message } from 'antd';
+import React, { startTransition } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Layout, Input, Space, Badge, Dropdown, Menu } from "antd";
+import {
+  SearchOutlined,
+  BellOutlined,
+  SettingOutlined,
+  UserOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import { logout } from "../../../redux/slices/authSlice";
+import "./index.css"; // Tạo file CSS mới cho header
+
+const { Header } = Layout;
+const { Search } = Input;
+
 export default function HeaderLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     startTransition(() => {
-    dispatch(logout());
-    message.success('Log out successfully!'); // Hiển thị thông báo đăng xuất thành công
-    navigate("/");
+      dispatch(logout());
+      navigate("/");
     });
   };
 
-  return (
-    <header className="d-flex justify-content-between align-items-center p-3 bg-light">
-      {/* Search Bar */}
-      <InputGroup className="w-50" style={{ marginTop: '22px' }}>
-        <InputGroup.Text>
-          <i className="fas fa-search"></i>
-        </InputGroup.Text>
-        <Form.Control type="text" placeholder="Search for..." />
-      </InputGroup>
+  const handleViewProfile = () => {
+    // Implement view profile logic here
+    console.log("View profile clicked");
+  };
 
-      {/* Notification & User Icon */}
-      <div className="d-flex align-items-center">
-        <i className="fas fa-bell mr-3"></i>
-        <i className="fas fa-user" onClick={handleLogout}></i>
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" icon={<UserOutlined />} onClick={handleViewProfile}>
+        View Profile
+      </Menu.Item>
+      <Menu.Item key="2" icon={<LogoutOutlined />} onClick={handleLogout}>
+        Log out
+      </Menu.Item>
+    </Menu>
+  );
+
+  return (
+    <Header
+      className="bg-white"
+      style={{
+        padding: 0,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ flex: 1 }}></div>
+      <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+        <Search
+          placeholder="Search for..."
+          onSearch={(value) => console.log(value)}
+          style={{ width: 300 }}
+          prefix={<SearchOutlined />}
+        />
       </div>
-    </header>
-  )
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "flex-end",
+          marginRight: 16,
+          alignItems: "center",
+        }}
+      >
+        <Space size="large" align="center">
+          <Badge dot>
+            <BellOutlined className="header-icon" style={{ fontSize: 20 }} />
+          </Badge>
+          <Dropdown overlay={menu} placement="bottomRight" trigger={['click']}>
+            <SettingOutlined className="header-icon" style={{ fontSize: 20 }} />
+          </Dropdown>
+        </Space>
+      </div>
+    </Header>
+  );
 }

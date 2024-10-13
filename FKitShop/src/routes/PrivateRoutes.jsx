@@ -18,7 +18,7 @@ const OrderPage = React.lazy(() =>
 const CategoryPage = React.lazy(() => import("../page/admin/category-manager"));
 const ProductPage = React.lazy(() => import("../page/admin/product-manager"));
 const DeliveryPage = React.lazy(() => import("../page/admin/delivery-manager"));
-const LabPage = React.lazy(() => import("../page/admin/Support/SupportManager.jsx"));
+const LabPage = React.lazy(() => import("../page/admin/support-manager/SupportManager.jsx"));
 const LabGuidePage = React.lazy(() => import("../page/admin/labGuide-manager"));
 const FeedbackPage = React.lazy(() => import("../page/admin/feedback-manager"));
 
@@ -48,31 +48,49 @@ const PrivateRoutes = [
       },
       // Thay đổi đường dẫn cho product và category
       { //all kit lab component
-        path: "overall-manager",
+        path: "product-manager",
         children: [
           {
             path: "product-manager",
             element: <LazyLoader children={<ProductPage />} />,
           },
           {
-            path: "category-manager",
+            path: "kit-manager",
             element: <LazyLoader children={<CategoryPage />} />,
           },
           {
-            path: "category-manager",
+            path: "component-manager",
             element: <LazyLoader children={<CategoryPage />} />,
           },
           {
-            path: "category-manager",
+            path: "lab-manager",
             element: <LazyLoader children={<CategoryPage />} />,
           },
         ],
       },
       {
+        path: "category-manager",
+        element: <LazyLoader children={<DeliveryPage />} />,
+      },
+      {
+        path: "tag-manager",
+        element: <LazyLoader children={<DeliveryPage />} />,
+      },
+      {
         path: "delivery-manager",
         element: <LazyLoader children={<DeliveryPage />} />,
       },
-      { path: "lab-support", element: <LazyLoader children={<LabPage />} /> },
+      { path: "lab-support", 
+        children: [
+           {
+            path: "support-manager",
+            element: <LazyLoader children={<LabPage />} />,
+           },
+           {
+            path: "question-manager",
+            element: <LazyLoader children={<LabPage />} />,
+           }
+        ] },
       {
         path: "labGuide-manager",
         element: <LazyLoader children={<LabGuidePage />} />,

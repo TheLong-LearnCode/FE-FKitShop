@@ -3,15 +3,13 @@ import { Container, Row, Col } from "react-bootstrap";
 import SupportTable from "./SupportTable";
 import SupportFormModal from "./SupportFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
-// Import các service cần thiết, ví dụ:
-// import { getAllSupports, getSupportDetailsBySupportID, updateSupportStatus, deleteSupport } from "../../../service/supportService";
+import { getAllSupport, updateSupportStatus } from "../../../service/supportService";
 
 export default function SupportManager() {
   const [supports, setSupports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [mode, setMode] = useState("list");
   const [selectedSupport, setSelectedSupport] = useState(null);
-  const [selectedSupportDetails, setSelectedSupportDetails] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const supportsPerPage = 5;
 
@@ -21,10 +19,13 @@ export default function SupportManager() {
 
   const fetchAllSupports = async () => {
     try {
-      // Thay thế bằng cuộc gọi API thực tế
-      // const response = await getAllSupports();
-      // setSupports(response.data);
-      setSupports([]); // Placeholder
+      const response = await getAllSupport();
+      if (response.data && Array.isArray(response.data)) {
+        setSupports(response.data);
+      }
+      console.log("RESPONSE.DATA: ", response.data);
+      
+      Notification(response.message, "", 4, "success");
     } catch (error) {
       console.error("Error fetching supports:", error);
       Notification("Error fetching supports", "", 4, "error");
@@ -34,38 +35,32 @@ export default function SupportManager() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedSupport(null);
-    setSelectedSupportDetails(null);
   };
 
   const handleUpdateSupportStatus = async (support, status) => {
     try {
-      // Thay thế bằng cuộc gọi API thực tế
-      // await updateSupportStatus(support.id, status);
-      Notification("Support status updated successfully", "", 4, "success");
+      const response = await updateSupportStatus({
+        supportingID: support.supporting.supportingID,
+        status: status,
+      });
+      Notification(response.message, "", 4, "success");
+
       fetchAllSupports();
     } catch (error) {
-      console.error("Error updating support status:", error);
+      console.log("Error updating support status:", error);
       Notification("Error updating support status", "", 4, "warning");
     }
   };
 
-  const handleViewSupportDetails = async (support) => {
-    try {
-      // Thay thế bằng cuộc gọi API thực tế
-      // const response = await getSupportDetailsBySupportID(support.id);
-      // setSelectedSupportDetails(response.data);
-      setSelectedSupport(support);
-      setShowModal(true);
-    } catch (error) {
-      console.error("Error fetching support details:", error);
-      Notification("Error fetching support details", "", 4, "warning");
-    }
+  const handleViewSupportDetails = (support) => {
+    setSelectedSupport(support);
+    setShowModal(true);
   };
 
   const handleDelete = async (support) => {
     try {
-      // Thay thế bằng cuộc gọi API thực tế
-      // await deleteSupport(support.id);
+      // Implement the actual API call here
+      // await deleteSupport(support.supporting.supportingID);
       fetchAllSupports();
       Notification("Support deleted successfully", "", 4, "success");
     } catch (error) {
@@ -100,7 +95,6 @@ export default function SupportManager() {
       <SupportFormModal
         mode={mode}
         selectedSupport={selectedSupport}
-        selectedSupportDetails={selectedSupportDetails}
         showModal={showModal}
         handleCloseModal={handleCloseModal}
       />

@@ -1,7 +1,7 @@
 import "./index.css";
-import React from 'react';
-import { Menu } from 'antd';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Menu } from "antd";
+import { Link } from "react-router-dom";
 import {
   DashboardOutlined,
   UserOutlined,
@@ -10,14 +10,23 @@ import {
   CarOutlined,
   ExperimentOutlined,
   FileTextOutlined,
-  CommentOutlined
-} from '@ant-design/icons';
+  CommentOutlined,
+  TagsOutlined,
+  ProjectOutlined,
+  ToolOutlined,
+  BookOutlined,
+  ApartmentOutlined,
+  FilePdfOutlined,
+  RobotOutlined,
+  QuestionCircleOutlined,
+  CustomerServiceOutlined,
+} from "@ant-design/icons";
 
 const { SubMenu } = Menu;
 
 const AdminMenu = () => {
   return (
-    <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+    <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
       <Menu.Item key="1" icon={<DashboardOutlined />}>
         <Link to="/admin/dashboard">Dashboard</Link>
       </Menu.Item>
@@ -27,36 +36,43 @@ const AdminMenu = () => {
       <Menu.Item key="3" icon={<ShoppingCartOutlined />}>
         <Link to="/admin/order-manager">Order</Link>
       </Menu.Item>
-      <SubMenu key="sub1" icon={<AppstoreOutlined />} title="Product Manager">
-        <Menu.Item key="4">
-          <Link to="/admin/overall-manager/kit-manager">Kit</Link>
+      <SubMenu key="sub1" icon={<ExperimentOutlined />} title="Lab Support" className="dark-submenu">
+        <Menu.Item key="11" icon={<CustomerServiceOutlined />}>
+          <Link to="/admin/lab-support/support-manager">Support</Link>
         </Menu.Item>
-        <Menu.Item key="5">
-          <Link to="/admin/overall-manager/component-manager">Component</Link>
-        </Menu.Item>
-        <Menu.Item key="6">
-          <Link to="/admin/overall-manager/lab-manager">Lab</Link>
+        <Menu.Item key="12" icon={<QuestionCircleOutlined />}>
+          <Link to="/admin/lab-support/question-manager">Question</Link>
         </Menu.Item>
       </SubMenu>
-      <Menu.Item key="4">
-          <Link to="/admin/overall-manager/category-manager">Category</Link>
+      <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Product Manager" className="dark-submenu">
+        <Menu.Item key="4" icon={<ProjectOutlined />}>
+          <Link to="/admin/product-manager/">All</Link>
         </Menu.Item>
-      <Menu.Item key="5">
-          <Link to="/admin/overall-manager/tag-manager">Tag</Link>
+        <Menu.Item key="5" icon={<RobotOutlined />}>
+          <Link to="/admin/product-manager/kit-manager">Kit</Link>
         </Menu.Item>
-      <Menu.Item key="6" icon={<CarOutlined />}>
+        <Menu.Item key="6" icon={<ToolOutlined />}>
+          <Link to="/admin/product-manager/component-manager">Component</Link>
+        </Menu.Item>
+        <Menu.Item key="7" icon={<FilePdfOutlined />}>
+          <Link to="/admin/product-manager/lab-manager">Lab</Link>
+        </Menu.Item>
+      </SubMenu>
+      <Menu.Item key="8" icon={<ApartmentOutlined />}>
+        <Link to="/admin/category-manager">Category</Link>
+      </Menu.Item>
+      <Menu.Item key="9" icon={<TagsOutlined />}>
+        <Link to="/admin/tag-manager">Tag</Link>
+      </Menu.Item>
+      <Menu.Item key="10" icon={<CarOutlined />}>
         <Link to="/admin/delivery-manager">Delivery</Link>
       </Menu.Item>
-      <Menu.Item key="7" icon={<ExperimentOutlined />}>
-        <Link to="/admin/lab-support">Support</Link>
-      </Menu.Item>
-      <Menu.Item key="8" icon={<FileTextOutlined />}>
+      <Menu.Item key="13" icon={<BookOutlined />}>
         <Link to="/admin/labGuide-manager">Lab Guide</Link>
       </Menu.Item>
-      <Menu.Item key="9" icon={<CommentOutlined />}>
+      <Menu.Item key="14" icon={<CommentOutlined />}>
         <Link to="/admin/feedback-manager">Feedback</Link>
       </Menu.Item>
-     
     </Menu>
   );
 };
