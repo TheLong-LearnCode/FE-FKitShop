@@ -3,14 +3,13 @@ import { Container, Row, Col } from "react-bootstrap";
 import SupportTable from "./SupportTable";
 import SupportFormModal from "./SupportFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
-import { getAllSupport, updateSupportStatus, getSupportByAccountIDAndSupportingID } from "../../../service/supportService";
+import { getAllSupport, updateSupportStatus, getSupportByAccountIDAndSupportingID, updateSupportDate } from "../../../service/supportService";
 
 export default function SupportManager() {
   const [supports, setSupports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [mode, setMode] = useState("list");
   const [selectedSupport, setSelectedSupport] = useState(null);
-  const [selectedSupportDetails, setSelectedSupportDetails] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const supportsPerPage = 5;
 
@@ -45,7 +44,6 @@ export default function SupportManager() {
         status: status,
       });
       Notification(response.message, "", 4, "success");
-
       fetchAllSupports();
     } catch (error) {
       console.log("Error updating support status:", error);
@@ -80,6 +78,20 @@ export default function SupportManager() {
     setCurrentPage(newPage);
   };
 
+  const handleUpdateSupportDate = async (support, date) => {
+    try {
+      const response = await updateSupportDate({
+        supportingID: support.supporting.supportingID,
+        date: date.format('YYYY-MM-DD'),
+      });
+      Notification(response.message, "", 4, "success");
+      fetchAllSupports();
+    } catch (error) {
+      console.log("Error updating support date:", error);
+      Notification("Error updating support date", "", 4, "warning");
+    }
+  };
+
   return (
     <Container fluid>
       <h2 className="my-4">
@@ -95,6 +107,7 @@ export default function SupportManager() {
         supportsPerPage={supportsPerPage}
         handleViewSupportDetails={handleViewSupportDetails}
         handleUpdateSupportStatus={handleUpdateSupportStatus}
+        handleUpdateSupportDate={handleUpdateSupportDate}
         handleDelete={handleDelete}
         onPageChange={handlePageChange}
       />
@@ -102,7 +115,6 @@ export default function SupportManager() {
       <SupportFormModal
         mode={mode}
         selectedSupport={selectedSupport}
-        selectedSupportDetails={selectedSupportDetails}
         showModal={showModal}
         handleCloseModal={handleCloseModal}
       />

@@ -53,6 +53,15 @@ export const updateSupportStatus = async (supportInfo) => {
   }
 };
 
+export const updateSupport = async (supportInfo) => {
+  try {
+    const response = await api[PUT]("support/update", supportInfo);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 
 //----------------------------FILTER--------------------------------

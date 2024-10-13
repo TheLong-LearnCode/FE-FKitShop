@@ -1,5 +1,5 @@
-import React from "react";
-import { Table, Button, Dropdown, Menu } from "antd";
+import React, { useState } from "react";
+import { Table, Button, Dropdown, Menu, DatePicker } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 export default function SupportTable({
@@ -8,10 +8,24 @@ export default function SupportTable({
   supportsPerPage,
   handleViewSupportDetails,
   handleUpdateSupportStatus,
+  handleUpdateSupportDate,
   handleDelete,
   onPageChange,
 }) {
+  const [datePickerOpen, setDatePickerOpen] = useState({});
+  const [dropdownOpen, setDropdownOpen] = useState({});
+
   const statusOptions = ["received", "approved", "done"];
+
+  const handleDatePickerOpen = (record, open) => {
+    setDatePickerOpen(prev => ({ ...prev, [record.supporting.supportingID]: open }));
+  };
+
+  const handleDateChange = (record, date) => {
+    handleUpdateSupportDate(record, date);
+    setDatePickerOpen(prev => ({ ...prev, [record.supporting.supportingID]: false }));
+    setDropdownOpen(prev => ({ ...prev, [record.supporting.supportingID]: false }));
+  };
 
   const columns = [
     {
@@ -69,22 +83,39 @@ export default function SupportTable({
             View
           </Button>
           <Dropdown
+            open={dropdownOpen[record.supporting.supportingID]}
+            onOpenChange={(open) => setDropdownOpen(prev => ({ ...prev, [record.supporting.supportingID]: open }))}
             overlay={
               <Menu>
-                {statusOptions.map((status, index) => (
-                  <Menu.Item
-                    key={status}
-                    onClick={() => handleUpdateSupportStatus(record, index)}
-                    disabled={record.supporting.status === index}
-                  >
-                    {status}
-                  </Menu.Item>
-                ))}
+                <Menu.SubMenu key="setStatus" title="Set Status">
+                  {statusOptions.map((status, index) => (
+                    <Menu.Item
+                      key={status}
+                      onClick={() => {
+                        handleUpdateSupportStatus(record, index);
+                        setDropdownOpen(prev => ({ ...prev, [record.supporting.supportingID]: false }));
+                      }}
+                      disabled={record.supporting.status === index}
+                    >
+                      {status}
+                    </Menu.Item>
+                  ))}
+                </Menu.SubMenu>
+                <Menu.Item key="updateDate" onClick={(e) => e.domEvent.stopPropagation()}>
+                  <DatePicker
+                    open={datePickerOpen[record.supporting.supportingID]}
+                    onOpenChange={(open) => handleDatePickerOpen(record, open)}
+                    onChange={(date) => handleDateChange(record, date)}
+                    onClick={(e) => e.stopPropagation()}
+                    placeholder="Update Support Date"
+                  />
+                </Menu.Item>
               </Menu>
             }
+            trigger={['click']}
           >
             <Button>
-              Set Status <DownOutlined />
+              Actions <DownOutlined />
             </Button>
           </Dropdown>
           <Button danger onClick={() => handleDelete(record)} disabled={record.supporting.status === 2} style={{ marginLeft: 8 }}>
