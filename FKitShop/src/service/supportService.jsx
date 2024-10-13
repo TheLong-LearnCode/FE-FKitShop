@@ -83,4 +83,30 @@ export const getSupportByAccountIDAndStatus = async (accountID, status) => {
   }
 };
 
+// Thêm hàm mới này vào cuối file
+export const getSupportByAccountIDAndSupportingID = async (accountID, supportingID) => {
+  try {
+    const response = await api[GET](`support/support-accountID/${accountID}`);
+    const allSupports = response.data;
+    
+    // Lọc ra support detail cụ thể dựa trên supportingID
+    const filteredSupport = allSupports.data.labSupports.find(
+      support => support.supporting.supportingID === supportingID
+    );
+
+    // Tạo đối tượng kết quả mới chỉ chứa support detail được chọn
+    const result = {
+      ...allSupports,
+      data: {
+        ...allSupports.data,
+        labSupports: filteredSupport ? [filteredSupport] : []
+      }
+    };
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
 //------------------------------------------------------------------

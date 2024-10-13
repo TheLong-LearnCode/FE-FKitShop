@@ -3,13 +3,14 @@ import { Container, Row, Col } from "react-bootstrap";
 import SupportTable from "./SupportTable";
 import SupportFormModal from "./SupportFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
-import { getAllSupport, updateSupportStatus } from "../../../service/supportService";
+import { getAllSupport, updateSupportStatus, getSupportByAccountIDAndSupportingID } from "../../../service/supportService";
 
 export default function SupportManager() {
   const [supports, setSupports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [mode, setMode] = useState("list");
   const [selectedSupport, setSelectedSupport] = useState(null);
+  const [selectedSupportDetails, setSelectedSupportDetails] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const supportsPerPage = 5;
 
@@ -52,9 +53,15 @@ export default function SupportManager() {
     }
   };
 
-  const handleViewSupportDetails = (support) => {
-    setSelectedSupport(support);
-    setShowModal(true);
+  const handleViewSupportDetails = async (support) => {
+    try {
+      const response = await getSupportByAccountIDAndSupportingID(support.accountID, support.supporting.supportingID);
+      setSelectedSupport(response);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error fetching support details:", error);
+      Notification("Error fetching support details", "", 4, "error");
+    }
   };
 
   const handleDelete = async (support) => {
@@ -95,6 +102,7 @@ export default function SupportManager() {
       <SupportFormModal
         mode={mode}
         selectedSupport={selectedSupport}
+        selectedSupportDetails={selectedSupportDetails}
         showModal={showModal}
         handleCloseModal={handleCloseModal}
       />

@@ -3,9 +3,14 @@ import './Loading.css';
 
 const Loading = () => (
   <div className="loading-overlay">
-    <div className="loading-content">
-      {/* Hourglass or any loading animation can go here */}
-    </div>
+      <div className="loading-dots">
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+      </div>
+
   </div>
 );
 
