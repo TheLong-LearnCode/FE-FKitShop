@@ -2,9 +2,9 @@ import React, { Suspense } from "react";
 import UserLayout from "../layouts/User/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
 // import { ROLE_ADMIN } from "../constants/role";
-import OrderView from "../page/user/order/OrderView.jsx";
-import OrderSuccess from "../page/user/order/OrderSuccess.jsx";
 
+const OrderSuccessPage = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
+const OrderViewPage = React.lazy(() => import("../page/user/order/OrderView.jsx"));
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
@@ -231,7 +231,7 @@ const PrivateRoutes = [
     path: "/order",
     element: (
       <Suspense fallback={null}>
-        <OrderView />
+        <OrderViewPage />
       </Suspense>
     ),
   },
@@ -239,7 +239,7 @@ const PrivateRoutes = [
     path: "/order-success",
     element: (
       <Suspense fallback={null}>
-        <OrderSuccess />
+        <OrderSuccessPage />
       </Suspense>
     ),
   },
