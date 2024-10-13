@@ -108,3 +108,4 @@ export const activateAccount = async (id) => {
     throw error;
   }
 };
+
