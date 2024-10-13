@@ -35,3 +35,39 @@
   
 
   
+.ant-menu-item-selected {
+  background-color: #1890ff !important;
+}
+
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  color: #1890ff !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected .ant-menu-item-icon,
+.ant-menu-dark .ant-menu-item-selected .anticon {
+  color: #fff !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected .ant-menu-title-content {
+  color: #fff !important;
+}
+
+.ant-layout-sider-children {
+  background: #001529;
+}
+
+/* Remove underline on hover for menu items */
+.ant-menu-item a:hover,
+.ant-menu-item-selected a:hover {
+  text-decoration: none;
+}
+
+.ant-menu-submenu-title:hover {
+  text-decoration: none;
+}
+
+/* Remove underline for all anchor tags within the menu */
+.ant-menu a {
+  text-decoration: none;
+}

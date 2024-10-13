@@ -82,6 +82,7 @@ export default function AccountManager() {
   };
 
   // Hàm này sẽ mở modal xác nhận xóa
+  
   const handleDelete = (user) => {
     setUserToDelete(user); // Lưu thông tin user cần xóa
     setShowDeleteModal(true); // Hiển thị modal xác nhận
@@ -96,6 +97,7 @@ export default function AccountManager() {
     try {
       const response = await activateAccount(userToActivate.accountID);
       Notification("User has been activated", "", 4, "success");
+      //Notification("response.message", "", 4, "success");
       const updatedResponse = await getAllAccounts();
       setUsers(updatedResponse.data);
     } catch (error) {
@@ -108,6 +110,7 @@ export default function AccountManager() {
   };
 
   // Xử lý xóa sau khi người dùng xác nhận
+
   const confirmDelete = async () => {
     try {
       const response = await deleteAccount(userToDelete.accountID); // Gọi API xóa
@@ -175,6 +178,10 @@ export default function AccountManager() {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   return (
     <Container fluid>
       <h2 className="my-4">
@@ -182,10 +189,10 @@ export default function AccountManager() {
       </h2>
       <Row className="mb-3">
         <Col className="d-flex justify-content-end">
-          <Button variant="success" className="mr-1">
+          <Button variant="outline-success" className="mr-1">
             <box-icon name="export"></box-icon> Export
           </Button>
-          <Button variant="info" onClick={handleAddNew}>
+          <Button variant="outline-info" onClick={handleAddNew}>
             <box-icon name="plus"></box-icon> Add New
           </Button>
         </Col>
@@ -201,6 +208,7 @@ export default function AccountManager() {
         handleActivate={handleActivate}
         handleNext={handleNext}
         handlePrevious={handlePrevious}
+        onPageChange={handlePageChange}
       />
 
       <AccountFormModal
@@ -208,14 +216,16 @@ export default function AccountManager() {
         selectedUser={selectedUser}
         showModal={showModal}
         admins={admins} // Truyền danh sách admin xuống modal
-        showDeleteModal={showDeleteModal} // Trạng thái hiển thị modal xóa
+        showDeleteModal={showDeleteModal}
+        userToDelete={userToDelete}
+        handleCloseDeleteModal={handleCloseDeleteModal}
+        handleConfirmDelete={confirmDelete}
         showActivateModal={showActivateModal}
+        handleConfirmActivate={confirmActivate}
+        userToActivate={userToActivate}
         handleCloseModal={handleCloseModal}
-        handleCloseDeleteModal={handleCloseDeleteModal} // Đóng modal xóa
         handleCloseActivateModal={handleCloseActivateModal}
         handleSubmit={handleSubmit}
-        handleConfirmDelete={confirmDelete} // Xử lý xóa
-        handleConfirmActivate={confirmActivate}
       />
     </Container>
   );

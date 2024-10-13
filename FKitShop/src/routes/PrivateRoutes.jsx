@@ -1,10 +1,10 @@
-import React from "react";
-import LazyLoader from "../component/LazyLoader/index.jsx";
-import UserLayout from "../layouts/user/UserLayout";
+import React, { Suspense } from "react";
+import UserLayout from "../layouts/User/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
-import { ROLE_ADMIN } from "../constants/role";
+// import { ROLE_ADMIN } from "../constants/role";
 import OrderView from "../page/user/order/OrderView.jsx";
 import OrderSuccess from "../page/user/order/OrderSuccess.jsx";
+
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
@@ -12,81 +12,236 @@ const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
 const AccountPage = React.lazy(() =>
   import("../page/admin/account-manager/AccountManager.jsx")
 );
-const OrderPage = React.lazy(() => import("../page/admin/order-manager/OrderManager.jsx"));
+const OrderPage = React.lazy(() =>
+  import("../page/admin/order-manager/OrderManager.jsx")
+);
+const OrderSuccess = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
+
+// const KitPage = React.lazy(() => import("../page/admin/kit-manager"));
+// const ComponentPage = React.lazy(() => import("../page/admin/component-manager"));
+// const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
 
 const CategoryPage = React.lazy(() => import("../page/admin/category-manager"));
 const ProductPage = React.lazy(() => import("../page/admin/product-manager"));
 const DeliveryPage = React.lazy(() => import("../page/admin/delivery-manager"));
-const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
+const SupportPage = React.lazy(() =>
+  import("../page/admin/support-manager/SupportManager.jsx")
+);
 const LabGuidePage = React.lazy(() => import("../page/admin/labGuide-manager"));
 const FeedbackPage = React.lazy(() => import("../page/admin/feedback-manager"));
-
+const QuestionPage = React.lazy(() => import("../page/admin/question-manager/QuestionManager.jsx"));
 const UserProfilePage = React.lazy(() => import("../page/user/profile"));
 
 const PrivateRoutes = [
   {
     path: "/admin",
     element: (
-      // <ProtectedRoutes allowedRoles={ROLE_ADMIN}>
-      <LazyLoader children={<AdminLayOut />} />
-      // </ProtectedRoutes>
+      <Suspense fallback={null}>
+        {/* <ProtectedRoutes allowedRoles={ROLE_ADMIN}> */}
+        <AdminLayOut />
+        {/* </ProtectedRoutes> */}
+      </Suspense>
     ),
     children: [
-      { index: true, element: <LazyLoader children={<DashboardPage />} /> },
+      {
+        index: true,
+        element: (
+          <Suspense fallback={null}>
+            <DashboardPage />
+          </Suspense>
+        ),
+      },
       {
         path: "dashboard",
-        element: <LazyLoader children={<DashboardPage />} />,
+        element: (
+          <Suspense fallback={null}>
+            <DashboardPage />
+          </Suspense>
+        ),
       },
       {
         path: "account-manager",
-        element: <LazyLoader children={<AccountPage />} />,
-      },
-      {
-        path: "category-manager",
-        element: <LazyLoader children={<CategoryPage />} />,
-      },
-      {
-        path: "product-manager",
-        element: <LazyLoader children={<ProductPage />} />,
-      },
-      {
-        path: "delivery-manager",
-        element: <LazyLoader children={<DeliveryPage />} />,
+        element: (
+          <Suspense fallback={null}>
+            <AccountPage />
+          </Suspense>
+        ),
       },
       {
         path: "order-manager",
-        element: <LazyLoader children={<OrderPage />} />,
+        element: (
+          <Suspense fallback={null}>
+            <OrderPage />
+          </Suspense>
+        ),
       },
-      { path: "lab-manager", element: <LazyLoader children={<LabPage />} /> },
+      {
+        path: "product-manager",
+        children: [
+          {
+            path: "product-manager",
+            element: (
+              <Suspense fallback={null}>
+                <ProductPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "kit-manager",
+            element: (
+              <Suspense fallback={null}>
+                <CategoryPage /> 
+                {/* KitPage */}
+              </Suspense>
+            ),
+          },
+          {
+            path: "component-manager",
+            element: (
+              <Suspense fallback={null}>
+                <CategoryPage />
+                {/* ComponentPage */}
+              </Suspense>
+            ),
+          },
+          {
+            path: "lab-manager",
+            element: (
+              <Suspense fallback={null}>
+                <CategoryPage />
+              </Suspense>
+            ),
+          },
+        ],
+      },
+      {
+        path: "category-manager",
+        element: (
+          <Suspense fallback={null}>
+            <CategoryPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "tag-manager",
+        element: (
+          <Suspense fallback={null}>
+            <DeliveryPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "delivery-manager",
+        element: (
+          <Suspense fallback={null}>
+            <DeliveryPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "lab-support",
+        children: [
+          {
+            path: "support-manager",
+            element: (
+              <Suspense fallback={null}>
+                <SupportPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "question-manager",
+            element: (
+              <Suspense fallback={null}>
+                <QuestionPage />
+              </Suspense>
+            ),
+          },
+        ],
+      },
       {
         path: "labGuide-manager",
-        element: <LazyLoader children={<LabGuidePage />} />,
+        element: (
+          <Suspense fallback={null}>
+            <LabGuidePage />
+          </Suspense>
+        ),
       },
       {
         path: "feedback-manager",
-        element: <LazyLoader children={<FeedbackPage />} />,
+        element: (
+          <Suspense fallback={null}>
+            <FeedbackPage />
+          </Suspense>
+        ),
       },
     ],
   },
   {
     path: "/user",
-    element: <LazyLoader children={<UserLayout />} />,
+    element: (
+      <Suspense fallback={null}>
+        <UserLayout />
+      </Suspense>
+    ),
     children: [
-      { path: "information", element: <UserProfilePage /> },
-      { path: "purchase", element: <UserProfilePage /> },
-      { path: "updateAccount", element: <UserProfilePage /> },
-      { path: "changePassword", element: <UserProfilePage /> },
-      { path: "myLab", element: <UserProfilePage /> },
+      {
+        path: "information",
+        element: (
+          <Suspense fallback={null}>
+            <UserProfilePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "purchase",
+        element: (
+          <Suspense fallback={null}>
+            <UserProfilePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "updateAccount",
+        element: (
+          <Suspense fallback={null}>
+            <UserProfilePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "changePassword",
+        element: (
+          <Suspense fallback={null}>
+            <UserProfilePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "myLab",
+        element: (
+          <Suspense fallback={null}>
+            <UserProfilePage />
+          </Suspense>
+        ),
+      },
     ],
   },
   {
     path: "/order",
-    element: <OrderView />,
+    element: (
+      <Suspense fallback={null}>
+        <OrderView />
+      </Suspense>
+    ),
   },
-
   {
     path: "/order-success",
-    element: <OrderSuccess />,
+    element: (
+      <Suspense fallback={null}>
+        <OrderSuccess />
+      </Suspense>
+    ),
   },
 ];
 

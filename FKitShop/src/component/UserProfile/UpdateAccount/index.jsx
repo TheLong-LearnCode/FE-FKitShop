@@ -56,7 +56,7 @@ export default function UpdateAccountForm({ userInfo }) {
         // Hiển thị các thay đổi nếu có
         if (changes.length > 0) {
             changes.forEach(change => {
-                Notification("Notice:", change, 5, "info");
+                Notification("Notice:", change, 6, "info");
             });
             Notification(response.message, '', 2, "success");
         } else {
@@ -95,7 +95,7 @@ export default function UpdateAccountForm({ userInfo }) {
                     dispatch(setUser(updatedUserData));
                     navigate('/user/information');
                 } catch (error) {
-                    message.error(error);
+                    Notification("Error", error.response.data.message, 4, "error");
                 }
             }
         });

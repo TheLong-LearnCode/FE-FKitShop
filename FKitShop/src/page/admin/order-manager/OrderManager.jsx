@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { getAllOrders, getOrdersByAccountID } from "../../../service/orderService";
+import {
+  cancelOrder,
+  getAllOrders,
+  getOrderDetailsByOrderID,
+  //getOrdersByAccountID,
+  updateOrderStatus,
+} from "../../../service/orderService";
 import OrderTable from "./OrderTable";
 import OrderFormModal from "./OrderFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
+//import { getUserByAccountID } from "../../../service/userService";
 
 export default function OrderManager() {
   const [orders, setOrders] = useState([]);
@@ -11,6 +18,7 @@ export default function OrderManager() {
   const [mode, setMode] = useState("list");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
+  const orderDetails = [];
   const [showModal, setShowModal] = useState(false);
   const ordersPerPage = 5;
 
@@ -21,7 +29,6 @@ export default function OrderManager() {
   const fetchAllOrders = async () => {
     try {
       const response = await getAllOrders();
-      console.log("response: ", response);
       // Check if response.data is an object with orders property
       if (response.data && response.data.orders) {
         setOrders(Object.values(response.data.orders));
@@ -36,7 +43,6 @@ export default function OrderManager() {
       Notification("Error fetching orders", "", 4, "error");
     }
   };
-
   const handleNext = () => {
     if (currentPage < Math.ceil(orders.length / ordersPerPage)) {
       setCurrentPage(currentPage + 1);
@@ -52,22 +58,36 @@ export default function OrderManager() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedOrder(null);
+    setSelectedOrderDetails([]);
   };
 
-  const handleViewOrder = (order) => {
-    const accID = order.accountID;
+  const handleUpdateOrderStatus = async (order, status) => {
+    try {
+      const response = await updateOrderStatus(order.ordersID, status);
+      console.log("RESPONSE", response);
+      Notification(response.message, "", 4, "success");
+      fetchAllOrders();
+    } catch (error) {
+      console.log("ERROR", error);
+      Notification(error.response.data.message, "", 4, "warning");
+    }
+  };
+
+  const handleViewOrderDetails = (order, orderDetails) => {
+    //const accID = order.accountID;
     const fetchOrderDetails = async () => {
       try {
-        const response = await getOrdersByAccountID(accID);
-        console.log("response ORDERDETAIL: ", response);
-        setSelectedOrderDetails(response);
+        //BY ORDER ID
+        const response = await getOrderDetailsByOrderID(order.ordersID);
+        orderDetails = response.data;
+        setSelectedOrderDetails(orderDetails);
+        setSelectedOrder(order);
       } catch (error) {
         console.error("Error fetching order details:", error);
         Notification("Error fetching order details", "", 4, "warning");
       }
     };
     fetchOrderDetails();
-    setSelectedOrder(order);
     setShowModal(true);
   };
 
@@ -82,6 +102,10 @@ export default function OrderManager() {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   return (
     <Container fluid>
       <h2 className="my-4">
@@ -93,17 +117,22 @@ export default function OrderManager() {
 
       <OrderTable
         orders={orders}
+        orderDetails={orderDetails}
         currentPage={currentPage}
         ordersPerPage={ordersPerPage}
-        handleViewOrder={handleViewOrder}
+        handleViewOrderDetails={handleViewOrderDetails}
+        handleUpdateOrderStatus={handleUpdateOrderStatus}
         handleDelete={handleDelete}
         handleNext={handleNext}
         handlePrevious={handlePrevious}
+        onPageChange={handlePageChange}
       />
 
       <OrderFormModal
         mode={mode}
+        orderDetails={orderDetails}
         selectedOrder={selectedOrder}
+        selectedOrderDetails={selectedOrderDetails}
         showModal={showModal}
         handleCloseModal={handleCloseModal}
       />

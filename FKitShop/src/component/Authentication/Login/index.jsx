@@ -77,7 +77,7 @@ function SignInSignUp() {
               console.log("resultVerify: ", resultVerify);
               //resultAction.payload.data là lấy ra được user
               const userResponse = resultVerify.data;
-              console.log("userResponse: ", userResponse);
+              console.log("USERRESPONSE: ", userResponse);
               message.success(`Login successfully! 
                                 Welcome ${userResponse.role} ${userResponse.fullName}`);
               switch (userResponse.role) {

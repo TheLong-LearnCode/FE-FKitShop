@@ -1,100 +1,102 @@
-import React, { useState } from "react";
-import { Table, Button } from "react-bootstrap";
+import React from "react";
+import { Table, Button, Dropdown, Menu } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import { formatCurrency } from "../../../util/CurrencyUnit";
 
 export default function OrderTable({
   orders,
   currentPage,
   ordersPerPage,
-  handleViewOrder,
+  handleViewOrderDetails,
+  handleUpdateOrderStatus,
   handleDelete,
-  handlePrevious,
-  handleNext,
+  onPageChange,
 }) {
-  const [sortColumn, setSortColumn] = useState("orderDate");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const statusOptions = ["pending", "in-progress", "delivering", "delivered", "canceled"];
 
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-
-  const handleSort = (column) => {
-    setSortColumn(column);
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
-  };
-
-  const sortedOrders = Array.isArray(orders) 
-    ? [...orders].sort((a, b) => {
-        const aValue = a[sortColumn];
-        const bValue = b[sortColumn];
-        if (sortColumn === "orderDate") {
-          return sortOrder === "asc"
-            ? new Date(aValue) - new Date(bValue)
-            : new Date(bValue) - new Date(aValue);
-        }
-        return sortOrder === "asc"
-          ? String(aValue).localeCompare(String(bValue))
-          : String(bValue).localeCompare(String(aValue));
-      })
-    : [];
-
-  const currentOrders = sortedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-
-  if (!Array.isArray(orders) || orders.length === 0) {
-    return <p>No orders available.</p>;
-  }
+  const columns = [
+    {
+      title: "No",
+      dataIndex: "index",
+      key: "index",
+      render: (_, __, index) => (currentPage - 1) * ordersPerPage + index + 1,
+    },
+    {
+      title: "Order ID",
+      dataIndex: "ordersID",
+      key: "ordersID",
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Total Price",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+      render: (price) => formatCurrency(price),
+      sorter: (a, b) => a.totalPrice - b.totalPrice,
+    },
+    {
+      title: "Order Date",
+      dataIndex: "orderDate",
+      key: "orderDate",
+      render: (date) => new Date(date).toLocaleDateString(),
+      sorter: (a, b) => new Date(a.orderDate) - new Date(b.orderDate),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      sorter: (a, b) => a.status.localeCompare(b.status),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <>
+          <Button type="primary" onClick={() => handleViewOrderDetails(record)} style={{ marginRight: 8 }}>
+            View
+          </Button>
+          <Dropdown
+            overlay={
+              <Menu>
+                {statusOptions.map((status) => (
+                  <Menu.Item
+                    key={status}
+                    onClick={() => handleUpdateOrderStatus(record, status)}
+                    disabled={record.status === status}
+                  >
+                    {status}
+                  </Menu.Item>
+                ))}
+              </Menu>
+            }
+          >
+            <Button>
+              Set Status <DownOutlined />
+            </Button>
+          </Dropdown>
+          <Button danger onClick={() => handleDelete(record)} disabled={record.status === "canceled"} style={{ marginLeft: 8 }}>
+            Cancel
+          </Button>
+        </>
+      ),
+    },
+  ];
 
   return (
-    <>
-      <Table striped bordered hover responsive>
-        <thead style={{ backgroundColor: "var(--forth-color)" }}>
-          <tr>
-            <th>No</th>
-            <th>Order ID</th>
-            <th>Customer ID</th>
-            <th onClick={() => handleSort("totalPrice")} style={{ cursor: "pointer" }}>
-              Total Price {sortColumn === "totalPrice" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("orderDate")} style={{ cursor: "pointer" }}>
-              Order Date {sortColumn === "orderDate" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("status")} style={{ cursor: "pointer" }}>
-              Status {sortColumn === "status" && (sortOrder === "asc" ? "▲" : "▼")}
-            </th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentOrders.map((order, index) => (
-            <tr key={order.ordersID}>
-              <td>{indexOfFirstOrder + index + 1}</td>
-              <td>{order.ordersID}</td>
-              <td>{order.accountID}</td>
-              <td>{order.totalPrice}</td>
-              <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-              <td>{order.status}</td>
-              <td>
-                <Button variant="primary" onClick={() => handleViewOrder(order)}>
-                  View
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(order)}
-                  disabled={order.status === "Canceled"}
-                >
-                  Cancel
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      <div className="d-flex justify-content-between">
-        <Button onClick={handlePrevious} disabled={currentPage === 1}>
-          Previous
-        </Button>
-        <Button onClick={handleNext} disabled={indexOfLastOrder >= orders.length}>
-          Next
-        </Button>
-      </div>
-    </>
+    <Table
+      columns={columns}
+      dataSource={orders}
+      rowKey="ordersID"
+      pagination={{
+        current: currentPage,
+        pageSize: ordersPerPage,
+        total: orders.length,
+        onChange: onPageChange,
+      }}
+    />
   );
 }

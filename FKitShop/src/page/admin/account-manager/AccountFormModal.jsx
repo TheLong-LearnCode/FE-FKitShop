@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { getModalHeaderMode } from "../../../util/GetModalHeaderMode";
 
 export default function AccountFormModal({
   mode,
@@ -15,11 +16,12 @@ export default function AccountFormModal({
   handleConfirmDelete,
   handleConfirmActivate,
 }) {
+  // Function to determine the header class based on mode
   return (
     <>
       {/* Modal Form */}
       <Modal show={showModal} onHide={handleCloseModal} size="lg">
-        <Modal.Header>
+        <Modal.Header className={getModalHeaderMode(mode)}>
           <Modal.Title>
             {mode === "view"
               ? `Viewing User: ${selectedUser?.fullName}`
@@ -31,8 +33,9 @@ export default function AccountFormModal({
             Close
           </Button>
         </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body>
+            {/* Form fields... */}
             <Form.Group controlId="formID">
               <Form.Label>Customer ID</Form.Label>
               <Form.Control
@@ -43,17 +46,34 @@ export default function AccountFormModal({
             </Form.Group>
             <Form.Group controlId="formAdminID">
               <Form.Label>Admin ID</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={selectedUser?.adminID ?? ""}
-              >
-                <option value="">Select Admin</option>
-                {admins.map((admin) => (
-                  <option key={admin.accountID} value={admin.accountID}>
-                    {admin.fullName} ({admin.email})
-                  </option>
-                ))}
-              </Form.Control>
+              {mode === "view" ? (
+                <Form.Control
+                  type="text"
+                  value={
+                    selectedUser?.adminID
+                      ? `${selectedUser.adminID} (${
+                          admins.find(
+                            (admin) => admin.accountID === selectedUser.adminID
+                          )?.fullName
+                        })`
+                      : "None"
+                  }
+                  readOnly
+                />
+              ) : (
+                <Form.Control
+                  as="select"
+                  defaultValue={selectedUser?.adminID ?? ""}
+                  readOnly={mode === "view"}
+                >
+                  <option value="">None</option>
+                  {admins.map((admin) => (
+                    <option key={admin.accountID} value={admin.accountID}>
+                      {admin.fullName} ({admin.email})
+                    </option>
+                  ))}
+                </Form.Control>
+              )}
             </Form.Group>
             <Form.Group controlId="formFullName">
               <Form.Label>Full Name</Form.Label>
@@ -131,14 +151,15 @@ export default function AccountFormModal({
                 <option value={2}>Banned</option>
               </Form.Control>
             </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
             {mode !== "view" && (
               <Button variant="primary" type="submit">
                 {mode === "add" ? "Create" : "Update"}
               </Button>
             )}
-          </Form>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
+          </Modal.Footer>
+        </Form>
       </Modal>
 
       {/* Modal Delete */}
