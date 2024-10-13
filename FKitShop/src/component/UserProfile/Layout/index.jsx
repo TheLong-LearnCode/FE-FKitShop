@@ -90,7 +90,7 @@ export default function UserProfile() {
     }, [location.pathname]); // Run this effect whenever the URL changes
 
     return (
-        <div className={styles.ht}>
+        <div className={styles.ht} style={{ paddingTop: '0px' }}> {/* Thêm paddingTop ở đây */}
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-md-10 col-lg-12 col-xs-12">

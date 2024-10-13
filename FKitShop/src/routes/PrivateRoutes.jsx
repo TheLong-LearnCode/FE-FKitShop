@@ -2,7 +2,6 @@ import React, { Suspense } from "react";
 import UserLayout from "../layouts/User/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
 // import { ROLE_ADMIN } from "../constants/role";
-
 const OrderSuccessPage = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
 const OrderViewPage = React.lazy(() => import("../page/user/order/OrderView.jsx"));
 
