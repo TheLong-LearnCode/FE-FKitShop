@@ -184,18 +184,18 @@ export default function HomePage() {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header>
-          <Modal.Title>5 Cây Cơ xin kính chào quý kháchhhh =))))</Modal.Title>
+          <Modal.Title>WELCOME TO FKITSHOP</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Có vẻ như bạn chưa đăng nhập nhỉ??</Modal.Body>
+        <Modal.Body>Please login for the best experience.</Modal.Body>
         <Modal.Footer>
           <Button variant="outline-success" onClick={handleLogin}>
-            Oke dô nè
+            Login
           </Button>
           <Button variant="outline-primary" onClick={handleRegister}>
-            Toii chưa có tài khoản
+            I don't have account
           </Button>
-          <Button variant="outline-secondary" onClick={handleClose}>
-            Thôii
+          <Button variant="outline-danger" onClick={handleClose}>
+            Skip
           </Button>
         </Modal.Footer>
       </Modal>

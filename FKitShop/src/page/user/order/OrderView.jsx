@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useTransition } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
 import { getProvinces, getDistricts, getWards, calculateShippingFee } from '../../../service/ghnApi.jsx';
 import { IDLE } from '../../../redux/constants/status.js';
@@ -21,6 +21,7 @@ export default function OrderView() {
     const [wards, setWards] = useState([]);
     const [shippingFee, setShippingFee] = useState(0);
     const [error, setError] = useState('');
+
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
@@ -144,40 +145,56 @@ export default function OrderView() {
         return Object.values(tempErrors).every(x => x === "");
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validateForm()) {
-            console.log('Form is valid');
-            console.log("USERINFO: " + userInfo);
-            const formData2 = {
-                accountID: userInfo?.data.accountID,
-                name: formData.fullName,
-                province: formData.provinceId,
-                district: formData.districtId,
-                ward: formData.wardCode,
-                address: formData.address,
-                payingMethod: formData.payingMethod,
-                phoneNumber: formData.phoneNumber,
-                shippingPrice: shippingFee,
-                note: formData.note
-            };
-            console.log("formData2: ", formData2);
-            const orderDetailsRequest = cartProducts.map(cartProduct => ({
-                productID: cartProduct.productID,
-                quantity: cartProduct.quantity,
-            }));
-            console.log("cartProducts: ", cartProducts);
-            console.log("orderDetailsRequest: ", orderDetailsRequest);
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     if (validateForm()) {
+    //         console.log('Form is valid');
+    //         console.log("USERINFO: " + userInfo);
+    //         const formData2 = {
+    //             accountID: userInfo?.data.accountID,
+    //             name: formData.fullName,
+    //             province: formData.provinceId,
+    //             district: formData.districtId,
+    //             ward: formData.wardCode,
+    //             address: formData.address,
+    //             payingMethod: formData.payingMethod,
+    //             phoneNumber: formData.phoneNumber,
+    //             shippingPrice: shippingFee,
+    //             note: formData.note
+    //         };
+    //         console.log("formData2: ", formData2);
+    //         const orderDetailsRequest = cartProducts.map(cartProduct => ({
+    //             productID: cartProduct.productID,
+    //             quantity: cartProduct.quantity,
+    //         }));
+    //         console.log("cartProducts: ", cartProducts);
+    //         console.log("orderDetailsRequest: ", orderDetailsRequest);
+    //         const fetchOrder = async () => {
+    //             const response = await checkOutOrder(formData2, orderDetailsRequest);
+    //             console.log("RESPONSE.DATAAA: ");
+    //             console.log(response);
+    //             if (formData.payingMethod === 'cod') {
+                    // navigate('/order-success', { state: { userName: formData.fullName } });
+    //             } else {
+    //                 // Xử lý cho phương thức thanh toán khác
+    //                 console.log("Handling other payment methods");
+    //             }
+    //         };
+    //         fetchOrder();
+
+    //     } else {
+    //         console.log('Form is invalid');
+    //     }
+    // };
+
+         const handleSubmit = (e) => {
+            e.preventDefault();
             const fetchOrder = async () => {
-                const response = await checkOutOrder(formData2, orderDetailsRequest);
-                console.log("RESPONSE.DATAAA: ");
-                console.log(response);
-            };
+            const response = await checkOutOrder(total);
+            }
             fetchOrder();
-        } else {
-            console.log('Form is invalid');
         }
-    };
+    
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', {
@@ -300,13 +317,27 @@ export default function OrderView() {
                         <h2>Payment Method</h2>
                         <div className="mb-3">
                             <div className="form-check">
-                                <input className="form-check-input" type="radio" name="paymentMethod" id="onlineBanking" checked />
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="paymentMethod"
+                                    id="vnpay"
+                                    value={formData.payingMethod === 'vnpay'}
+                                    onChange={handleChange}
+                                />
                                 <label className="form-check-label" htmlFor="onlineBanking">
                                     VNPAY
                                 </label>
                             </div>
                             <div className="form-check">
-                                <input className="form-check-input" type="radio" name="paymentMethod" id="cod" />
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="paymentMethod"
+                                    id="cod"
+                                    value={formData.payingMethod}
+                                    onChange={handleChange}
+                                />
                                 <label className="form-check-label" htmlFor="cod">
                                     Cash on Delivery (COD)
                                 </label>
@@ -349,6 +380,7 @@ export default function OrderView() {
                             <strong>Total</strong>
                             <strong>{formatCurrency(total)}</strong>
                         </div>
+                        <Link to={"/cart"}><box-icon name='chevrons-left' color='#a49898' ></box-icon> Back to your shopping cart</Link>
                     </div>
                 </div>
             </div>

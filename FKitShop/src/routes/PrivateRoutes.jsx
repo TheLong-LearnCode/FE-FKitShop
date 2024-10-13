@@ -3,6 +3,7 @@ import UserLayout from "../layouts/User/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
 // import { ROLE_ADMIN } from "../constants/role";
 import OrderView from "../page/user/order/OrderView.jsx";
+import OrderSuccess from "../page/user/order/OrderSuccess.jsx";
 
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
