@@ -4,8 +4,7 @@ import './Loading.css';
 const Loading = () => (
   <div className="loading-overlay">
     <div className="loading-content">
-      <div className="hourglass"></div>
-      {/* <p>Loading</p> */}
+      {/* Hourglass or any loading animation can go here */}
     </div>
   </div>
 );
