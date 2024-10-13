@@ -74,7 +74,7 @@ export default function HeaderLayout() {
           <Badge dot>
             <BellOutlined className="header-icon" style={{ fontSize: 20 }} />
           </Badge>
-          <Dropdown overlay={menu} placement="bottomRight" trigger={['click']}>
+          <Dropdown menu={menu} placement="bottomRight" trigger={['click']}>
             <SettingOutlined className="header-icon" style={{ fontSize: 20 }} />
           </Dropdown>
         </Space>
