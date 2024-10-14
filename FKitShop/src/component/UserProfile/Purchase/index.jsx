@@ -10,7 +10,11 @@ import {
   Input,
   message,
 } from "antd";
-import { MoreOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import {
+  UnorderedListOutlined,
+  RollbackOutlined
+} from "@ant-design/icons";
+import './index.css';
 import {
   getOrdersByAccountID,
   getOrderDetailsByOrderID,
@@ -132,6 +136,8 @@ export default function Purchase({ userInfo }) {
             labID: labIDs[0],
             description: modalContent,
           });
+          console.log("RESPONSE", response);
+          
           message.success("Support request created successfully");
         } else {
           message.error(
@@ -235,10 +241,12 @@ export default function Purchase({ userInfo }) {
         />
       ) : (
         <div>
-          <Button onClick={backToOrderList} style={{ marginBottom: 16 }}>
-            Back to Order List
-          </Button>
-          <h3>Order Details</h3>
+          <Button
+            icon={<RollbackOutlined />}
+            onClick={backToOrderList}
+            style={{ marginBottom: 16 }}
+          />
+          {/* <h3>Order Details</h3> */}
           <p>
             <strong>Order ID:</strong> {selectedOrder.orders.ordersID}
           </p>

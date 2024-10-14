@@ -224,6 +224,14 @@ const PrivateRoutes = [
           </Suspense>
         ),
       },
+      {
+        path: "support",
+        element: (
+          <Suspense fallback={null}>
+            <UserProfilePage />
+          </Suspense>
+        ),
+      },
     ],
   },
   {
