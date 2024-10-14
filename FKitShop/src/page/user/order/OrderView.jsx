@@ -207,6 +207,7 @@ export default function OrderView() {
 
     useEffect(() => {
         if (paymentStatus === 'success' && paymentMethod === 'vnpay') {
+            console.log("status: " + paymentStatus);
             const fetchOrder = async () => {
                 try {
                     const response = await checkOutOrder(formData3, orderDR);

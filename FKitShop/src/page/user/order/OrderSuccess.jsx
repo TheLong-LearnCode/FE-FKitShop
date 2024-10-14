@@ -20,7 +20,7 @@ export default function OrderSuccess() {
             setPaymentStatus('fail');
         }
     }, [location, setPaymentStatus]);
-    
+
     return (
         <div className="order-success-container">
             <div className="order-success-content">
