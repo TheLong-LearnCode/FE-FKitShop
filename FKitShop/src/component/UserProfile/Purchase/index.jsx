@@ -6,6 +6,7 @@ import { getOrdersByAccountID, getOrderDetailsByOrderID } from "../../../service
 import { getProductById } from "../../../service/productService";
 import { createSupport } from "../../../service/supportService";
 import { formatCurrency } from "../../../util/CurrencyUnit";
+import { getLabByAccountID } from "../../../service/labService";
 
 const { TextArea } = Input;
 
@@ -96,12 +97,17 @@ export default function Purchase({ userInfo }) {
     setIsModalVisible(true);
   };
 
-  const handleOk = async () => {
+  const handleOk = async () => {  
     if (modalType === "Support") {
       try {
+        const res = await getLabByAccountID(userInfo.accountID);
+        const orderIDAndLabList = res.data;
+        console.log("ARRAY: ", orderIDAndLabList);
+        //--------
+        
         const response = await createSupport({
           accountID: userInfo.accountID,
-          labID: selectedProductId,
+          labID: labID,
           description: modalContent
         });
         message.success("Support request created successfully");
