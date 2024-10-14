@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
-import { getProvinces, getDistricts, getWards, calculateShippingFee } from '../../../service/ghnApi.jsx';
+import { getProvinces, getDistricts, getWards } from '../../../service/ghnApi.jsx';
 import { IDLE } from '../../../redux/constants/status.js';
 import { checkOutOrder, checkOutVNP } from '../../../service/orderService.jsx';
 import { log } from 'react-modal/lib/helpers/ariaAppHider.js';
 import { verifyToken } from '../../../service/authUser.jsx';
+import { usePaymentContext } from '../../../contexts/PaymentContext';
+
 
 
 export default function OrderView() {
     const dispatch = useDispatch();
-    const [isPending, startTransition] = useTransition();
     const [activeLink, setActiveLink] = useState('');
     const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
     const [errors, setErrors] = useState({});
@@ -23,6 +24,9 @@ export default function OrderView() {
     const [shippingFee, setShippingFee] = useState(0);
     const [error, setError] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
+    const { paymentStatus } = usePaymentContext();
+    const [formData3, setFormData3] = useState(null);
+    const [orderDR, setOrderDR] = useState(null);
 
 
     // Lấy thông tin người dùng từ Redux Store
@@ -151,11 +155,10 @@ export default function OrderView() {
         return Object.values(tempErrors).every(x => x === "");
     };
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            console.log('Form is valid');
-            console.log("USERINFO: " + userInfo);
             const formData2 = {
                 accountID: userInfo?.data.accountID,
                 name: formData.fullName,
@@ -168,34 +171,57 @@ export default function OrderView() {
                 shippingPrice: shippingFee,
                 note: formData.note
             };
-            console.log("formData2: ", formData2);
+
+            setFormData3(formData2)
+
             const orderDetailsRequest = cartProducts.map(cartProduct => ({
                 productID: cartProduct.productID,
                 quantity: cartProduct.quantity,
             }));
-            console.log("cartProducts: ", cartProducts);
-            console.log("orderDetailsRequest: ", orderDetailsRequest);
-            const fetchOrder = async () => {
-                const response = await checkOutOrder(formData2, orderDetailsRequest);
-                console.log("RESPONSE.DATAAA: ");
-                console.log(response);
-            };
-            if (paymentMethod === 'cod') {
-                fetchOrder(); 
-                navigate('/order-success', { state: { userName: formData.fullName } });
-            } else if (paymentMethod === 'vnpay') {
-                const fetchVNP = async () => {
-                    const responseVNP = await checkOutVNP(total);
-                }
-                fetchVNP();
-                fetchOrder(); 
-            }
 
+            setOrderDR(orderDetailsRequest);
+
+            if (paymentMethod === 'cod') {
+                try {
+                    await checkOutOrder(formData2, orderDetailsRequest);
+                    navigate('/order-success', { state: { userName: formData.fullName } });
+                } catch (error) {
+                    console.error("Error placing COD order:", error);
+                    // Xử lý lỗi nếu cần
+                }
+            } else if (paymentMethod === 'vnpay') {
+                try {
+                    const vnpayResponse = await checkOutVNP(total);
+                    // Chuyển hướng người dùng đến trang thanh toán VNPAY
+                    window.location.href = vnpayResponse;
+                } catch (error) {
+                    console.error("Error with VNPAY checkout:", error);
+                    // Xử lý lỗi nếu cần
+                }
+            }
         } else {
             console.log('Form is invalid');
         }
+
     };
-    
+
+    useEffect(() => {
+        if (paymentStatus === 'success' && paymentMethod === 'vnpay') {
+            const fetchOrder = async () => {
+                try {
+                    const response = await checkOutOrder(formData3, orderDR);
+                    console.log("RESPONSE.DATAAA: ", response);
+                    // Xử lý response nếu cần
+                    navigate('/order-success', { state: { userName: formData.fullName } });
+                } catch (error) {
+                    console.error("Error fetching order:", error);
+                    // Xử lý lỗi nếu cần
+                }
+            };
+            fetchOrder();
+        }
+    }, [paymentStatus, paymentMethod]);
+
 
 
     const formatCurrency = (amount) => {

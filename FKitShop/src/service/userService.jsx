@@ -109,3 +109,22 @@ export const activateAccount = async (id) => {
   }
 };
 
+export const getMyLab = async (id) => {
+  try{
+    const response = await api[GET](`/lab/account/${id}`);
+    console.log("response in getMyLab: ", response);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const downloadMyLab = async (formDownload) => {
+  try{
+    const response = await api[POST]('/lab/download', formDownload);
+    console.log("response in getMyLab: ", response);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

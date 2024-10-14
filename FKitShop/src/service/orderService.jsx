@@ -43,7 +43,6 @@ export const checkOutVNP = async (amount) => {
     try {
         const response = await api[POST](`/submitOrder?amount=${amount}&orderInfo=Payment for test`);
         console.log("RESPONSE: ", response.data);
-        window.location.href = response.data;
         return response.data;
     } catch (error) {
         throw error;
