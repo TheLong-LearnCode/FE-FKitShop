@@ -18,22 +18,8 @@ export default function MyLab({ userInfo }) {
 
   const handleDownload = async (lab) => {
     try {
-      const downloadData = {
-        accountID: userInfo?.accountID,
-        orderID: lab.orderID,
-        labID: lab.lab.labID,
-        productID: lab.lab.productID,
-        fileName: lab.lab.fileNamePDF
-      };
-      
-      const response = await downloadMyLab(downloadData);
-      
-      // Xử lý response ở đây. Ví dụ:
-      if (response.url) {
-        window.open(response.url, '_blank');
-      } else {
-        console.error('Download URL not found in response');
-      }
+      const response = await downloadMyLab( userInfo?.accountID,lab.orderID,lab.lab.labID,lab.lab.productID,lab.lab.fileNamePDF);
+      window.location.href = response;
     } catch (error) {
       console.error('Error downloading lab:', error);
       // Có thể hiển thị thông báo lỗi cho người dùng ở đây
@@ -57,7 +43,6 @@ export default function MyLab({ userInfo }) {
                 <td className="col-8">{lab.lab.fileNamePDF}</td>
                 <td className='text-center col-2'>
                   <a href="#" onClick={(e) => {
-                    e.preventDefault();
                     handleDownload(lab);
                   }}>
                     <box-icon name='download' type='solid' color='#3fe70f'></box-icon>
