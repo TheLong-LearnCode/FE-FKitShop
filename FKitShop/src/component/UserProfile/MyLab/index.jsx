@@ -42,11 +42,11 @@ export default function MyLab({ userInfo }) {
               <tr key={lab.lab.labID}>
                 <td className="col-8">{lab.lab.fileNamePDF}</td>
                 <td className='text-center col-2'>
-                  <a href="#" onClick={(e) => {
+                  <button className='btn' onClick={(e) => {
                     handleDownload(lab);
                   }}>
                     <box-icon name='download' type='solid' color='#3fe70f'></box-icon>
-                  </a>
+                  </button>
                 </td>
               </tr>
             ))}
