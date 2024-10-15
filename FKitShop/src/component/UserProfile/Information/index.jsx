@@ -1,9 +1,13 @@
 // ProfileInformation.js
-import { Alert } from 'antd';
 import React, { useState } from 'react';
+import { Alert, Card, Avatar, Typography, Descriptions } from 'antd';
+import { UserOutlined, PhoneOutlined, MailOutlined, CalendarOutlined, LinuxOutlined } from '@ant-design/icons';
+import './Information.css'; // Chúng ta sẽ tạo file CSS riêng cho component này
+
+const { Title } = Typography;
 
 export default function ProfileInformation({ userInfo }) {
-  const [showMessage, setShowMessage] = useState(true); // State to control message visibility
+  const [showMessage, setShowMessage] = useState(true);
 
   if (!userInfo) {
     return (
@@ -12,23 +16,28 @@ export default function ProfileInformation({ userInfo }) {
         description="Press CTRL+R to reload the profile!"
         type="info"
         closable
-        onClose={() => setShowMessage(false)} // Hide the message when closed
+        onClose={() => setShowMessage(false)}
         showIcon
       />
-    )
+    );
   }
-  const { fullName, dob, phoneNumber, email } = userInfo;
+
+  const { fullName, dob, phoneNumber, email, createDate, role } = userInfo;
   const age = new Date().getFullYear() - new Date(dob).getFullYear();
 
   return (
-    <>
-      <div className="col-md-8">
-        <h4 className='text-center'><strong>Information</strong></h4>
-        <p><strong>Name:</strong> {fullName}</p>
-        <p><strong>Age:</strong> {age}</p>
-        <p><strong>Phone Number:</strong> {phoneNumber}</p>
-        <p><strong>Email:</strong> {email}</p>
+    <Card className="profile-card">
+      <div className="profile-header">
+        <Avatar size={100} icon={<UserOutlined />} className="profile-avatar" />
+        <Title level={2}>{fullName}</Title>
       </div>
-    </>
+      <Descriptions bordered column={1}>
+        <Descriptions.Item label={<> <UserOutlined /> Role</>}>{role}</Descriptions.Item>
+        <Descriptions.Item label={<><LinuxOutlined /> Age</>}>{age}</Descriptions.Item>
+        <Descriptions.Item label={<><PhoneOutlined /> Phone Number</>}>{phoneNumber}</Descriptions.Item>
+        <Descriptions.Item label={<><MailOutlined /> Email</>}>{email}</Descriptions.Item>
+        <Descriptions.Item label={<><CalendarOutlined /> Participant Date</>}>{createDate}</Descriptions.Item>
+      </Descriptions>
+    </Card>
   );
 }

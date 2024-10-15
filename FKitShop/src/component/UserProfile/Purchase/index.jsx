@@ -1,19 +1,6 @@
 // ProfileInformation.js
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  Image,
-  Dropdown,
-  Menu,
-  Modal,
-  Input,
-  message,
-} from "antd";
-import {
-  UnorderedListOutlined,
-  RollbackOutlined
-} from "@ant-design/icons";
+import { message } from "antd";
 import './index.css';
 import {
   getOrdersByAccountID,
@@ -21,26 +8,72 @@ import {
 } from "../../../service/orderService";
 import { getProductById } from "../../../service/productService";
 import { createSupport } from "../../../service/supportService";
-import { formatCurrency } from "../../../util/CurrencyUnit";
 import { getLabByAccountID } from "../../../service/labService";
-
-const { TextArea } = Input;
+import OrderTabs from './OrderTabs';
+import OrderList from './OrderList';
+import OrderDetails from './OrderDetails';
+import SupportModal from './SupportModal';
 
 export default function Purchase({ userInfo }) {
-  const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderDetails, setOrderDetails] = useState([]);
   const [showOrderList, setShowOrderList] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
+  const [tabCounts, setTabCounts] = useState({
+    all: 0,
+    pending: 0,
+    processing: 0,
+    shipped: 0,
+    delivered: 0,
+    canceled: 0
+  });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const [modalContent, setModalContent] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 3;
 
   useEffect(() => {
     const fetchOrders = async () => {
       if (userInfo?.accountID) {
         const response = await getOrdersByAccountID(userInfo.accountID);
-        setOrders(response.data);
+        setAllOrders(response.data);
+        setFilteredOrders(response.data);
+        
+        const counts = {
+          all: response.data.length,
+          pending: 0,
+          processing: 0,
+          shipped: 0,
+          delivered: 0,
+          canceled: 0
+        };
+        
+        response.data.forEach(order => {
+          const status = order.orders.status.toLowerCase();
+          if (counts.hasOwnProperty(status)) {
+            counts[status]++;
+          }
+        });
+        
+        setTabCounts(counts);
       }
     };
     fetchOrders();
   }, [userInfo]);
+
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+    if (key === 'all') {
+      setFilteredOrders(allOrders);
+    } else {
+      const filtered = allOrders.filter(order => order.orders.status.toLowerCase() === key);
+      setFilteredOrders(filtered);
+    }
+  };
 
   const showOrderDetails = async (orderId) => {
     const details = await getOrderDetailsByOrderID(orderId);
@@ -54,7 +87,7 @@ export default function Purchase({ userInfo }) {
       })
     );
     setOrderDetails(detailsWithImages);
-    setSelectedOrder(orders.find((order) => order.orders.ordersID === orderId));
+    setSelectedOrder(allOrders.find((order) => order.orders.ordersID === orderId));
     setShowOrderList(false);
   };
 
@@ -63,49 +96,6 @@ export default function Purchase({ userInfo }) {
     setOrderDetails([]);
     setShowOrderList(true);
   };
-
-  const columns = [
-    {
-      title: "Order ID",
-      dataIndex: ["orders", "ordersID"],
-      key: "ordersID",
-    },
-    {
-      title: "Order Date",
-      dataIndex: ["orders", "orderDate"],
-      key: "orderDate",
-    },
-    {
-      title: "Paying Method",
-      dataIndex: ["orders", "payingMethod"],
-      key: "payingMethod",
-    },
-    {
-      title: "Total Price",
-      dataIndex: ["orders", "totalPrice"],
-      key: "totalPrice",
-      render: (price) => formatCurrency(price),
-    },
-    {
-      title: "Status",
-      dataIndex: ["orders", "status"],
-      key: "status",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Button onClick={() => showOrderDetails(record.orders.ordersID)}>
-          View
-        </Button>
-      ),
-    },
-  ];
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalType, setModalType] = useState("");
-  const [modalContent, setModalContent] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState(null);
 
   const showModal = (type, productId) => {
     setModalType(type);
@@ -118,18 +108,11 @@ export default function Purchase({ userInfo }) {
       try {
         const res = await getLabByAccountID(userInfo.accountID);
         const orderLabs = res.data.orderLabs;
-
-        // Lọc ra các lab có productID trùng với selectedProductId
         const matchingLabs = orderLabs.filter(
           (order) => order.lab.productID === selectedProductId
         );
-
-        // Lấy ra các labID
         const labIDs = matchingLabs.map((lab) => lab.lab.labID);
-
         console.log("Matching Lab IDs:", labIDs);
-
-        // Nếu có ít nhất một labID phù hợp, sử dụng labID đầu tiên
         if (labIDs.length > 0) {
           const response = await createSupport({
             accountID: userInfo.accountID,
@@ -137,7 +120,6 @@ export default function Purchase({ userInfo }) {
             description: modalContent,
           });
           console.log("RESPONSE", response);
-          
           message.success("Support request created successfully");
         } else {
           message.error(
@@ -149,7 +131,6 @@ export default function Purchase({ userInfo }) {
         message.error("Failed to create support request");
       }
     } else {
-      // Handle Question submission here
       message.info("Question submission not implemented yet");
     }
     setIsModalVisible(false);
@@ -161,132 +142,38 @@ export default function Purchase({ userInfo }) {
     setModalContent("");
   };
 
-  const menu = (productId) => (
-    <Menu>
-      <Menu.SubMenu key="support" title="Support">
-        <Menu.Item key="supportView">View</Menu.Item>
-        <Menu.Item
-          key="supportNew"
-          onClick={() => showModal("Support", productId)}
-        >
-          New
-        </Menu.Item>
-      </Menu.SubMenu>
-      <Menu.SubMenu key="question" title="Question">
-        <Menu.Item key="questionView">View</Menu.Item>
-        <Menu.Item
-          key="questionNew"
-          onClick={() => showModal("Question", productId)}
-        >
-          New
-        </Menu.Item>
-      </Menu.SubMenu>
-    </Menu>
-  );
-
-  const detailColumns = [
-    {
-      title: "Product",
-      dataIndex: "image",
-      key: "image",
-      render: (image) => <Image src={image} width={50} />,
-    },
-    {
-      title: "Product ID",
-      dataIndex: "productID",
-      key: "productID",
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price) => formatCurrency(price),
-    },
-    {
-      title: "Total",
-      key: "total",
-      render: (_, record) => formatCurrency(record.price * record.quantity),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Dropdown overlay={menu(record.productID)} trigger={["click"]}>
-          <Button icon={<UnorderedListOutlined />} />
-        </Dropdown>
-      ),
-    },
-  ];
-
-  // Thêm state cho phân trang
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 4; // Số sản phẩm mỗi trang
-
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
 
   return (
     <div style={{ marginTop: "-10px" }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <OrderTabs activeTab={activeTab} tabCounts={tabCounts} onTabChange={handleTabChange} />
+      </div>
+
       {showOrderList ? (
-        <Table
-          columns={columns}
-          dataSource={orders}
-          rowKey={(record) => record.orders.ordersID}
-        />
+        <OrderList filteredOrders={filteredOrders} showOrderDetails={showOrderDetails} />
       ) : (
-        <div>
-          <Button
-            icon={<RollbackOutlined />}
-            onClick={backToOrderList}
-            style={{ marginBottom: 16 }}
-          />
-          {/* <h3>Order Details</h3> */}
-          <p>
-            <strong>Order ID:</strong> {selectedOrder.orders.ordersID}
-          </p>
-          <p>
-            <strong>Address:</strong> {selectedOrder.orders.address},{" "}
-            {selectedOrder.orders.ward}, {selectedOrder.orders.district},{" "}
-            {selectedOrder.orders.province}
-          </p>
-          <p>
-            <strong>Status:</strong> {selectedOrder.orders.status}
-          </p>
-          <Table
-            columns={detailColumns}
-            dataSource={orderDetails}
-            rowKey="orderDetailsID"
-            pagination={{
-              current: currentPage,
-              pageSize: pageSize,
-              total: orderDetails.length,
-              showSizeChanger: false,
-            }}
-            onChange={handleTableChange}
-          />
-        </div>
+        <OrderDetails
+          selectedOrder={selectedOrder}
+          orderDetails={orderDetails}
+          backToOrderList={backToOrderList}
+          showModal={showModal}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          handleTableChange={handleTableChange}
+        />
       )}
 
-      <Modal
-        title={modalType}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        style={{ top: "20%" }}
-      >
-        <TextArea
-          rows={4}
-          value={modalContent}
-          onChange={(e) => setModalContent(e.target.value)}
-          placeholder={`Enter your ${modalType.toLowerCase()} here...`}
-        />
-      </Modal>
+      <SupportModal
+        isModalVisible={isModalVisible}
+        modalType={modalType}
+        modalContent={modalContent}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+        setModalContent={setModalContent}
+      />
     </div>
   );
 }

@@ -1,5 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Pagination, Dropdown, Menu, Tabs, Input, message, Select, Image, Empty } from "antd";
+import {
+  Table,
+  Button,
+  Modal,
+  Pagination,
+  Dropdown,
+  Menu,
+  Tabs,
+  Input,
+  message,
+  Select,
+  Image,
+  Empty,
+  Badge,
+} from "antd";
 import { MoreOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import {
   getSupportByAccountID,
@@ -27,33 +41,64 @@ export default function Support({ userInfo }) {
   const pageSize = 4;
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
-  const [selectedProductId, setSelectedProductId] = useState(null);
-  const [labs, setLabs] = useState([]);
-  const [selectedLabId, setSelectedLabId] = useState(null);
   const [userLabs, setUserLabs] = useState([]);
   const [selectedLab, setSelectedLab] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [tabCounts, setTabCounts] = useState({
+    all: 0,
+    received: 0,
+    approved: 0,
+    done: 0,
+    canceled: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       if (userInfo?.accountID) {
-        // Fetch supports
         const supportResponse = await getSupportByAccountID(userInfo.accountID);
         setSupports(supportResponse.data.labSupports);
         setFilteredSupports(supportResponse.data.labSupports);
-        
+
+        // Calculate counts for each tab
+        const counts = {
+          all: supportResponse.data.labSupports.length,
+          received: 0,
+          approved: 0,
+          done: 0,
+          canceled: 0,
+        };
+
+        supportResponse.data.labSupports.forEach((support) => {
+          switch (support.supporting.status) {
+            case 0:
+              counts.received++;
+              break;
+            case 1:
+              counts.approved++;
+              break;
+            case 2:
+              counts.done++;
+              break;
+            case 3:
+              counts.canceled++;
+              break;
+          }
+        });
+
+        setTabCounts(counts);
+
         // Fetch orders
         const orderResponse = await getOrdersByAccountID(userInfo.accountID);
         setOrders(orderResponse.data);
-        
+
         // Fetch user's labs
         const labResponse = await getLabByAccountID(userInfo.accountID);
         setUserLabs(labResponse.data.orderLabs);
-        
+
         // Extract unique products from orders and fetch product details
         const uniqueProductIds = new Set();
-        orderResponse.data.forEach(order => {
-          order.orderDetails.forEach(detail => {
+        orderResponse.data.forEach((order) => {
+          order.orderDetails.forEach((detail) => {
             if (detail.isActive === 1) {
               uniqueProductIds.add(detail.productID);
             }
@@ -67,7 +112,7 @@ export default function Support({ userInfo }) {
             return {
               id: product.productID,
               name: product.name,
-              image: product.images[0]?.url || 'default-image-url.jpg'
+              image: product.images[0]?.url || "default-image-url.jpg",
             };
           })
         );
@@ -96,7 +141,9 @@ export default function Support({ userInfo }) {
     if (status === "all") {
       setFilteredSupports(supports);
     } else {
-      const statusIndex = ["received", "approved", "done", "canceled"].indexOf(status);
+      const statusIndex = ["received", "approved", "done", "canceled"].indexOf(
+        status
+      );
       setFilteredSupports(
         supports.filter((support) => support.supporting.status === statusIndex)
       );
@@ -109,9 +156,11 @@ export default function Support({ userInfo }) {
     setModalType(type);
     setIsModalVisible(true);
     setModalContent("");
-    
+
     if (type === "Create a Support Request" && support) {
-      const selectedLab = userLabs.find(item => item.lab.labID === support.labID);
+      const selectedLab = userLabs.find(
+        (item) => item.lab.labID === support.labID
+      );
       setSelectedLab(selectedLab);
       // Fetch product details for the selected lab
       fetchProductDetails(selectedLab);
@@ -179,7 +228,13 @@ export default function Support({ userInfo }) {
       title: "Support Times",
       dataIndex: ["supporting", "countSupport"],
       key: "countSupport",
-      render: (countSupport) => `#${5 - countSupport}`,
+      render: (countSupport, record) => {
+        if (record.supporting.status !== 2) {
+          return `#${6 - countSupport}`;
+        } else {
+          return `#${5 - countSupport}`;
+        }
+      },
     },
     {
       title: "Request Date",
@@ -191,13 +246,15 @@ export default function Support({ userInfo }) {
       title: "Expected Date",
       dataIndex: ["supporting", "expectedSpDate"],
       key: "expectedSpDate",
-      render: (date) => (date ? new Date(date).toLocaleDateString() : "Not Yet"),
+      render: (date) =>
+        date ? new Date(date).toLocaleDateString() : "Not Yet",
     },
     {
       title: "Support Date",
       dataIndex: ["supporting", "supportDate"],
       key: "supportDate",
-      render: (date) => (date ? new Date(date).toLocaleDateString() : "Not Yet"),
+      render: (date) =>
+        date ? new Date(date).toLocaleDateString() : "Not Yet",
     },
     {
       title: "Action",
@@ -227,10 +284,7 @@ export default function Support({ userInfo }) {
 
   const locale = {
     emptyText: (
-      <Empty
-        image={Empty.PRESENTED_IMAGE_SIMPLE}
-        description="No Data"
-      />
+      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data" />
     ),
   };
 
@@ -242,16 +296,51 @@ export default function Support({ userInfo }) {
           onChange={setActiveTab}
           className="custom-tabs"
         >
-          <TabPane tab="All" key="all" />
-          <TabPane tab="Received" key="received" />
-          <TabPane tab="Approved" key="approved" />
-          <TabPane tab="Done" key="done" />
-          <TabPane tab="Canceled" key="canceled" />
+          <TabPane
+            tab={
+              <Badge count={tabCounts.all} offset={[10, 0]}>
+                <span>All</span>
+              </Badge>
+            }
+            key="all"
+          />
+          <TabPane
+            tab={
+              <Badge count={tabCounts.received} offset={[10, 0]}>
+                <span>Received</span>
+              </Badge>
+            }
+            key="received"
+          />
+          <TabPane
+            tab={
+              <Badge count={tabCounts.approved} offset={[10, 0]}>
+                <span>Approved</span>
+              </Badge>
+            }
+            key="approved"
+          />
+          <TabPane
+            tab={
+              <Badge count={tabCounts.done} offset={[10, 0]}>
+                <span>Done</span>
+              </Badge>
+            }
+            key="done"
+          />
+          <TabPane
+            tab={
+              <Badge count={tabCounts.canceled} offset={[10, 0]}>
+                <span>Canceled</span>
+              </Badge>
+            }
+            key="canceled"
+          />
         </Tabs>
       </div>
-      
+
       {/* Thêm nút "Create A Request Support" ở đây */}
-      <div style={{ marginBottom: '16px', textAlign: 'right' }}>
+      <div style={{ marginBottom: "16px", textAlign: "right" }}>
         <Button type="primary" onClick={showCreateSupportModal}>
           Create A Request Support
         </Button>
@@ -276,7 +365,15 @@ export default function Support({ userInfo }) {
       )}
 
       <Modal
-        title={modalType}
+        title={
+          modalType === "Create a Support Request" && selectedSupport
+            ? `Create a Support Request #${
+                6 - selectedSupport.supporting.countSupport
+              }`
+            : modalType === "View Detail"
+            ? ""
+            : modalType
+        }
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -285,18 +382,36 @@ export default function Support({ userInfo }) {
         {modalType === "View Detail" && selectedSupport && (
           <div>
             <p>
+              <strong>Status:</strong>{" "}
+              <span
+                style={{
+                  color:
+                    selectedSupport.supporting.status === 0
+                      ? "#006d75"
+                      : selectedSupport.supporting.status === 1
+                      ? "blue"
+                      : "green",
+                  fontWeight: "bold",
+                }}
+              >
+                {
+                  ["Received", "Approved", "Done"][
+                    selectedSupport.supporting.status
+                  ]
+                }
+              </span>
+            </p>
+            <p>
               <strong>Lab ID:</strong> {selectedSupport.labID}
             </p>
             <p>
               <strong>Lab Name:</strong> {selectedSupport.labName}
             </p>
             <p>
-              <strong>Description:</strong>{" "}
-              {selectedSupport.supporting.description}
-            </p>
-            <p>
               <strong>Support Times:</strong>{" "}
-              #{5 - selectedSupport.supporting.countSupport}
+              {selectedSupport.supporting.status !== 2
+                ? `#${6 - selectedSupport.supporting.countSupport}`
+                : `#${5 - selectedSupport.supporting.countSupport}`}
             </p>
             <p>
               <strong>Request Date:</strong>{" "}
@@ -321,58 +436,49 @@ export default function Support({ userInfo }) {
                 : "Not Yet"}
             </p>
             <p>
-              <strong>Status:</strong>{" "}
-              <span
-                style={{
-                  color:
-                    selectedSupport.supporting.status === 0
-                      ? "#006d75"
-                      : selectedSupport.supporting.status === 1
-                      ? "blue"
-                      : "green",
-                    fontWeight: "bold",
-                }}
-              >
-                {
-                  ["Received", "Approved", "Done"][
-                    selectedSupport.supporting.status
-                  ]
-                }
-              </span>
+              <strong>Description:</strong>{" "}
+              {selectedSupport.supporting.description}
             </p>
           </div>
         )}
         {modalType === "Create a Support Request" && (
           <>
             <Select
-              style={{ width: '100%', marginBottom: '16px', height: '50px' }}
+              style={{ width: "100%", marginBottom: "16px", height: "50px" }}
               placeholder="Select a lab"
               onChange={(value) => {
-                const lab = userLabs.find(item => item.lab.labID === value);
+                const lab = userLabs.find((item) => item.lab.labID === value);
                 setSelectedLab(lab);
                 fetchProductDetails(lab);
               }}
               value={selectedLab?.lab.labID}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
             >
               {userLabs.map((item) => (
-                <Option 
-                  key={item.lab.labID} 
+                <Option
+                  key={item.lab.labID}
                   value={item.lab.labID}
-                  style={{ padding: '10px', height: 'auto' }}
+                  style={{ padding: "10px", height: "auto" }}
                 >
                   {item.lab.labID} - {item.lab.name}
                 </Option>
               ))}
             </Select>
             {selectedProduct && (
-              <div style={{ marginBottom: '16px' }}>
+              <div style={{ marginBottom: "16px" }}>
                 {/* <h4>Selected Product:</h4> */}
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Image
-                    src={selectedProduct.images[0]?.url || 'default-image-url.jpg'}
+                    src={
+                      selectedProduct.images[0]?.url || "default-image-url.jpg"
+                    }
                     alt={selectedProduct.name}
-                    style={{ width: 40, height: 40, marginRight: 10, objectFit: 'cover' }}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      marginRight: 10,
+                      objectFit: "cover",
+                    }}
                   />
                   <span>{selectedProduct.name}</span>
                 </div>

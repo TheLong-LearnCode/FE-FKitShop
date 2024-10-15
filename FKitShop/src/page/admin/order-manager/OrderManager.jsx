@@ -4,7 +4,6 @@ import {
   cancelOrder,
   getAllOrders,
   getOrderDetailsByOrderID,
-  //getOrdersByAccountID,
   updateOrderStatus,
 } from "../../../service/orderService";
 import OrderTable from "./OrderTable";
@@ -21,6 +20,7 @@ export default function OrderManager() {
   const orderDetails = [];
   const [showModal, setShowModal] = useState(false);
   const ordersPerPage = 5;
+  const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
     fetchAllOrders();
@@ -126,6 +126,8 @@ export default function OrderManager() {
         handleNext={handleNext}
         handlePrevious={handlePrevious}
         onPageChange={handlePageChange}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
       />
 
       <OrderFormModal
