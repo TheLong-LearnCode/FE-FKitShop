@@ -164,7 +164,7 @@ export default function Support({ userInfo }) {
       key: "labName",
     },
     {
-      title: "Available Support",
+      title: "Support Times",
       dataIndex: ["supporting", "countSupport"],
       key: "countSupport",
       render: (countSupport) => `#${5 - countSupport}`,
@@ -274,7 +274,7 @@ export default function Support({ userInfo }) {
               {selectedSupport.supporting.description}
             </p>
             <p>
-              <strong>Available Support:</strong>{" "}
+              <strong>Support Times:</strong>{" "}
               #{5 - selectedSupport.supporting.countSupport}
             </p>
             <p>
