@@ -25,8 +25,8 @@ export default function OrderView() {
     const [error, setError] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
     const { paymentStatus } = usePaymentContext();
-    const [formData3, setFormData3] = useState(null);
-    const [orderDR, setOrderDR] = useState(null);
+    const [formData3, setFormData3] = useState([]);
+    const [orderDR, setOrderDR] = useState([]);
 
 
     // Lấy thông tin người dùng từ Redux Store
@@ -172,14 +172,12 @@ export default function OrderView() {
                 note: formData.note
             };
 
-            setFormData3(formData2)
 
             const orderDetailsRequest = cartProducts.map(cartProduct => ({
                 productID: cartProduct.productID,
                 quantity: cartProduct.quantity,
             }));
 
-            setOrderDR(orderDetailsRequest);
 
             if (paymentMethod === 'cod') {
                 try {
@@ -205,15 +203,38 @@ export default function OrderView() {
 
     };
 
+
+
+
     useEffect(() => {
         if (paymentStatus === 'success' && paymentMethod === 'vnpay') {
             console.log("status: " + paymentStatus);
             const fetchOrder = async () => {
                 try {
-                    const response = await checkOutOrder(formData3, orderDR);
-                    console.log("RESPONSE.DATAAA: ", response);
-                    // Xử lý response nếu cần
-                    navigate('/order-success', { state: { userName: formData.fullName } });
+                    if (validateForm()) {
+                        const formData2 = {
+                            accountID: userInfo?.data.accountID,
+                            name: formData.fullName,
+                            province: formData.provinceId,
+                            district: formData.districtId,
+                            ward: formData.wardCode,
+                            address: formData.address,
+                            payingMethod: paymentMethod,
+                            phoneNumber: formData.phoneNumber,
+                            shippingPrice: shippingFee,
+                            note: formData.note
+                        };
+
+
+                        const orderDetailsRequest = cartProducts.map(cartProduct => ({
+                            productID: cartProduct.productID,
+                            quantity: cartProduct.quantity,
+                        }));
+                        const response = await checkOutOrder(formData2, orderDetailsRequest);
+                        console.log("RESPONSE.DATAAA: ", response);
+                        // Xử lý response nếu cần
+                        navigate('/order-success', { state: { userName: formData.fullName } });
+                    }
                 } catch (error) {
                     console.error("Error fetching order:", error);
                     // Xử lý lỗi nếu cần

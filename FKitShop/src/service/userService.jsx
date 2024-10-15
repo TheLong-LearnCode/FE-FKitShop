@@ -119,11 +119,11 @@ export const getMyLab = async (id) => {
   }
 };
 
-export const downloadMyLab = async (formDownload) => {
+export const downloadMyLab = async (accountID,orderID,labID,productID,fileNamePDF) => {
   try{
-    const response = await api[POST]('/lab/download', formDownload);
-    console.log("response in getMyLab: ", response);
-    return response.data;
+    const response = (`http://localhost:8080/fkshop/lab/download?accountID=${accountID}&orderID=${orderID}&labID=${labID}&productID=${productID}&fileName=${fileNamePDF}`);
+    console.log("response in downloadMyLab: ", response);
+    return response;
   } catch (error) {
     throw error;
   }
