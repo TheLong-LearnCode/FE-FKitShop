@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { Table, Button, Dropdown, Menu, DatePicker } from "antd";
+import React, { useState, useMemo } from "react";
+import { Table, Button, Dropdown, Menu, DatePicker, Tabs, Badge } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import "./SupportTable.css";
+
+const { TabPane } = Tabs;
 
 export default function SupportTable({
   supports,
@@ -14,8 +17,9 @@ export default function SupportTable({
 }) {
   const [datePickerOpen, setDatePickerOpen] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState({});
+  const [activeTab, setActiveTab] = useState("all");
 
-  const statusOptions = ["received", "approved", "done"];
+  const statusOptions = ["received", "approved", "done", "canceled"];
 
   const handleDatePickerOpen = (record, open) => {
     setDatePickerOpen(prev => ({ ...prev, [record.supporting.supportingID]: open }));
@@ -67,13 +71,13 @@ export default function SupportTable({
         return new Date(a.supporting.expectedSpDate) - new Date(b.supporting.expectedSpDate);
       },
     },
-    {
-      title: "Status",
-      dataIndex: ["supporting", "status"],
-      key: "status",
-      render: (status) => statusOptions[status] || 'Unknown',
-      sorter: (a, b) => a.supporting.status - b.supporting.status,
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: ["supporting", "status"],
+    //   key: "status",
+    //   render: (status) => statusOptions[status] || 'Unknown',
+    //   sorter: (a, b) => a.supporting.status - b.supporting.status,
+    // },
     {
       title: "Actions",
       key: "actions",
@@ -126,17 +130,73 @@ export default function SupportTable({
     },
   ];
 
+  const filterSupports = (status) => {
+    if (status === "all") {
+      return supports;
+    } else {
+      const statusIndex = statusOptions.indexOf(status);
+      return supports.filter((support) => support.supporting.status === statusIndex);
+    }
+  };
+
+  const filteredSupports = filterSupports(activeTab);
+
+  const statusCounts = useMemo(() => {
+    const counts = {
+      all: supports.length,
+      received: 0,
+      approved: 0,
+      done: 0,
+      canceled: 0,
+    };
+    
+    supports.forEach((support) => {
+      const status = statusOptions[support.supporting.status];
+      if (status) {
+        counts[status]++;
+      }
+    });
+    
+    return counts;
+  }, [supports]);
+
+  const renderTabTitle = (title, count) => (
+    <span>
+      {title} <Badge count={count} style={{ backgroundColor: '#52c41a' }} />
+    </span>
+  );
+
   return (
-    <Table
-      columns={columns}
-      dataSource={supports}
-      rowKey={(record) => record.supporting.supportingID}
-      pagination={{
-        current: currentPage,
-        pageSize: supportsPerPage,
-        total: supports.length,
-        onChange: onPageChange,
-      }}
-    />
+    <div className="support-container">
+      <div className="support-header">
+        <Tabs
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          className="custom-tabs"
+        >
+          <TabPane tab={renderTabTitle("All", statusCounts.all)} key="all" />
+          <TabPane tab={renderTabTitle("Received", statusCounts.received)} key="received" />
+          <TabPane tab={renderTabTitle("Approved", statusCounts.approved)} key="approved" />
+          <TabPane tab={renderTabTitle("Done", statusCounts.done)} key="done" />
+          <TabPane tab={renderTabTitle("Canceled", statusCounts.canceled)} key="canceled" />
+        </Tabs>
+      </div>
+      <Table
+        columns={columns}
+        dataSource={filteredSupports}
+        rowKey={(record) => record.supporting.supportingID}
+        pagination={{
+          current: currentPage,
+          pageSize: supportsPerPage,
+          total: filteredSupports.length,
+          onChange: onPageChange,
+        }}
+      />
+      {/* <div className="status-count">
+        {activeTab !== 'all' && (
+          <p>Total {activeTab}: {statusCounts[activeTab]}</p>
+        )}
+      </div> */}
+    </div>
   );
 }

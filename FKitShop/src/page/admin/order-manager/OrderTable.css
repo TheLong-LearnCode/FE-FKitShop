@@ -1,9 +1,9 @@
-.support-container {
+.order-container {
   position: relative;
   padding-bottom: 40px;
 }
 
-.support-header {
+.order-header {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 16px;
@@ -29,13 +29,6 @@
   margin-left: 8px;
 }
 
-.status-count {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  font-weight: bold;
-}
-
 .ant-tabs-tab .ant-badge {
   margin-left: 5px;
   position: relative;
@@ -55,13 +48,13 @@
   justify-content: flex-end;
 }
 
+/* Thêm style mới này */
 .ant-tabs-nav-list {
   width: auto;
   display: flex;
   justify-content: flex-end;
 }
 
-/* Thêm style mới này */
 .ant-tabs-ink-bar {
   position: absolute;
   bottom: 0;
