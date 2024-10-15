@@ -13,7 +13,7 @@ function SignIn() {
                     <input id="password" name="password" type="password" className="form-control" placeholder="Password" />
                     <span className="form-message"></span>
                 </div>
-                <button type="submit" className="btn btn-outline-dark btn-block">Sign In</button>
+                <button type="submit" id="signIn-btn" className="btn btn-outline-dark btn-block">Sign In</button>
 
                 {/* Add a horizontal line and the text "Hoặc tiếp tục với:" */}
                 <div className="form-group text-center mt-4">
