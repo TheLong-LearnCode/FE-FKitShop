@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Pagination, Dropdown, Menu, Tabs, Input, message, Select, Image } from "antd";
+import { Table, Button, Modal, Pagination, Dropdown, Menu, Tabs, Input, message, Select, Image, Empty } from "antd";
 import { MoreOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import {
   getSupportByAccountID,
@@ -8,6 +8,7 @@ import {
 import { getLabByProductID } from "../../../service/labService";
 import { getOrdersByAccountID } from "../../../service/orderService";
 import { getProductById } from "../../../service/productService";
+import { getLabByAccountID } from "../../../service/labService";
 import "./index.css";
 
 const { TabPane } = Tabs;
@@ -23,12 +24,15 @@ export default function Support({ userInfo }) {
   const [modalType, setModalType] = useState("");
   const [modalContent, setModalContent] = useState("");
   const [activeTab, setActiveTab] = useState("all");
-  const pageSize = 5;
+  const pageSize = 4;
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [labs, setLabs] = useState([]);
   const [selectedLabId, setSelectedLabId] = useState(null);
+  const [userLabs, setUserLabs] = useState([]);
+  const [selectedLab, setSelectedLab] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +45,10 @@ export default function Support({ userInfo }) {
         // Fetch orders
         const orderResponse = await getOrdersByAccountID(userInfo.accountID);
         setOrders(orderResponse.data);
+        
+        // Fetch user's labs
+        const labResponse = await getLabByAccountID(userInfo.accountID);
+        setUserLabs(labResponse.data.orderLabs);
         
         // Extract unique products from orders and fetch product details
         const uniqueProductIds = new Set();
@@ -71,14 +79,14 @@ export default function Support({ userInfo }) {
   }, [userInfo]);
 
   useEffect(() => {
-    const fetchLabs = async () => {
-      if (selectedProductId) {
-        const labResponse = await getLabByProductID(selectedProductId);
-        setLabs(labResponse.data);
+    const fetchProductDetails = async () => {
+      if (selectedLab) {
+        const productResponse = await getProductById(selectedLab.lab.productID);
+        setSelectedProduct(productResponse.data);
       }
     };
-    fetchLabs();
-  }, [selectedProductId]);
+    fetchProductDetails();
+  }, [selectedLab]);
 
   useEffect(() => {
     filterSupports(activeTab);
@@ -88,7 +96,7 @@ export default function Support({ userInfo }) {
     if (status === "all") {
       setFilteredSupports(supports);
     } else {
-      const statusIndex = ["received", "approved", "done"].indexOf(status);
+      const statusIndex = ["received", "approved", "done", "canceled"].indexOf(status);
       setFilteredSupports(
         supports.filter((support) => support.supporting.status === statusIndex)
       );
@@ -101,24 +109,28 @@ export default function Support({ userInfo }) {
     setModalType(type);
     setIsModalVisible(true);
     setModalContent("");
-    setSelectedLabId(null);
-    setSelectedProductId(null);
+    
+    if (type === "Create a Support Request" && support) {
+      const selectedLab = userLabs.find(item => item.lab.labID === support.labID);
+      setSelectedLab(selectedLab);
+      // Fetch product details for the selected lab
+      fetchProductDetails(selectedLab);
+    } else {
+      setSelectedLab(null);
+      setSelectedProduct(null);
+    }
   };
 
   const handleOk = async () => {
     if (modalType === "Create a Support Request") {
-      if (!selectedProductId) {
-        message.error("Please select a product");
-        return;
-      }
-      if (!selectedLabId) {
+      if (!selectedLab) {
         message.error("Please select a lab");
         return;
       }
       try {
         await createSupport({
           accountID: userInfo.accountID,
-          labID: selectedLabId,
+          labID: selectedLab.lab.labID,
           description: modalContent,
         });
         const response = await getSupportByAccountID(userInfo.accountID);
@@ -131,8 +143,8 @@ export default function Support({ userInfo }) {
     }
     setIsModalVisible(false);
     setModalContent("");
-    setSelectedLabId(null);
-    setSelectedProductId(null);
+    setSelectedLab(null);
+    setSelectedProduct(null);
   };
 
   const handleCancel = () => {
@@ -213,6 +225,15 @@ export default function Support({ userInfo }) {
     showModal("Create a Support Request", null);
   };
 
+  const locale = {
+    emptyText: (
+      <Empty
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+        description="No Data"
+      />
+    ),
+  };
+
   return (
     <div className="support-container">
       <div className="support-header">
@@ -225,24 +246,24 @@ export default function Support({ userInfo }) {
           <TabPane tab="Received" key="received" />
           <TabPane tab="Approved" key="approved" />
           <TabPane tab="Done" key="done" />
+          <TabPane tab="Canceled" key="canceled" />
         </Tabs>
       </div>
-      {currentSupports.length > 0 ? (
-        <Table
-          columns={columns}
-          dataSource={currentSupports}
-          rowKey={(record) => record.supporting.supportingID}
-          pagination={false}
-        />
-      ) : (
-        <div style={{ textAlign: 'center', margin: '20px 0' }}>
-          <p>No support requests found.</p>
-          <Button type="primary" onClick={showCreateSupportModal}>
-            Create A Request Support
-          </Button>
-        </div>
-      )}
+      
+      {/* Thêm nút "Create A Request Support" ở đây */}
+      <div style={{ marginBottom: '16px', textAlign: 'right' }}>
+        <Button type="primary" onClick={showCreateSupportModal}>
+          Create A Request Support
+        </Button>
+      </div>
 
+      <Table
+        columns={columns}
+        dataSource={currentSupports}
+        rowKey={(record) => record.supporting.supportingID}
+        pagination={false}
+        locale={locale}
+      />
       {currentSupports.length > 0 && (
         <div className="pagination-container">
           <Pagination
@@ -325,51 +346,38 @@ export default function Support({ userInfo }) {
           <>
             <Select
               style={{ width: '100%', marginBottom: '16px', height: '50px' }}
-              placeholder="Select a product"
-              onChange={(value) => {
-                setSelectedProductId(value);
-                setSelectedLabId(null); // Reset lab selection when product changes
-              }}
-              value={selectedProductId}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            >
-              {products.map((product) => (
-                <Option 
-                  key={product.id} 
-                  value={product.id}
-                  style={{ padding: '10px', height: 'auto' }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      style={{ width: 40, height: 40, marginRight: 10, objectFit: 'cover' }}
-                    />
-                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {product.name}
-                    </span>
-                  </div>
-                </Option>
-              ))}
-            </Select>
-            <Select
-              style={{ width: '100%', marginBottom: '16px', height: '50px' }}
               placeholder="Select a lab"
-              onChange={(value) => setSelectedLabId(value)}
-              value={selectedLabId}
-              disabled={!selectedProductId}
+              onChange={(value) => {
+                const lab = userLabs.find(item => item.lab.labID === value);
+                setSelectedLab(lab);
+                fetchProductDetails(lab);
+              }}
+              value={selectedLab?.lab.labID}
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             >
-              {labs.map((lab) => (
+              {userLabs.map((item) => (
                 <Option 
-                  key={lab.labID} 
-                  value={lab.labID}
+                  key={item.lab.labID} 
+                  value={item.lab.labID}
                   style={{ padding: '10px', height: 'auto' }}
                 >
-                  {lab.name}
+                  {item.lab.labID} - {item.lab.name}
                 </Option>
               ))}
             </Select>
+            {selectedProduct && (
+              <div style={{ marginBottom: '16px' }}>
+                {/* <h4>Selected Product:</h4> */}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Image
+                    src={selectedProduct.images[0]?.url || 'default-image-url.jpg'}
+                    alt={selectedProduct.name}
+                    style={{ width: 40, height: 40, marginRight: 10, objectFit: 'cover' }}
+                  />
+                  <span>{selectedProduct.name}</span>
+                </div>
+              </div>
+            )}
             <TextArea
               rows={4}
               value={modalContent}
