@@ -1,11 +1,28 @@
 // ProfileInformation.js
 import React, { useEffect, useState } from "react";
-import { Table, Button, Image, Dropdown, Menu, Modal, Input, message } from "antd";
-import { MoreOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { getOrdersByAccountID, getOrderDetailsByOrderID } from "../../../service/orderService";
+import {
+  Table,
+  Button,
+  Image,
+  Dropdown,
+  Menu,
+  Modal,
+  Input,
+  message,
+} from "antd";
+import {
+  UnorderedListOutlined,
+  RollbackOutlined
+} from "@ant-design/icons";
+import './index.css';
+import {
+  getOrdersByAccountID,
+  getOrderDetailsByOrderID,
+} from "../../../service/orderService";
 import { getProductById } from "../../../service/productService";
 import { createSupport } from "../../../service/supportService";
 import { formatCurrency } from "../../../util/CurrencyUnit";
+import { getLabByAccountID } from "../../../service/labService";
 
 const { TextArea } = Input;
 
@@ -37,7 +54,7 @@ export default function Purchase({ userInfo }) {
       })
     );
     setOrderDetails(detailsWithImages);
-    setSelectedOrder(orders.find(order => order.orders.ordersID === orderId));
+    setSelectedOrder(orders.find((order) => order.orders.ordersID === orderId));
     setShowOrderList(false);
   };
 
@@ -99,13 +116,36 @@ export default function Purchase({ userInfo }) {
   const handleOk = async () => {
     if (modalType === "Support") {
       try {
-        const response = await createSupport({
-          accountID: userInfo.accountID,
-          labID: selectedProductId,
-          description: modalContent
-        });
-        message.success("Support request created successfully");
+        const res = await getLabByAccountID(userInfo.accountID);
+        const orderLabs = res.data.orderLabs;
+
+        // Lọc ra các lab có productID trùng với selectedProductId
+        const matchingLabs = orderLabs.filter(
+          (order) => order.lab.productID === selectedProductId
+        );
+
+        // Lấy ra các labID
+        const labIDs = matchingLabs.map((lab) => lab.lab.labID);
+
+        console.log("Matching Lab IDs:", labIDs);
+
+        // Nếu có ít nhất một labID phù hợp, sử dụng labID đầu tiên
+        if (labIDs.length > 0) {
+          const response = await createSupport({
+            accountID: userInfo.accountID,
+            labID: labIDs[0],
+            description: modalContent,
+          });
+          console.log("RESPONSE", response);
+          
+          message.success("Support request created successfully");
+        } else {
+          message.error(
+            "No matching lab found for this product. This is a component, not a kit"
+          );
+        }
       } catch (error) {
+        console.error("Error creating support request:", error);
         message.error("Failed to create support request");
       }
     } else {
@@ -125,11 +165,21 @@ export default function Purchase({ userInfo }) {
     <Menu>
       <Menu.SubMenu key="support" title="Support">
         <Menu.Item key="supportView">View</Menu.Item>
-        <Menu.Item key="supportNew" onClick={() => showModal("Support", productId)}>New</Menu.Item>
+        <Menu.Item
+          key="supportNew"
+          onClick={() => showModal("Support", productId)}
+        >
+          New
+        </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu key="question" title="Question">
         <Menu.Item key="questionView">View</Menu.Item>
-        <Menu.Item key="questionNew" onClick={() => showModal("Question", productId)}>New</Menu.Item>
+        <Menu.Item
+          key="questionNew"
+          onClick={() => showModal("Question", productId)}
+        >
+          New
+        </Menu.Item>
       </Menu.SubMenu>
     </Menu>
   );
@@ -166,7 +216,7 @@ export default function Purchase({ userInfo }) {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Dropdown overlay={menu(record.productID)} trigger={['click']}>
+        <Dropdown overlay={menu(record.productID)} trigger={["click"]}>
           <Button icon={<UnorderedListOutlined />} />
         </Dropdown>
       ),
@@ -182,7 +232,7 @@ export default function Purchase({ userInfo }) {
   };
 
   return (
-    <div style={{ marginTop: '-10px' }}>
+    <div style={{ marginTop: "-10px" }}>
       {showOrderList ? (
         <Table
           columns={columns}
@@ -191,11 +241,23 @@ export default function Purchase({ userInfo }) {
         />
       ) : (
         <div>
-          <Button onClick={backToOrderList} style={{ marginBottom: 16 }}>Back to Order List</Button>
-          <h3>Order Details</h3>
-          <p><strong>Order ID:</strong> {selectedOrder.orders.ordersID}</p>
-          <p><strong>Address:</strong> {selectedOrder.orders.address}, {selectedOrder.orders.ward}, {selectedOrder.orders.district}, {selectedOrder.orders.province}</p>
-          <p><strong>Status:</strong> {selectedOrder.orders.status}</p>
+          <Button
+            icon={<RollbackOutlined />}
+            onClick={backToOrderList}
+            style={{ marginBottom: 16 }}
+          />
+          {/* <h3>Order Details</h3> */}
+          <p>
+            <strong>Order ID:</strong> {selectedOrder.orders.ordersID}
+          </p>
+          <p>
+            <strong>Address:</strong> {selectedOrder.orders.address},{" "}
+            {selectedOrder.orders.ward}, {selectedOrder.orders.district},{" "}
+            {selectedOrder.orders.province}
+          </p>
+          <p>
+            <strong>Status:</strong> {selectedOrder.orders.status}
+          </p>
           <Table
             columns={detailColumns}
             dataSource={orderDetails}
@@ -210,13 +272,13 @@ export default function Purchase({ userInfo }) {
           />
         </div>
       )}
-      
+
       <Modal
         title={modalType}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        style={{ top: '20%' }}
+        style={{ top: "20%" }}
       >
         <TextArea
           rows={4}

@@ -5,6 +5,7 @@ import ProfileInformation from '../Information';
 import Purchase from '../Purchase';
 import UpdateAccount from '../UpdateAccount';
 import ChangePassword from '../ChangePassword';
+import Support from '../Support';
 import MyLab from '../MyLab';
 import { useDispatch, useSelector } from 'react-redux';
 import { verifyToken } from '../../../service/authUser';
@@ -105,6 +106,7 @@ export default function UserProfile() {
                                 {/* lần đầu vào -> user.data?.accounts , khi load lại trang -> user.data?.data */}
                                 {activeTab === 'information' && <ProfileInformation userInfo={userFinalInfo} />}
                                 {activeTab === 'purchase' && <Purchase userInfo={userFinalInfo}/>}
+                                {activeTab === 'support' && <Support userInfo={userFinalInfo}/>}
                                 {activeTab === 'updateAccount' && <UpdateAccount userInfo={userFinalInfo}/>}
                                 {activeTab === 'changePassword' && <ChangePassword userInfo={userFinalInfo}/>}
                                 {activeTab === 'myLab' && <MyLab userInfo={userFinalInfo}/>}
