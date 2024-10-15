@@ -64,7 +64,7 @@ function SignUp() {
                         </div>
                     </div>
                     <div className="col-md-12 tab-content mt-3">
-                        <button type="submit" className="btn btn-outline-dark btn-block">Sign Up</button>
+                        <button type="submit" id='signUp-btn' className="btn btn-outline-dark btn-block">Sign Up</button>
                         <div className="form-group text-center">
                             <hr />
                             <span className="text-muted">or continue with</span>

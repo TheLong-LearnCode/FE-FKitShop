@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f7f7f7;
+    background: linear-gradient(0deg, rgba(162,202,113,1) 50%, rgba(246,233,107,1) 100%, rgba(255,255,255,1) 100%);
 }
 
 .order-success-content {

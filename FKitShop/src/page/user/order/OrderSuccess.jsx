@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './OrderSuccess.css';
+import { usePaymentContext } from '../../../contexts/PaymentContext';
 
 export default function OrderSuccess() {
     const location = useLocation();
     const navigate = useNavigate();
     const userName = location.state?.userName || 'Valued Customer';
+    const { setPaymentStatus } = usePaymentContext();
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const transactionStatus = queryParams.get('vnp_TransactionStatus');
+        const responseCode = queryParams.get('vnp_ResponseCode');
+
+        if (transactionStatus === '00' && responseCode === '00') {
+            setPaymentStatus('success');
+        } else {
+            setPaymentStatus('fail');
+        }
+    }, [location, setPaymentStatus]);
 
     return (
         <div className="order-success-container">

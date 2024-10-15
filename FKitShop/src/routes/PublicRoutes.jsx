@@ -1,5 +1,5 @@
 import React from "react";
-import UserLayout from "../layouts/user/UserLayout.jsx";
+import UserLayout from "../layouts/User/UserLayout.jsx";
 import LazyLoader from "../component/LazyLoader/index.jsx";
 
 

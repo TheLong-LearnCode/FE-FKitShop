@@ -108,3 +108,23 @@ export const activateAccount = async (id) => {
     throw error;
   }
 };
+
+export const getMyLab = async (id) => {
+  try{
+    const response = await api[GET](`/lab/account/${id}`);
+    console.log("response in getMyLab: ", response);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const downloadMyLab = async (accountID,orderID,labID,productID,fileNamePDF) => {
+  try{
+    const response = (`http://localhost:8080/fkshop/lab/download?accountID=${accountID}&orderID=${orderID}&labID=${labID}&productID=${productID}&fileName=${fileNamePDF}`);
+    console.log("response in downloadMyLab: ", response);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
