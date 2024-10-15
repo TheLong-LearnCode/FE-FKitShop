@@ -1,34 +1,103 @@
 import React, { useEffect, useState } from 'react'
 import './index.css'
 import { getMyLab, downloadMyLab } from '../../../service/userService';
+import { getLabByProductID } from '../../../service/labService';
+import { Pagination, Select, message } from 'antd';
 
+const { Option } = Select;
 
 export default function MyLab({ userInfo }) {
-  const [labList, setLabList] = useState([]);
+  const [allLabs, setAllLabs] = useState([]);
+  const [filteredLabs, setFilteredLabs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const pageSize = 5; // Số item trên mỗi trang
+
   useEffect(() => {
     const fetchGetMyLab = async () => {
       if (userInfo?.accountID) {
         const response = await getMyLab(userInfo.accountID);
         console.log("response in MyLab: ", response.data.orderLabs);
-        setLabList(response.data.orderLabs);
+        setAllLabs(response.data.orderLabs);
+        setFilteredLabs(response.data.orderLabs);
+        
+        // Extract unique products from labs
+        const uniqueProducts = [...new Set(response.data.orderLabs.map(lab => lab.lab.productID))];
+        setProducts(uniqueProducts.map(productId => ({ id: productId, name: `Product ${productId}` })));
       }
     };
     fetchGetMyLab();
   }, [userInfo]);
 
+  useEffect(() => {
+    if (selectedProductId) {
+      fetchLabsByProductID(selectedProductId);
+    } else {
+      setFilteredLabs(allLabs);
+    }
+    setCurrentPage(1);
+  }, [selectedProductId, allLabs]);
+
+  const fetchLabsByProductID = async (productID) => {
+    try {
+      const response = await getLabByProductID(productID);
+      const filteredLabs = response.data.map(lab => ({
+        lab: {
+          labID: lab.labID,
+          productID: lab.productID,
+          name: lab.name,
+          fileNamePDF: lab.fileNamePDF
+        }
+      }));
+      setFilteredLabs(filteredLabs);
+    } catch (error) {
+      console.error("Error fetching labs by productID:", error);
+      message.error("Failed to fetch labs for the selected product");
+    }
+  };
+
   const handleDownload = async (lab) => {
     try {
-      const response = await downloadMyLab( userInfo?.accountID,lab.orderID,lab.lab.labID,lab.lab.productID,lab.lab.fileNamePDF);
+      const response = await downloadMyLab(userInfo?.accountID, lab.orderID, lab.lab.labID, lab.lab.productID, lab.lab.fileNamePDF);
       window.location.href = response;
     } catch (error) {
       console.error('Error downloading lab:', error);
-      // Có thể hiển thị thông báo lỗi cho người dùng ở đây
     }
   };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleProductChange = (value) => {
+    setSelectedProductId(value);
+  };
+
+  // Tính toán các lab sẽ hiển thị trên trang hiện tại
+  const paginatedLabList = filteredLabs.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <div className="container">
       <h4 className='text-center'><strong>My LAB</strong></h4>
+      <div style={{ marginBottom: '16px' }}>
+        <Select
+          style={{ width: 200 }}
+          placeholder="Filter by Product"
+          onChange={handleProductChange}
+          value={selectedProductId}
+        >
+          <Option value={null}>All Products</Option>
+          {products.map((product) => (
+            <Option key={product.id} value={product.id}>
+              {product.name}
+            </Option>
+          ))}
+        </Select>
+      </div>
       <div className="lab-table">
         <table className="table table-bordered">
           <thead className="lab-thead">
@@ -38,13 +107,11 @@ export default function MyLab({ userInfo }) {
             </tr>
           </thead>
           <tbody>
-            {labList.map((lab) => (
+            {paginatedLabList.map((lab) => (
               <tr key={lab.lab.labID}>
                 <td className="col-8">{lab.lab.fileNamePDF}</td>
                 <td className='text-center col-2'>
-                  <button className='btn' onClick={(e) => {
-                    handleDownload(lab);
-                  }}>
+                  <button className='btn' onClick={() => handleDownload(lab)}>
                     <box-icon name='download' type='solid' color='#3fe70f'></box-icon>
                   </button>
                 </td>
@@ -52,6 +119,15 @@ export default function MyLab({ userInfo }) {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="pagination-container" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <Pagination
+          current={currentPage}
+          total={filteredLabs.length}
+          pageSize={pageSize}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
       </div>
     </div>
   )
