@@ -24,7 +24,7 @@ export default function MyLab({ userInfo }) {
         
         // Extract unique products from labs
         const uniqueProducts = [...new Set(response.data.orderLabs.map(lab => lab.lab.productID))];
-        setProducts(uniqueProducts.map(productId => ({ id: productId, name: `Product ${productId}` })));
+        setProducts(uniqueProducts.map((productId, productName) => ({ id: productId, name: `${productName}` })));
       }
     };
     fetchGetMyLab();
