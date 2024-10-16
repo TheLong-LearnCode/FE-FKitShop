@@ -16,8 +16,11 @@ export default function OrderSuccess() {
                 </div>
                 <h2>Your Order Has Been Placed Successfully</h2>
                 <p>We appreciate your business and hope you enjoy your purchase.</p>
-                <button className="home-button" onClick={() => navigate('/')}>
+                <button className="home-button m-2" onClick={() => navigate('/')}>
                     Return to Home
+                </button>
+                <button className="viewPurchase-button m-2" onClick={() => navigate('/user/purchase')}>
+                    View your Order
                 </button>
             </div>
         </div>

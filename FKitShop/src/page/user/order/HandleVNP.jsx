@@ -14,7 +14,7 @@ export default function HandleVNP() {
                 const { formData, orderDetails, total } = location.state;
                 try {
                     const vnpayUrl = await checkOutVNP(total);
-                    // Lưu thông tin đơn hàng vào localStorage trước khi chuyển hướng
+                    // Lưu thông tin đơn hàng vào localStorage
                     localStorage.setItem('pendingOrder', JSON.stringify({ formData, orderDetails }));
                     window.location.href = vnpayUrl;
                 } catch (error) {
