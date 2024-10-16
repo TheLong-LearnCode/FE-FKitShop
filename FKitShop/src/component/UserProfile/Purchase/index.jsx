@@ -25,7 +25,7 @@ export default function Purchase({ userInfo }) {
     all: 0,
     pending: 0,
     processing: 0,
-    shipped: 0,
+    delivering: 0,
     delivered: 0,
     canceled: 0
   });
@@ -47,7 +47,7 @@ export default function Purchase({ userInfo }) {
           all: response.data.length,
           pending: 0,
           processing: 0,
-          shipped: 0,
+          delivering: 0,
           delivered: 0,
           canceled: 0
         };
@@ -56,9 +56,12 @@ export default function Purchase({ userInfo }) {
           const status = order.orders.status.toLowerCase();
           if (counts.hasOwnProperty(status)) {
             counts[status]++;
+          } else {
+            console.log(`Unexpected status: ${status}`);
           }
         });
         
+        console.log("Tab counts:", counts);
         setTabCounts(counts);
       }
     };
@@ -149,6 +152,7 @@ export default function Purchase({ userInfo }) {
   return (
     <div style={{ marginTop: "-10px" }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        {console.log("Current tabCounts before rendering OrderTabs:", tabCounts)}
         <OrderTabs activeTab={activeTab} tabCounts={tabCounts} onTabChange={handleTabChange} />
       </div>
 

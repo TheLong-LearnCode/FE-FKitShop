@@ -13,11 +13,7 @@ export default function SupportFormModal({
 
   if (!selectedSupport || !selectedSupport.data) return null;
 
-  const {
-    accountID,
-    customerName,
-    labSupports,
-  } = selectedSupport.data;
+  const { accountID, customerName, labSupports } = selectedSupport.data;
 
   const onPageChange = (page) => {
     setCurrentPage(page);
@@ -49,12 +45,15 @@ export default function SupportFormModal({
       title: "Support Times",
       dataIndex: ["supporting", "countSupport"],
       key: "countSupport",
+      render: (countSupport, record) => {
+        return `#${5 - countSupport}`;
+      },
     },
     {
       title: "Status",
       dataIndex: ["supporting", "status"],
       key: "status",
-      render: (status) => ['Received', 'Approved', 'Done'][status],
+      render: (status) => ["Received", "Approved", "Done"][status],
     },
     {
       title: "Date Post",
@@ -66,13 +65,13 @@ export default function SupportFormModal({
       title: "Expected Support Date",
       dataIndex: ["supporting", "expectedSpDate"],
       key: "expectedSpDate",
-      render: (date) => date ? new Date(date).toLocaleDateString() : 'N/A',
+      render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
     },
     {
       title: "Support Date",
       dataIndex: ["supporting", "supportDate"],
       key: "supportDate",
-      render: (date) => date ? new Date(date).toLocaleDateString() : 'N/A',
+      render: (date) => (date ? new Date(date).toLocaleDateString() : "N/A"),
     },
   ];
 
@@ -81,17 +80,25 @@ export default function SupportFormModal({
       open={showModal}
       onCancel={handleCloseModal}
       width="80%"
-      title={<h4>Support Details</h4>}
+      title={<h4>Customer Information</h4>}
       footer={null}
     >
       <Row gutter={16}>
         <Col span={12}>
-          <p><strong>Customer ID:</strong> {accountID}</p>
-          <p><strong>Customer Name:</strong> {customerName}</p>
+          <p>
+            <strong>Customer ID:</strong> {accountID}
+          </p>
+          <p>
+            <strong>Customer Name:</strong> {customerName}
+          </p>
         </Col>
         <Col span={12}>
           <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-            <img src="/img/user.png" alt="Customer Avatar" style={{ width: "100px", height: "100px" }}/>
+            <img
+              src="/img/user.png"
+              alt="Customer Avatar"
+              style={{ width: "100px", height: "100px" }}
+            />
           </div>
         </Col>
       </Row>
@@ -108,7 +115,10 @@ export default function SupportFormModal({
           onChange: onPageChange,
         }}
       />
-
+      <h4>Status:</h4>
+      <p>
+        {["Received", "Approved", "Done"][labSupports[0].supporting?.status]}
+      </p>
       <h4>Description:</h4>
       <p>{labSupports[0].supporting.description}</p>
     </Modal>

@@ -16,9 +16,10 @@ const OrderPage = React.lazy(() =>
 );
 const OrderSuccess = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
 
-// const KitPage = React.lazy(() => import("../page/admin/kit-manager"));
-// const ComponentPage = React.lazy(() => import("../page/admin/component-manager"));
-// const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
+const KitPage = React.lazy(() => import("../page/admin/kit-manager"));
+const ComponentPage = React.lazy(() => import("../page/admin/component-manager"));
+const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
+const TagPage = React.lazy(() => import("../page/admin/tag-manager"));
 
 const CategoryPage = React.lazy(() => import("../page/admin/category-manager"));
 const ProductPage = React.lazy(() => import("../page/admin/product-manager"));
@@ -89,8 +90,7 @@ const PrivateRoutes = [
             path: "kit-manager",
             element: (
               <Suspense fallback={null}>
-                <CategoryPage /> 
-                {/* KitPage */}
+                <KitPage /> 
               </Suspense>
             ),
           },
@@ -98,7 +98,7 @@ const PrivateRoutes = [
             path: "component-manager",
             element: (
               <Suspense fallback={null}>
-                <CategoryPage />
+                <ComponentPage />
                 {/* ComponentPage */}
               </Suspense>
             ),
@@ -107,7 +107,7 @@ const PrivateRoutes = [
             path: "lab-manager",
             element: (
               <Suspense fallback={null}>
-                <CategoryPage />
+                <LabPage />
               </Suspense>
             ),
           },
@@ -125,7 +125,7 @@ const PrivateRoutes = [
         path: "tag-manager",
         element: (
           <Suspense fallback={null}>
-            <DeliveryPage />
+            <TagPage />
           </Suspense>
         ),
       },
