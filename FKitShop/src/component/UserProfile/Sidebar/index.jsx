@@ -3,7 +3,7 @@ import React from "react";
 import clsx from "clsx"; // Using clsx to handle class names
 import "./index.module.css";
 
-export default function ProfileSidebar({ activeTab, setActiveTab }) {
+export default function ProfileSidebar({ activeTab, setActiveTab, userInfo }) {
   const handleOnclick = (id) => () => {
     setActiveTab(id); // Update the active tab in UserProfile component
   };
@@ -14,7 +14,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab }) {
         <strong>My Profile</strong>
       </h4>
       <img
-        src="/img/user.png" // Replace this with your avatar image path
+        src= {userInfo?.image ? userInfo.image : "/img/user.png"} // Replace this with your avatar image path
         alt="Profile"
         className="profile-avatar mb-3"
       />

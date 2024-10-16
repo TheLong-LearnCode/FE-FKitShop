@@ -28,7 +28,7 @@ export default function ProfileInformation({ userInfo }) {
   return (
     <Card className="profile-card">
       <div className="profile-header">
-        <Avatar size={100} icon={<UserOutlined />} className="profile-avatar" />
+        <img src={userInfo.image ? userInfo.image : (<Avatar size={100} icon={<UserOutlined />} className="profile-avatar" />)} alt="Profile" className="profile-avatar" />
         <Title level={2}>{fullName}</Title>
       </div>
       <Descriptions bordered column={1}>

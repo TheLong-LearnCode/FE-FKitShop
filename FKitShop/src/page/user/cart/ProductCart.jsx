@@ -85,6 +85,8 @@ export default function ProductCart() {
             })).then(() => {
                 dispatch(fetchCart(userInfo?.data?.accountID)); // Lấy giỏ hàng đã cập nhật sau khi thay đổi số lượng
             });
+        } else {
+            handleRemoveProduct(product);
         }
     };
 

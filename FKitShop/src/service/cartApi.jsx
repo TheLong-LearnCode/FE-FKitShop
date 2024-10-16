@@ -27,6 +27,7 @@ export const updateCartItem = async (accountID, productID, quantity) => {
     const response = await api[PUT]("/carts", { accountID, productID, quantity });
     return response.data.data;
   } catch (error) {
+    console.log("Error updating cart item:", error);
     throw error;
   }
 };

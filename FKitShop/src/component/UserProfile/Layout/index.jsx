@@ -98,7 +98,11 @@ export default function UserProfile() {
                         <div className="row">
                             <div className="col-md-3 border-right">
                                 {/* Pass the activeTab and setActiveTab to Sidebar */}
-                                <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
+                                <Sidebar 
+                                    activeTab={activeTab} 
+                                    setActiveTab={handleTabChange} 
+                                    userInfo={userFinalInfo} 
+                                />
                             </div>
                             <div className='col-md-9'>
                                 {/* Show a dismissible alert if showMessage is true */}

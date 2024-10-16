@@ -86,7 +86,6 @@ export default function Purchase({ userInfo }) {
   };
 
   const showOrderDetails = useCallback(async (orderId) => {
-    navigate(`/user/purchase/orderid=${orderId}`, { replace: true });
     const details = await getOrderDetailsByOrderID(orderId);
     const detailsWithImages = await Promise.all(
       details.data.map(async (detail) => {

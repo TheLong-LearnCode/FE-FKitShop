@@ -45,6 +45,7 @@ const OrderList = ({ filteredOrders, showOrderDetails, pageSize }) => {
   return (
     <Table
       columns={columns}
+      
       dataSource={filteredOrders}
       rowKey={(record) => record.orders.ordersID}
       pagination={{ pageSize: pageSize }}

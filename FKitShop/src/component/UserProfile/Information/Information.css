@@ -14,6 +14,8 @@
 .profile-avatar {
   margin-bottom: 16px;
   background-color: #1890ff;
+  border-radius: 100%;
+
 }
 
 .ant-descriptions-item-label {
