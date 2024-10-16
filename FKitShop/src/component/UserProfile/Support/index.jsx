@@ -187,7 +187,7 @@ export default function Support({ userInfo }) {
         message.success("Support request created successfully");
       } catch (error) {
         console.error("Error creating support:", error);
-        message.error("Failed to create support request");
+        message.error(error.response.data.message);
       }
     }
     setIsModalVisible(false);
@@ -451,7 +451,7 @@ export default function Support({ userInfo }) {
               value={selectedLab?.lab.labID}
               dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
             >
-              {userLabs.map((item) => (
+              {/* {userLabs.map((item) => (
                 <Option
                   key={item.lab.labID}
                   value={item.lab.labID}
@@ -459,16 +459,25 @@ export default function Support({ userInfo }) {
                 >
                   {item.lab.labID} - {item.lab.name}
                 </Option>
-              ))}
+              ))} */}
+              {Array.from(new Set(userLabs.map(item => item.lab.labID))).map((labID) => {
+                const lab = userLabs.find(item => item.lab.labID === labID);
+                return (
+                  <Option
+                    key={labID}
+                    value={labID}
+                    style={{ padding: "10px", height: "auto" }}
+                  >
+                    {labID} - {lab.lab.name}
+                  </Option>
+                );
+              })}
             </Select>
             {selectedProduct && (
               <div style={{ marginBottom: "16px" }}>
-                {/* <h4>Selected Product:</h4> */}
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Image
-                    src={
-                      selectedProduct.images[0]?.url || "default-image-url.jpg"
-                    }
+                    src={selectedProduct.images[0]?.url || "default-image-url.jpg"}
                     alt={selectedProduct.name}
                     style={{
                       width: 40,

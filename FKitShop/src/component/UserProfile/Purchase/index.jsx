@@ -1,6 +1,7 @@
 // ProfileInformation.js
-import React, { useEffect, useState } from "react";
-import { message } from "antd";
+import React, { useEffect, useState, useCallback } from "react";
+import { message, Modal } from "antd";
+import { useNavigate, useParams } from 'react-router-dom';
 import './index.css';
 import {
   getOrdersByAccountID,
@@ -19,7 +20,6 @@ export default function Purchase({ userInfo }) {
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderDetails, setOrderDetails] = useState([]);
-  const [showOrderList, setShowOrderList] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [tabCounts, setTabCounts] = useState({
     all: 0,
@@ -30,43 +30,50 @@ export default function Purchase({ userInfo }) {
     canceled: 0
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSupportModalVisible, setIsSupportModalVisible] = useState(false);
   const [modalType, setModalType] = useState("");
   const [modalContent, setModalContent] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 3;
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const fetchOrders = useCallback(async () => {
+    if (userInfo?.accountID) {
+      const response = await getOrdersByAccountID(userInfo.accountID);
+      setAllOrders(response.data);
+      setFilteredOrders(response.data);
+      
+      const counts = {
+        all: response.data.length,
+        pending: 0,
+        processing: 0,
+        delivering: 0,
+        delivered: 0,
+        canceled: 0
+      };
+      
+      response.data.forEach(order => {
+        const status = order.orders.status.toLowerCase();
+        if (counts.hasOwnProperty(status)) {
+          counts[status]++;
+        }
+      });
+      
+      setTabCounts(counts);
+    }
+  }, [userInfo]);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (userInfo?.accountID) {
-        const response = await getOrdersByAccountID(userInfo.accountID);
-        setAllOrders(response.data);
-        setFilteredOrders(response.data);
-        
-        const counts = {
-          all: response.data.length,
-          pending: 0,
-          processing: 0,
-          delivering: 0,
-          delivered: 0,
-          canceled: 0
-        };
-        
-        response.data.forEach(order => {
-          const status = order.orders.status.toLowerCase();
-          if (counts.hasOwnProperty(status)) {
-            counts[status]++;
-          } else {
-            console.log(`Unexpected status: ${status}`);
-          }
-        });
-        
-        console.log("Tab counts:", counts);
-        setTabCounts(counts);
-      }
-    };
     fetchOrders();
-  }, [userInfo]);
+  }, [fetchOrders]);
+
+  useEffect(() => {
+    if (id) {
+      const orderId = id.split('=')[1];
+      showOrderDetails(orderId);
+    }
+  }, [id]);
 
   const handleTabChange = (key) => {
     setActiveTab(key);
@@ -78,7 +85,8 @@ export default function Purchase({ userInfo }) {
     }
   };
 
-  const showOrderDetails = async (orderId) => {
+  const showOrderDetails = useCallback(async (orderId) => {
+    navigate(`/user/purchase/orderid=${orderId}`, { replace: true });
     const details = await getOrderDetailsByOrderID(orderId);
     const detailsWithImages = await Promise.all(
       details.data.map(async (detail) => {
@@ -90,23 +98,24 @@ export default function Purchase({ userInfo }) {
       })
     );
     setOrderDetails(detailsWithImages);
-    setSelectedOrder(allOrders.find((order) => order.orders.ordersID === orderId));
-    setShowOrderList(false);
-  };
+    setSelectedOrder(allOrders.find(order => order.orders.ordersID === orderId));
+    setIsModalVisible(true);
+  }, [allOrders, navigate]);
 
-  const backToOrderList = () => {
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
     setSelectedOrder(null);
     setOrderDetails([]);
-    setShowOrderList(true);
+    navigate('/user/purchase', { replace: true });
   };
 
-  const showModal = (type, productId) => {
+  const showSupportModal = (type, productId) => {
     setModalType(type);
     setSelectedProductId(productId);
-    setIsModalVisible(true);
+    setIsSupportModalVisible(true);
   };
 
-  const handleOk = async () => {
+  const handleSupportOk = async () => {
     if (modalType === "Support") {
       try {
         const res = await getLabByAccountID(userInfo.accountID);
@@ -115,14 +124,12 @@ export default function Purchase({ userInfo }) {
           (order) => order.lab.productID === selectedProductId
         );
         const labIDs = matchingLabs.map((lab) => lab.lab.labID);
-        console.log("Matching Lab IDs:", labIDs);
         if (labIDs.length > 0) {
-          const response = await createSupport({
+          await createSupport({
             accountID: userInfo.accountID,
             labID: labIDs[0],
             description: modalContent,
           });
-          console.log("RESPONSE", response);
           message.success("Support request created successfully");
         } else {
           message.error(
@@ -136,12 +143,12 @@ export default function Purchase({ userInfo }) {
     } else {
       message.info("Question submission not implemented yet");
     }
-    setIsModalVisible(false);
+    setIsSupportModalVisible(false);
     setModalContent("");
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const handleSupportCancel = () => {
+    setIsSupportModalVisible(false);
     setModalContent("");
   };
 
@@ -152,30 +159,40 @@ export default function Purchase({ userInfo }) {
   return (
     <div style={{ marginTop: "-10px" }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        {console.log("Current tabCounts before rendering OrderTabs:", tabCounts)}
         <OrderTabs activeTab={activeTab} tabCounts={tabCounts} onTabChange={handleTabChange} />
       </div>
 
-      {showOrderList ? (
-        <OrderList filteredOrders={filteredOrders} showOrderDetails={showOrderDetails} />
-      ) : (
-        <OrderDetails
-          selectedOrder={selectedOrder}
-          orderDetails={orderDetails}
-          backToOrderList={backToOrderList}
-          showModal={showModal}
-          currentPage={currentPage}
-          pageSize={pageSize}
-          handleTableChange={handleTableChange}
-        />
-      )}
+      <OrderList 
+        filteredOrders={filteredOrders} 
+        showOrderDetails={showOrderDetails} 
+        pageSize={5}
+      />
+
+      <Modal
+        visible={isModalVisible}
+        onCancel={handleModalCancel}
+        width={800}
+        footer={null}
+        style={{ marginTop: "3%" }}
+      >
+        {selectedOrder && (
+          <OrderDetails
+            selectedOrder={selectedOrder}
+            orderDetails={orderDetails}
+            showModal={showSupportModal}
+            currentPage={currentPage}
+            pageSize={2}
+            handleTableChange={handleTableChange}
+          />
+        )}
+      </Modal>
 
       <SupportModal
-        isModalVisible={isModalVisible}
+        isModalVisible={isSupportModalVisible}
         modalType={modalType}
         modalContent={modalContent}
-        handleOk={handleOk}
-        handleCancel={handleCancel}
+        handleOk={handleSupportOk}
+        handleCancel={handleSupportCancel}
         setModalContent={setModalContent}
       />
     </div>

@@ -105,11 +105,6 @@ const OrderDetails = ({ selectedOrder, orderDetails, backToOrderList, showModal,
 
   return (
     <div>
-      <Button
-        icon={<RollbackOutlined />}
-        onClick={backToOrderList}
-        style={{ marginBottom: 16 }}
-      />
       <p>
         <strong>Order ID:</strong> {selectedOrder.orders.ordersID}
       </p>

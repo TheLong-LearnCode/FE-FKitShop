@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Button } from 'antd';
 import { formatCurrency } from "../../../util/CurrencyUnit";
 
-const OrderList = ({ filteredOrders, showOrderDetails }) => {
+const OrderList = ({ filteredOrders, showOrderDetails, pageSize }) => {
   const columns = [
     {
       title: "Order ID",
@@ -47,6 +47,7 @@ const OrderList = ({ filteredOrders, showOrderDetails }) => {
       columns={columns}
       dataSource={filteredOrders}
       rowKey={(record) => record.orders.ordersID}
+      pagination={{ pageSize: pageSize }}
     />
   );
 };

@@ -12,7 +12,7 @@ export default function MyLab({ userInfo }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const pageSize = 5; // Số item trên mỗi trang
+  const pageSize = 4; // Số item trên mỗi trang
 
   useEffect(() => {
     const fetchGetMyLab = async () => {
@@ -53,7 +53,7 @@ export default function MyLab({ userInfo }) {
       setFilteredLabs(filteredLabs);
     } catch (error) {
       console.error("Error fetching labs by productID:", error);
-      message.error("Failed to fetch labs for the selected product");
+      message.error(error.response.data.message);
     }
   };
 
@@ -63,6 +63,7 @@ export default function MyLab({ userInfo }) {
       window.location.href = response;
     } catch (error) {
       console.error('Error downloading lab:', error);
+      message.error(error.response.data.message);
     }
   };
 

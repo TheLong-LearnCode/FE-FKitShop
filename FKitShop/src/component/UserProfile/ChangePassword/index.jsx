@@ -35,7 +35,8 @@ export default function ChangePassword({ userInfo }) {
       ],
       onSubmit: async (rawData) => {
         const updatedPassword = {
-          password: rawData.newPassword,
+          currentPassword: rawData.currentPassword,
+          newPassword: rawData.newPassword,
         };
         console.log("updatedPassword: ", updatedPassword);
         try {
@@ -44,6 +45,7 @@ export default function ChangePassword({ userInfo }) {
           Notification(response.message, "", 2, "info");
         } catch (error) {
           console.error("Error in updatePassword: ", error);
+          Notification(error.response.data.message, "", 2, "error");
         }
       },
     });
