@@ -15,7 +15,7 @@ export const viewCart = async (accountID) => {
 export const addToCart = async (accountID, productID, quantity) => {
   try {
     const response = await api[POST]('/carts/create', { accountID, productID, quantity });
-    return response.data.data;
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -36,7 +36,7 @@ export const updateCartItem = async (accountID, productID, quantity) => {
 export const removeFromCart = async (accountID, productID) => {
   try {
     const response = await api[DELETE](`/carts/delete?accountID=${accountID}&productID=${productID}`);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     throw error;
   }
