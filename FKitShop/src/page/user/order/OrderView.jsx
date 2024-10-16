@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
 import { getProvinces, getDistricts, getWards } from '../../../service/ghnApi.jsx';
 import { IDLE } from '../../../redux/constants/status.js';
-import { checkOutOrder, checkOutVNP } from '../../../service/orderService.jsx';
+import { checkOutOrder, checkOutVNP} from '../../../service/orderService.jsx';
 import { log } from 'react-modal/lib/helpers/ariaAppHider.js';
 import { verifyToken } from '../../../service/authUser.jsx';
-import { usePaymentContext } from '../../../contexts/PaymentContext';
+
 
 
 
@@ -24,9 +24,6 @@ export default function OrderView() {
     const [shippingFee, setShippingFee] = useState(0);
     const [error, setError] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
-    const { paymentStatus } = usePaymentContext();
-    const [formData3, setFormData3] = useState([]);
-    const [orderDR, setOrderDR] = useState([]);
 
 
     // Lấy thông tin người dùng từ Redux Store
@@ -172,12 +169,10 @@ export default function OrderView() {
                 note: formData.note
             };
 
-
             const orderDetailsRequest = cartProducts.map(cartProduct => ({
                 productID: cartProduct.productID,
                 quantity: cartProduct.quantity,
             }));
-
 
             if (paymentMethod === 'cod') {
                 try {
@@ -185,64 +180,20 @@ export default function OrderView() {
                     navigate('/order-success', { state: { userName: formData.fullName } });
                 } catch (error) {
                     console.error("Error placing COD order:", error);
-                    // Xử lý lỗi nếu cần
                 }
-            } else if (paymentMethod === 'vnpay') {
-                try {
-                    const vnpayResponse = await checkOutVNP(total);
-                    // Chuyển hướng người dùng đến trang thanh toán VNPAY
-                    window.location.href = vnpayResponse;
-                } catch (error) {
-                    console.error("Error with VNPAY checkout:", error);
-                    // Xử lý lỗi nếu cần
-                }
+            } else if (paymentMethod === 'VNpay') {
+                navigate('/handle-vnpay', { 
+                    state: { 
+                        formData: formData2, 
+                        orderDetails: orderDetailsRequest,
+                        total: total
+                    } 
+                });
             }
         } else {
             console.log('Form is invalid');
         }
-
     };
-
-
-
-
-    useEffect(() => {
-        if (paymentStatus === 'success' && paymentMethod === 'vnpay') {
-            console.log("status: " + paymentStatus);
-            const fetchOrder = async () => {
-                try {
-                    if (validateForm()) {
-                        const formData2 = {
-                            accountID: userInfo?.data.accountID,
-                            name: formData.fullName,
-                            province: formData.provinceId,
-                            district: formData.districtId,
-                            ward: formData.wardCode,
-                            address: formData.address,
-                            payingMethod: paymentMethod,
-                            phoneNumber: formData.phoneNumber,
-                            shippingPrice: shippingFee,
-                            note: formData.note
-                        };
-
-
-                        const orderDetailsRequest = cartProducts.map(cartProduct => ({
-                            productID: cartProduct.productID,
-                            quantity: cartProduct.quantity,
-                        }));
-                        const response = await checkOutOrder(formData2, orderDetailsRequest);
-                        console.log("RESPONSE.DATAAA: ", response);
-                        // Xử lý response nếu cần
-                        navigate('/order-success', { state: { userName: formData.fullName } });
-                    }
-                } catch (error) {
-                    console.error("Error fetching order:", error);
-                    // Xử lý lỗi nếu cần
-                }
-            };
-            fetchOrder();
-        }
-    }, [paymentStatus, paymentMethod]);
 
 
 
@@ -372,9 +323,9 @@ export default function OrderView() {
                                     className="form-check-input"
                                     type="radio"
                                     name="paymentMethod"
-                                    id="vnpay"
-                                    value="vnpay"
-                                    checked={paymentMethod === 'vnpay'}
+                                    id="VNpay"
+                                    value="VNpay"
+                                    checked={paymentMethod === 'VNpay'}
                                     onChange={handlePaymentMethodChange}
                                 />
                                 <label className="form-check-label" htmlFor="onlineBanking">
