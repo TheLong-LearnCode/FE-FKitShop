@@ -332,6 +332,7 @@ export default function Support({ userInfo }) {
             }
             key="canceled"
           />
+          <TabPane />
         </Tabs>
       </div>
 
@@ -386,12 +387,14 @@ export default function Support({ userInfo }) {
                       ? "#006d75"
                       : selectedSupport.supporting.status === 1
                       ? "blue"
-                      : "green",
+                      : selectedSupport.supporting.status === 2
+                      ? "green"
+                      : "red",
                   fontWeight: "bold",
                 }}
               >
                 {
-                  ["Received", "Approved", "Done"][
+                  ["Received", "Approved", "Done", "Canceled"][
                     selectedSupport.supporting.status
                   ]
                 }
