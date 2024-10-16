@@ -29,6 +29,7 @@ const OrderList = ({ filteredOrders, showOrderDetails }) => {
       title: "Status",
       dataIndex: ["orders", "status"],
       key: "status",
+      render: (status) => status, // Thêm dòng này để chuyển đổi hiển thị
     },
     {
       title: "Action",

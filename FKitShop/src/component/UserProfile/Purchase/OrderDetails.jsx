@@ -119,6 +119,9 @@ const OrderDetails = ({ selectedOrder, orderDetails, backToOrderList, showModal,
         {addressDetails.province}
       </p>
       <p>
+        <strong>Note:</strong> {selectedOrder.orders.note}
+      </p>
+      <p>
         <strong>Status:</strong> {selectedOrder.orders.status}
       </p>
       <Table

@@ -52,6 +52,9 @@ export default function SupportTable({
       title: "Available Support",
       dataIndex: ["supporting", "countSupport"],
       key: "availableSupport",
+      render: (countSupport, record) => {
+        return `#${5 - countSupport}`;
+      },
     },
     {
       title: "Request Date",

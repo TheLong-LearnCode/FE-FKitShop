@@ -229,11 +229,7 @@ export default function Support({ userInfo }) {
       dataIndex: ["supporting", "countSupport"],
       key: "countSupport",
       render: (countSupport, record) => {
-        if (record.supporting.status !== 2) {
-          return `#${6 - countSupport}`;
-        } else {
-          return `#${5 - countSupport}`;
-        }
+        return `#${5 - countSupport}`;
       },
     },
     {
@@ -409,9 +405,7 @@ export default function Support({ userInfo }) {
             </p>
             <p>
               <strong>Support Times:</strong>{" "}
-              {selectedSupport.supporting.status !== 2
-                ? `#${6 - selectedSupport.supporting.countSupport}`
-                : `#${5 - selectedSupport.supporting.countSupport}`}
+              {`#${5 - selectedSupport.supporting.countSupport}`}
             </p>
             <p>
               <strong>Request Date:</strong>{" "}
