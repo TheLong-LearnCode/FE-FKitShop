@@ -1,4 +1,3 @@
-
 import api from "../config/axios";
 
 import { GET, PUT, POST } from "../constants/httpMethod";
@@ -31,10 +30,12 @@ export const getAllOrders = async () => {
 }
 export const checkOutOrder = async (ordersRequest, orderDetailsRequest) => {
     try {
+        console.log("Sending order request:", { ordersRequest, orderDetailsRequest });
         const response = await api[POST]('/orders/checkout', { ordersRequest, orderDetailsRequest });
-        console.log("RESPONSE: ", response);
+        console.log("RESPONSE from checkOutOrder: ", response);
         return response.data;
     } catch (error) {
+        console.error("Error in checkOutOrder:", error);
         throw error;
     }
 }
@@ -43,7 +44,7 @@ export const checkOutVNP = async (amount) => {
     try {
         const response = await api[POST](`/submitOrder?amount=${amount}&orderInfo=Payment for test`);
         console.log("RESPONSE: ", response.data);
-        return response.data;
+        return response.data; // Đảm bảo rằng response.data chứa URL VNPAY
     } catch (error) {
         throw error;
     }

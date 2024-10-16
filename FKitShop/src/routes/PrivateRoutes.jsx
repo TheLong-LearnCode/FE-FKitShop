@@ -4,6 +4,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 // import { ROLE_ADMIN } from "../constants/role";
 const OrderSuccessPage = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
 const OrderViewPage = React.lazy(() => import("../page/user/order/OrderView.jsx"));
+const HandleVNPPage = React.lazy(() => import("../page/user/order/HandleVNP.jsx"));
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
@@ -247,6 +248,14 @@ const PrivateRoutes = [
     element: (
       <Suspense fallback={null}>
         <OrderSuccessPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/handle-vnpay",
+    element: (
+      <Suspense fallback={null}>
+        <HandleVNPPage />
       </Suspense>
     ),
   },
