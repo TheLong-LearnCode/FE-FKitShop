@@ -10,3 +10,4 @@ export const Notification = (message, detail, duration, status) => {
     duration: duration,
   });
 };
+

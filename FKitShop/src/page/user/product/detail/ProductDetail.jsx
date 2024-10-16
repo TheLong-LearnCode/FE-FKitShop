@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { IDLE } from '../../../../redux/constants/status';
 import { verifyToken } from '../../../../service/authUser';
 import { addProductToCart } from '../../../../redux/slices/cartSlice';
+import { message } from 'antd';
 
 export default function ProductDetail() {
     const [product, setProduct] = useState(null); // Khởi tạo là null thay vì mảng rỗng
@@ -16,6 +17,7 @@ export default function ProductDetail() {
     const [activeButton, setActiveButton] = useState('descript');
     const [selectedImage, setSelectedImage] = useState('');
     const [quantity, setQuantity] = useState(1);
+    const [labDetails, setLabDetails] = useState(null);
 
     const { productID } = useParams()
     const dispatch = useDispatch()
@@ -79,6 +81,17 @@ export default function ProductDetail() {
         fetchProductDetail();
     }, [productID]);
 
+    const fetchLabDetails = async () => {
+        try {
+            const response = await api[GET](`lab/product/${productID}`);
+            setLabDetails(response.data.data);
+        } catch (err) {
+            console.error("Error fetching lab details: ", err);
+        }
+    }
+
+    fetchLabDetails();
+
     const handleButtonClick = (buttonType) => {
         setActiveButton(buttonType);
     }
@@ -92,7 +105,10 @@ export default function ProductDetail() {
     };
 
     const handleIncreaseQuantity = () => {
-        setQuantity(prevQuantity => prevQuantity + 1);
+        setQuantity(prevQuantity => prevQuantity >= product.quantity ? product.quantity : prevQuantity + 1);
+        if(quantity === product.quantity){
+            message.error("This product just has " + product.quantity + " in stock.");
+        }
     };
 
     const handleDecreaseQuantity = () => {
@@ -175,8 +191,8 @@ export default function ProductDetail() {
                             </div>
                         </div>
 
-                        <button 
-                            className="btn btn-block mb-2 atc-btn" 
+                        <button
+                            className="btn btn-block mb-2 atc-btn"
                             onClick={handleAddToCart}
                         >
                             Add to cart
@@ -220,9 +236,17 @@ export default function ProductDetail() {
                 }
 
                 {activeButton === 'lab' &&
-                    <div className="product-detail-content">
-                        <h3>Related Labs</h3>
-                        {/* Thêm nội dung cho phần Related Labs ở đây */}
+                    <div className="product-detail-content py-2">
+                        {labDetails.map((lab) => (
+                            <div key={lab.labID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
+                                <div style={{margin:'20px'}}>
+                                    <h3 style={{paddingTop:'10px'}}>{lab.name}</h3>
+                                    <p><strong>Description:</strong> {lab.description}</p>
+                                    <p style={{paddingBottom:'10px'}}><strong>Level:</strong> <strong style={{color:'red'}}>{lab.level}</strong></p>
+                                </div>
+
+                            </div>
+                        ))}
                     </div>
                 }
             </div>
