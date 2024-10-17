@@ -85,12 +85,12 @@ const OrderDetails = ({ selectedOrder, orderDetails, backToOrderList, showModal,
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price) => formatCurrency(price),
+      render: (_,record) => formatCurrency(record.price / record.quantity),
     },
     {
       title: "Total",
       key: "total",
-      render: (_, record) => formatCurrency(record.price * record.quantity),
+      render: (_, record) => formatCurrency(record.price),
     },
     {
       title: "Actions",
@@ -117,7 +117,11 @@ const OrderDetails = ({ selectedOrder, orderDetails, backToOrderList, showModal,
         <strong>Note:</strong> {selectedOrder.orders.note}
       </p>
       <p>
-        <strong>Status:</strong> {selectedOrder.orders.status}
+        <strong>Status:</strong> {selectedOrder.orders.status.toLowerCase() === 'processing' ? 'In Progress' : selectedOrder.orders.status}
+      </p>
+      <p><strong>Shipping Price:</strong> {formatCurrency(selectedOrder.orders.shippingPrice)}</p>
+      <p>
+        <strong>Total Price:</strong> {formatCurrency(selectedOrder.orders.totalPrice)}
       </p>
       <Table
         columns={detailColumns}
