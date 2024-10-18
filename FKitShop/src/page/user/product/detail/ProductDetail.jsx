@@ -106,7 +106,7 @@ export default function ProductDetail() {
 
     const handleIncreaseQuantity = () => {
         setQuantity(prevQuantity => prevQuantity >= product.quantity ? product.quantity : prevQuantity + 1);
-        if(quantity === product.quantity){
+        if (quantity === product.quantity) {
             message.error("This product just has " + product.quantity + " in stock.");
         }
     };
@@ -152,6 +152,7 @@ export default function ProductDetail() {
                             <div className="col-md-5  mt-2">
                                 <p><strong>Type:</strong> {product.type}</p>
                                 <p><strong>Sold:</strong> {product.unitOnOrder}</p>
+                                <p><strong>In stock:</strong> {product.quantity}</p>
                             </div>
                             <div className="col-md-5 mt-2">
                                 <p><strong>Status:</strong> {product.status}</p>
@@ -190,13 +191,19 @@ export default function ProductDetail() {
                                 </div>
                             </div>
                         </div>
+                        {product.quantity === 0 ?
+                            <button
+                                className='btn btn-block mb-2 out-stock-btn'
+                            >
+                                Out of stock
+                            </button>
+                            : <button
+                                className="btn btn-block mb-2 detail-atc-btn"
+                                onClick={handleAddToCart}
+                            >
+                                Add to cart
+                            </button>}
 
-                        <button
-                            className="btn btn-block mb-2 atc-btn"
-                            onClick={handleAddToCart}
-                        >
-                            Add to cart
-                        </button>
                     </div>
                 </div>
             </div>
@@ -239,10 +246,10 @@ export default function ProductDetail() {
                     <div className="product-detail-content py-2">
                         {labDetails.map((lab) => (
                             <div key={lab.labID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
-                                <div style={{margin:'20px'}}>
-                                    <h3 style={{paddingTop:'10px'}}>{lab.name}</h3>
+                                <div style={{ margin: '20px' }}>
+                                    <h3 style={{ paddingTop: '10px' }}>{lab.name}</h3>
                                     <p><strong>Description:</strong> {lab.description}</p>
-                                    <p style={{paddingBottom:'10px'}}><strong>Level:</strong> <strong style={{color:'red'}}>{lab.level}</strong></p>
+                                    <p style={{ paddingBottom: '10px' }}><strong>Level:</strong> <strong style={{ color: 'red' }}>{lab.level}</strong></p>
                                 </div>
 
                             </div>

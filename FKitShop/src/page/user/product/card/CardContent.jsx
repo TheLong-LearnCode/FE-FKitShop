@@ -26,9 +26,8 @@ export default function CardContent({ product }) {
                     <p className="price">{formatCurrency(product.price)}</p>
                     <div className="card-bottom">
                         <Link to={`/detail/${product.productID}`}><button className="btn view-detail-btn">View details</button></Link>
-                        <button className="btn like-btn">
-                            <box-icon name='heart' type='solid' color='var(--secondary-color)'></box-icon>
-                            Like
+                        <button className="btn atc-btn">
+                            <box-icon name='cart' type='solid' color='#000F8F'></box-icon>
                         </button>
                     </div>
                 </div>
