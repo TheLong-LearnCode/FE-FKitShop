@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { viewCart, addToCart, updateCartItem, removeFromCart } from '../../service/cartApi';
-import { notification } from 'antd';
 import { Notification } from '../../util/Notification';
+import { message } from 'antd';
 
 // Async thunk action để fetch cart
 export const fetchCart = createAsyncThunk(
@@ -21,7 +21,7 @@ export const addProductToCart = createAsyncThunk(
   async ({ accountID, productID, quantity }, { rejectWithValue }) => {
     try {
       const response = await addToCart(accountID, productID, quantity);
-      Notification('Add to status', response.message, 3,'success');
+      message.success('Added product to cart successfully');
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);

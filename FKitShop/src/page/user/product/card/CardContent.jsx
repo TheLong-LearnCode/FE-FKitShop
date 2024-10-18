@@ -4,9 +4,12 @@ import './CardContent.css'
 import { Link } from 'react-router-dom';
 import { GET } from '../../../../constants/httpMethod';
 import api from '../../../../config/axios';
-
+import AddToCartPopup from '../../../../components/AddToCartPopup';
+import { addProductToCart } from '../../../../redux/slices/cartSlice';
+import { useDispatch } from 'react-redux';
 
 export default function CardContent({ product }) {
+    const dispatch = useDispatch()
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('vi-VN', {
@@ -14,6 +17,21 @@ export default function CardContent({ product }) {
             currency: 'VND',
             minimumFractionDigits: 0,
         }).format(amount);
+    };
+
+    const [showPopup, setShowPopup] = useState(false);
+
+    const handleAddToCart = (accountID, quantity) => {
+        if (accountID && product.productID) {
+            dispatch(addProductToCart({
+                accountID: accountID,
+                productID: product.productID,
+                quantity: quantity
+            }));
+        } else {
+            console.error("Missing accountID or productID");
+            // Có thể thêm thông báo lỗi cho người dùng ở đây
+        } 
     };
 
     return (
@@ -26,12 +44,19 @@ export default function CardContent({ product }) {
                     <p className="price">{formatCurrency(product.price)}</p>
                     <div className="card-bottom">
                         <Link to={`/detail/${product.productID}`}><button className="btn view-detail-btn">View details</button></Link>
-                        <button className="btn atc-btn">
+                        <button className="btn atc-btn" onClick={() => setShowPopup(true)}>
                             <box-icon name='cart' type='solid' color='#000F8F'></box-icon>
                         </button>
                     </div>
                 </div>
             </div>
+            {showPopup && (
+                <AddToCartPopup
+                    product={product}
+                    onClose={() => setShowPopup(false)}
+                    onAddToCart={handleAddToCart}
+                />
+            )}
         </div>
 
     )
