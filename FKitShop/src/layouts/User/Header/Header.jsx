@@ -8,6 +8,8 @@ import { verifyToken } from '../../../service/authUser';
 import { IDLE } from '../../../redux/constants/status';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Notification } from '../../../component/UserProfile/UpdateAccount/Notification';
+import { GET } from '../../../constants/httpMethod';
+import api from '../../../config/axios';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
@@ -15,6 +17,7 @@ export default function Header() {
     const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [productTags, setProductTags] = useState([]);
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
@@ -69,17 +72,25 @@ export default function Header() {
     const [showProductMenu, setShowProductMenu] = useState(false);
     const [activeTag, setActiveTag] = useState(null);
 
-    // Giả sử chúng ta có dữ liệu về tags và categories
-    const productTags = [
-        { name: 'Arduino', categories: ['Arduino Board', 'Arduino Shield', 'Arduino Accessories'] },
-        { name: 'STEM Robotics & AI & IoT', categories: ['STEM Robotics Kit', 'AI & IoT'] },
-        { name: 'Sensor', categories: ['Light & Color & Sound', 'Motion & Vibration', 'Image & Barcode & QR'] },
-        { name: 'Accessories & Tools', categories: ['Electronic Components', 'Power Supply'] },
-        { name: 'STEM Programming', categories: ['Raspberry Pi', 'BBC Micro:Bit Programming'] },
-        { name: 'STEM Toy', categories: ['Preschool STEM', 'Primary STEM', 'Secondary STEM', 'High School STEM'] },
-        { name: 'Functional Module', categories: ['Control & Keyboard & Joystick', 'LCD Screen & HMI'] },
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const response = await api[GET]('/tags');
+                const activeTags = response.data.filter(item => item.tag.status === 1);
+                const formattedTags = activeTags.map(item => ({
+                    name: item.tag.tagName,
+                    categories: item.cates.map(cate => cate.categoryName)
+                }));
+                setProductTags(formattedTags);
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        };
 
-    ];
+        fetchTags();
+    }, []);
+
+    
 
     return (
         <div>
@@ -154,23 +165,23 @@ export default function Header() {
                                 {showProductMenu && (
                                     <div className="product-submenu">
                                         <div className="tags-list">
-                                            {productTags.map((tag) => (
-                                                <Link to={'/product'}
-                                                    key={tag.name}
+                                            {productTags.map((tag, index) => (
+                                                <div
+                                                    key={index}
                                                     className="tag-item"
                                                     onMouseEnter={() => setActiveTag(tag.name)}
                                                     onMouseLeave={() => setActiveTag(null)}>
                                                     {tag.name}
                                                     {activeTag === tag.name && (
                                                         <div className="categories-list">
-                                                            {tag.categories.map((category) => (
-                                                                <Link key={category} to={`/products/${tag.name.toLowerCase()}/${category.toLowerCase()}`}>
+                                                            {tag.categories.map((category, catIndex) => (
+                                                                <Link className="categories-list-cate" key={catIndex} to={`/products/${tag.name.toLowerCase()}/${category.toLowerCase()}`}>
                                                                     {category}
                                                                 </Link>
                                                             ))}
                                                         </div>
                                                     )}
-                                                </Link>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
