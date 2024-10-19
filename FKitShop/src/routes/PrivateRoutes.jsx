@@ -80,7 +80,7 @@ const PrivateRoutes = [
         path: "product-manager",
         children: [
           {
-            path: "product-manager",
+            index: true,
             element: (
               <Suspense fallback={null}>
                 <ProductPage />
@@ -109,6 +109,14 @@ const PrivateRoutes = [
             element: (
               <Suspense fallback={null}>
                 <LabPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "labGuide-manager",
+            element: (
+              <Suspense fallback={null}>
+                <LabGuidePage />
               </Suspense>
             ),
           },
@@ -158,14 +166,6 @@ const PrivateRoutes = [
             ),
           },
         ],
-      },
-      {
-        path: "labGuide-manager",
-        element: (
-          <Suspense fallback={null}>
-            <LabGuidePage />
-          </Suspense>
-        ),
       },
       {
         path: "feedback-manager",

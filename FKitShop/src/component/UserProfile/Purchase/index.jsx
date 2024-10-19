@@ -93,6 +93,7 @@ export default function Purchase({ userInfo }) {
         return {
           ...detail,
           image: product.data.images[0]?.url,
+          productName: product.data.name,
         };
       })
     );

@@ -3,6 +3,7 @@ import api from "../config/axios.jsx";
 import { GET, POST, PUT } from "../constants/httpMethod.js";
 
 import Cookies from 'js-cookie';
+import { message } from "antd";
 
 /**
  * 
@@ -52,7 +53,8 @@ export const verifyToken = async (token) => {
     console.log("response after verifyToken: ", response);
     return response.data; // Trả về dữ liệu từ phản hồi
   } catch (error) {
-    console.log("error: ", error);  
+    console.log("error: ", error);
+    //message.error(error.response.data.message);  
     return error; // Xử lý lỗi nếu có
   }
 }

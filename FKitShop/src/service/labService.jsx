@@ -18,7 +18,13 @@ export const deleteLab = async (id) => {
 export const updateLab = async (info,labID) => {
   try{
     //info gồm: productID, name, description, level, file(.pdf)
-    const response = await api[PUT](`/lab/${labID}`, info);
+    const formData = new FormData();
+    formData.append("pdf", info.file); // Đảm bảo file được thêm vào FormData
+    const response = await api.put(`/lab/${labID}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error updating lab:", error);
@@ -28,17 +34,22 @@ export const updateLab = async (info,labID) => {
 //-----------------------PUT-----------------------
 
 //-----------------------POST-----------------------
-//id này là id gì??
-export const uploadLab = async (info, id) => {
-  try{
-    //file(.pdf)
-    const response = await api[POST](`/lab/upload-lab/${id}`, info);
+
+export const uploadLab = async (info, labID) => {
+  try {
+    const formData = new FormData();
+    formData.append("pdf", info.file); // Đảm bảo file được thêm vào FormData
+    const response = await api.post(`/lab/upload-lab/${labID}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error uploading lab:", error);
     throw error;
   }
-}
+};
 
 export const createLab = async (info) => {
   try{

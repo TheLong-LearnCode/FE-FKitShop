@@ -36,7 +36,12 @@ const AdminMenu = () => {
       <Menu.Item key="3" icon={<ShoppingCartOutlined />}>
         <Link to="/admin/order-manager">Order</Link>
       </Menu.Item>
-      <SubMenu key="sub1" icon={<ExperimentOutlined />} title="Lab Support" className="dark-submenu">
+      <SubMenu
+        key="sub1"
+        icon={<ExperimentOutlined />}
+        title="Lab Support"
+        className="dark-submenu"
+      >
         <Menu.Item key="11" icon={<CustomerServiceOutlined />}>
           <Link to="/admin/lab-support/support-manager">Support</Link>
         </Menu.Item>
@@ -44,7 +49,12 @@ const AdminMenu = () => {
           <Link to="/admin/lab-support/question-manager">Question</Link>
         </Menu.Item>
       </SubMenu>
-      <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Product Manager" className="dark-submenu">
+      <SubMenu
+        key="sub2"
+        icon={<AppstoreOutlined />}
+        title="Product Manager"
+        className="dark-submenu"
+      >
         <Menu.Item key="4" icon={<ProjectOutlined />}>
           <Link to="/admin/product-manager/">All</Link>
         </Menu.Item>
@@ -57,6 +67,9 @@ const AdminMenu = () => {
         <Menu.Item key="7" icon={<FilePdfOutlined />}>
           <Link to="/admin/product-manager/lab-manager">Lab</Link>
         </Menu.Item>
+        <Menu.Item key="13" icon={<BookOutlined />}>
+          <Link to="/admin/product-manager/labGuide-manager">Lab Guide</Link>
+        </Menu.Item>
       </SubMenu>
       <Menu.Item key="8" icon={<ApartmentOutlined />}>
         <Link to="/admin/category-manager">Category</Link>
@@ -67,9 +80,7 @@ const AdminMenu = () => {
       <Menu.Item key="10" icon={<CarOutlined />}>
         <Link to="/admin/delivery-manager">Delivery</Link>
       </Menu.Item>
-      <Menu.Item key="13" icon={<BookOutlined />}>
-        <Link to="/admin/labGuide-manager">Lab Guide</Link>
-      </Menu.Item>
+
       <Menu.Item key="14" icon={<CommentOutlined />}>
         <Link to="/admin/feedback-manager">Feedback</Link>
       </Menu.Item>
