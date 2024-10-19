@@ -146,10 +146,14 @@ ul {
     position: relative;
     padding: 5px 10px;
     cursor: pointer;
+    color: var(--primary-color);
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
 }
 
 .tag-item:hover {
     background-color: #f0f0f0;
+    color: #007bff;
 }
 
 .categories-list {
@@ -159,18 +163,20 @@ ul {
     background-color: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     padding: 10px;
-    min-width: 200px;
+    min-width: 230px;
 }
 
-.categories-list a {
+.categories-list-cate {
     display: block;
     padding: 5px 0;
-    color: #333;
+    color: var(--primary-color);
     text-decoration: none;
+    transition: all 0.2s ease-in-out;
 }
 
-.categories-list a:hover {
-    color: #007bff;
+.categories-list-cate:hover {
+    color: #007bff !important;
+    background-color: #f0f0f0  !important;
 }
 
 .overlay {

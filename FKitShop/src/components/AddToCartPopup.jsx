@@ -95,8 +95,12 @@ const AddToCartPopup = ({ product, onClose, onAddToCart }) => {
                         </div>
                     </div>
                 </div>
+                {product.quantity > 0 ?
+                    <button onClick={() => onAddToCart(userInfo?.data?.accountID, quantity)} className="add-to-cart-btn">Add to Cart</button>
+                    : 
+                    <button className='out-of-stock-btn'>Out of Stock</button>
+                }
 
-                <button onClick={() => onAddToCart(userInfo?.data?.accountID , quantity)} className="add-to-cart-btn">Add to Cart</button>
                 <button onClick={onClose} className="close-btn">Cancel</button>
             </div>
         </div>
