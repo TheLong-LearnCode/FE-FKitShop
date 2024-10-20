@@ -18,11 +18,8 @@ export const deleteLab = async (id) => {
 //-----------------------PUT-----------------------
 export const updateLab = async (formData, labID) => {
   try {
-    const response = await api.put(`/lab/${labID}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await api.put(`/lab/${labID}`, 
+      formData);
     return response.data;
   } catch (error) {
     console.error("Error updating lab:", error);

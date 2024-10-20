@@ -2,9 +2,7 @@ import React from "react";
 import { Form, Input, Select, Upload, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-const { Option } = Select;
-
-const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile }) => {
+const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile, mode }) => {
   const normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
@@ -21,9 +19,9 @@ const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile }
       >
         <Select>
           {products.map((product) => (
-            <Option key={product.productID} value={product.productID}>
+            <Select.Option key={product.productID} value={product.productID}>
               {product.name}
-            </Option>
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>
@@ -39,33 +37,11 @@ const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile }
       </Form.Item>
       <Form.Item name="level" label="Level" rules={[{ required: true }]}>
         <Select>
-          <Option value="easy">Easy</Option>
-          <Option value="medium">Medium</Option>
-          <Option value="hard">Hard</Option>
+          <Select.Option value="easy">Easy</Select.Option>
+          <Select.Option value="medium">Medium</Select.Option>
+          <Select.Option value="hard">Hard</Select.Option>
         </Select>
       </Form.Item>
-      {/* <Form.Item
-        name="file"
-        label="PDF File"
-        valuePropName="fileList"
-        getValueFromEvent={normFile}
-      >
-        <Upload
-          name="file"
-          onChange={onFileChange}
-          beforeUpload={() => false}
-          defaultFileList={
-            currentFileName
-              ? [{ uid: "-1", name: currentFileName, status: "done" }]
-              : []
-          }
-        >
-          {currentFileName}
-          <Button icon={<UploadOutlined />} className="ml-2">
-            Change PDF
-          </Button>
-        </Upload>
-      </Form.Item> */}
       <Form.Item
         name="file"
         label="PDF File"
@@ -76,14 +52,18 @@ const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile }
           name="file"
           onChange={onFileChange}
           beforeUpload={() => false}
-          fileList={uploadedFile ? [uploadedFile] : []} // Ensure fileList is controlled by uploadedFile state
+          fileList={uploadedFile ? [uploadedFile] : []}
         >
-          {currentFileName}
-          <Button icon={<UploadOutlined />} className="ml-2">
-            {currentFileName ? "Change PDF" : "Upload PDF"}
+          <Button icon={<UploadOutlined />}>
+            {mode === "edit" ? (currentFileName ? "Change PDF" : "Upload PDF") : "Upload PDF"}
           </Button>
         </Upload>
       </Form.Item>
+      {currentFileName && (
+        <Form.Item label="Current PDF">
+          <span>{currentFileName}</span>
+        </Form.Item>
+      )}
     </Form>
   );
 };

@@ -23,14 +23,18 @@ const LabTable = ({ labs, onEdit, onDelete, onDownloadPDF }) => {
       title: "PDF File",
       dataIndex: "fileNamePDF",
       key: "fileNamePDF",
-      // render: (fileName) => fileName ? (
-      //   <Button
-      //     icon={<DownloadOutlined />}
-      //     onClick={() => onDownloadPDF(fileName)}
-      //   >
-      //     Download
-      //   </Button>
-      // ) : 'N/A'
+      render: (fileName) => fileName ? (
+        <Space>
+          <span>{fileName.slice(0, 10) + "..."}</span>
+          <Button
+            icon={<DownloadOutlined />}
+            onClick={() => onDownloadPDF(fileName)}
+            size="small"
+          >
+            {/* Download */}
+          </Button>
+        </Space>
+      ) : 'N/A'
     },
     {
       title: "Action",

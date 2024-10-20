@@ -58,7 +58,7 @@ const ProductManager = () => {
       key: "images",
       render: (_, record) => (
         <div style={{ display: "flex", alignItems: "flex-end", gap: "10px" }}>
-          <Carousel autoplay style={{ width: "70px", height: "70px"}}>
+          <Carousel autoplay style={{ width: "70px", height: "70px" }}>
             {record.images.slice(0, 3).map((image) => (
               <div key={image?.id} style={{ textAlign: "center" }}>
                 <Image
@@ -85,9 +85,7 @@ const ProductManager = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (name) => (
-        <span className="ellipsis-text">{name}</span>
-      ),
+      render: (name) => <span className="ellipsis-text">{name}</span>,
     },
     {
       title: "Stock",
@@ -100,68 +98,68 @@ const ProductManager = () => {
       key: "price",
       render: (_, record) => <span>{formatCurrency(record.price)}</span>,
     },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      render: (_, record) => <span>{record.description}</span>,
-    },
-    {
-      title: "Publisher",
-      dataIndex: "publisher",
-      key: "publisher",
-      render: (_, record) => <span>{record.publisher}</span>,
-    },
-    {
-      title: "Discount",
-      dataIndex: "discount",
-      key: "discount",
-      render: (_, record) => <span>{record.discount}</span>,
-    },
+    // {
+    //   title: "Description",
+    //   dataIndex: "description",
+    //   key: "description",
+    //   render: (_, record) => <span>{record.description.slice(0, 50) + '...'}</span>,
+    // },
+    // {
+    //   title: "Publisher",
+    //   dataIndex: "publisher",
+    //   key: "publisher",
+    //   render: (_, record) => <span>{record.publisher}</span>,
+    // },
+    // {
+    //   title: "Discount",
+    //   dataIndex: "discount",
+    //   key: "discount",
+    //   render: (_, record) => <span>{record.discount}</span>,
+    // },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (_, record) => <span>{record.status}</span>,
     },
-    {
-      title: "Weight",
-      dataIndex: "weight",
-      key: "weight",
-      render: (_, record) => <span>{record.weight}</span>,
-    },
-    {
-      title: "Material",
-      dataIndex: "material",
-      key: "material",
-      render: (_, record) => <span>{record.material}</span>,
-    },
-    {
-      title: "unitOnOrder",
-      dataIndex: "unitOnOrder",
-      key: "unitOnOrder",
-      render: (_, record) => <span>{record.unitOnOrder}</span>,
-    },
-    {
-      title: "Dimension",
-      dataIndex: "dimension",
-      key: "dimension",
-      render: (_, record) => <span>{record.dimension}</span>,
-    },
+    // {
+    //   title: "Weight",
+    //   dataIndex: "weight",
+    //   key: "weight",
+    //   render: (_, record) => <span>{record.weight}</span>,
+    // },
+    // {
+    //   title: "Material",
+    //   dataIndex: "material",
+    //   key: "material",
+    //   render: (_, record) => <span>{record.material}</span>,
+    // },
+    // {
+    //   title: "unitOnOrder",
+    //   dataIndex: "unitOnOrder",
+    //   key: "unitOnOrder",
+    //   render: (_, record) => <span>{record.unitOnOrder}</span>,
+    // },
+    // {
+    //   title: "Dimension",
+    //   dataIndex: "dimension",
+    //   key: "dimension",
+    //   render: (_, record) => <span>{record.dimension}</span>,
+    // },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => showEditModal(record)}>
-            Edit
+            {/* Edit */}
           </Button>
           <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.id)}
             danger
           >
-            Delete
+            {/* Delete */}
           </Button>
         </Space>
       ),
@@ -244,6 +242,9 @@ const ProductManager = () => {
         onCancel={handleCancel}
       >
         <Form form={form} layout="vertical">
+          <Form.Item name="image" label="Image">
+            <Input />
+          </Form.Item>
           <Form.Item
             name="name"
             label="Product Name"
@@ -276,26 +277,45 @@ const ProductManager = () => {
           >
             <InputNumber min={0} />
           </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please input the description!" }]}
-          >
+          <Form.Item name="description" label="Description">
             <Input.TextArea />
           </Form.Item>
 
-          {/* <Form.Item
-            name="category"
-            label="Category"
-            rules={[{ required: true, message: "Please select the category!" }]}
+          <Form.Item name="publisher" label="Publisher">
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="discount"
+            label="Discount"
+            rules={[{ required: true, message: "Please input the discount!" }]}
           >
+            <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item name="weight" label="Weight">
+            <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item name="material" label="Material">
+            <Input />
+          </Form.Item>
+          <Form.Item name="dimension" label="Dimension">
+            <Input />
+          </Form.Item>
+          <Form.Item name="unitOnOrder" label="Unit on Order">
+            <Input />
+          </Form.Item>
+          <Form.Item name="status" label="Status">
+            <Input />
+          </Form.Item>
+          <Form.Item name="type" label="Type">
+            <Input />
+          </Form.Item>
+          <Form.Item name="category" label="Category">
             <Select>
               <Option value="Starter">Starter</Option>
               <Option value="Advanced">Advanced</Option>
               <Option value="Home Automation">Home Automation</Option>
-              <Option value="Industrial">Industrial</Option>
             </Select>
-          </Form.Item> */}
+          </Form.Item>
         </Form>
       </Modal>
 
@@ -315,7 +335,6 @@ const ProductManager = () => {
                 width={300}
                 height={300}
                 style={{ objectFit: "cover", alignContent: "center" }}
-
                 fallback="https://s3.ap-southeast-2.amazonaws.com/fkshop/Product/no-image.png"
               />
             </div>
