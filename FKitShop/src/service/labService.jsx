@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
+import axios from 'axios';
 
 //----------------------DELETE----------------------
 export const deleteLab = async (id) => {

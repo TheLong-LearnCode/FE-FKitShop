@@ -52,25 +52,25 @@ const LabGuideManager = () => {
   };
 
   const columns = [
-    { title: "Lab Guide ID", dataIndex: "labGuideID", key: "labGuideID" },
+    { title: "Lab Guide ID", dataIndex: "labGuideID", key: "labGuideID",  },
     // { title: "Lab ID", dataIndex: "selectedLabID", key: "selectedLabID" },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "Step", dataIndex: "step", key: "step" },
-    { title: "Content", dataIndex: "content", key: "content" },
+    // { title: "Content", dataIndex: "content", key: "content", render: (content) => content.slice(0, 50) + '...' },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="small">
           <Button icon={<EditOutlined />} onClick={() => showEditModal(record)}>
-            Edit
+            {/* Edit */}
           </Button>
           <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.labGuideID)}
             danger
           >
-            Delete
+            {/* Delete */}
           </Button>
         </Space>
       ),
@@ -222,7 +222,7 @@ const LabGuideManager = () => {
           </Button>
         </div>
       </div>
-      <Table columns={columns} dataSource={labGuides} rowKey="labGuideID" />
+      <Table columns={columns} dataSource={labGuides} rowKey="labGuideID" style={{ textAlign: "center" }} />
       {/* -------------------------------Modal----------------------------------- */}
       <Modal
         title={editingGuideId ? "Edit Lab Guide" : "Add New Lab Guide"}
