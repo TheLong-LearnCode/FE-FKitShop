@@ -3,7 +3,7 @@ import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
 
 //----------------------DELETE----------------------
 export const deleteLab = async (id) => {
-  try{
+  try {
     //id này là id gì??
     const response = await api[DELETE](`/lab/${id}`);
     return response.data;
@@ -11,15 +11,12 @@ export const deleteLab = async (id) => {
     console.error("Error deleting lab:", error);
     throw error;
   }
-}
+};
 //----------------------DELETE----------------------
 
 //-----------------------PUT-----------------------
-export const updateLab = async (info,labID) => {
-  try{
-    //info gồm: productID, name, description, level, file(.pdf)
-    const formData = new FormData();
-    formData.append("pdf", info.file); // Đảm bảo file được thêm vào FormData
+export const updateLab = async (formData, labID) => {
+  try {
     const response = await api.put(`/lab/${labID}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -30,7 +27,8 @@ export const updateLab = async (info,labID) => {
     console.error("Error updating lab:", error);
     throw error;
   }
-}
+};
+
 //-----------------------PUT-----------------------
 
 //-----------------------POST-----------------------
@@ -52,7 +50,7 @@ export const uploadLab = async (info, labID) => {
 };
 
 export const createLab = async (info) => {
-  try{
+  try {
     //productID, name, description, level, file(.pdf)
     const response = await api[POST]("/lab/addLab", info);
     return response.data;
@@ -60,10 +58,10 @@ export const createLab = async (info) => {
     console.error("Error creating lab:", error);
     throw error;
   }
-}
+};
 
 export const downloadLab = async (info) => {
-  try{
+  try {
     //accountID, orderID, labID, productID
     const response = await api[POST]("/lab/download", info);
     return response.data;
@@ -71,7 +69,19 @@ export const downloadLab = async (info) => {
     console.error("Error downloading lab:", error);
     throw error;
   }
-}
+};
+
+export const mergeLabGuide = async (labID, labGuideID) => {
+  try {
+    console.log("LAB GUIDE ID: ", labGuideID);
+    
+    const response = await api[POST](`/lab/pdf/create/${labID}`, JSON.stringify(labGuideID));
+    return response.data;
+  } catch (error) {
+    console.error("Error merging lab guide:", error);
+    throw error;
+  }
+};
 //-----------------------POST-----------------------
 
 //-----------------------GET-----------------------

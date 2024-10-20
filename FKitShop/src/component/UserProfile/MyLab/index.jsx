@@ -57,13 +57,28 @@ export default function MyLab({ userInfo }) {
     }
   };
 
+  // const handleDownload = async (lab) => {
+  //   try {
+  //     const response = await downloadMyLab(userInfo?.accountID, lab.orderID, lab.lab.labID, lab.lab.productID, lab.lab.fileNamePDF);
+  //     window.location.href = response;
+  //     //window.open(response, '_blank');
+  //   } catch (error) {
+  //     console.error('Error downloading lab:', error);
+  //     message.error(error.response.data.message);
+  //   }
+  // };
   const handleDownload = async (lab) => {
     try {
-      const response = await downloadMyLab(userInfo?.accountID, lab.orderID, lab.lab.labID, lab.lab.productID, lab.lab.fileNamePDF);
-      window.location.href = response;
+      const url = await downloadMyLab(userInfo?.accountID, lab.orderID, lab.lab.labID, lab.lab.productID, lab.lab.fileNamePDF);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', lab.lab.fileNamePDF); // Set the file name for download
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
     } catch (error) {
       console.error('Error downloading lab:', error);
-      message.error(error.response.data.message);
+      message.error(error.response?.data?.message || 'Error downloading lab');
     }
   };
 

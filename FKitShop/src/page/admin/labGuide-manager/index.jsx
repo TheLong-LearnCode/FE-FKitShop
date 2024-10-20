@@ -167,7 +167,7 @@ const LabGuideManager = () => {
             const formData = new FormData();
 
             formData.append("file", file);
-            console.log("formData", formData);
+            console.log("formData in uploadAdapter", formData);
             axios
               .post("http://localhost:8080/fkshop/lab/upload-img", formData)
               .then((response) => {
@@ -233,8 +233,12 @@ const LabGuideManager = () => {
         bodyStyle={{ height: "450px", overflow: "auto" }}
       >
         <Form form={form} layout="vertical">
-          <Form.Item name="labID" label="Lab ID" rules={[{ required: true }]}>
-            <Select>
+          <Form.Item 
+            name="labID" 
+            label="Lab ID" 
+            rules={[{ required: true }]}
+          >
+            <Select disabled={!!editingGuideId}>
               {labs.map((lab) => (
                 <Option key={lab.labID} value={lab.labID}>
                   {lab.labID} - {lab.name}
