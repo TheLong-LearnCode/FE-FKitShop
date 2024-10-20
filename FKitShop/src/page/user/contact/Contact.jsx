@@ -25,7 +25,7 @@ export default function Contact() {
           <h2>Send us a message</h2>
           <input type="text" placeholder="Your Name" required />
           <input type="email" placeholder="Your Email" required />
-          <input type="text" placeholder="Subject" required />
+          <input type="tel" placeholder="Your Phone Number" required />
           <textarea placeholder="Your Message" required></textarea>
           <button type="submit">Send Message</button>
         </form>
