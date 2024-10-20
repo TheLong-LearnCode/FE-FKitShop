@@ -65,8 +65,8 @@ export default function OrderView() {
     };
 
     const [formData, setFormData] = useState({
-        fullName: '',
-        phoneNumber: '',
+        fullName: userInfo?.data?.fullName || '',
+        phoneNumber: userInfo?.data?.phoneNumber || '',
         address: '',
         province: '',
         district: '',
@@ -75,6 +75,7 @@ export default function OrderView() {
         payingMethod: '',
         note: ''
     });
+
 
     useEffect(() => {
         if (cartProducts.length === 0) {

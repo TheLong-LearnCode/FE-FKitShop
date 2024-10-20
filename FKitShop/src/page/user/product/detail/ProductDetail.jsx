@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useTransition } from 'react'
 import '../../../../util/GlobalStyle/GlobalStyle.css'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { GET } from '../../../../constants/httpMethod';
 import api from '../../../../config/axios';
 import './ProductDetail.css'
@@ -158,7 +158,11 @@ export default function ProductDetail() {
                             <div className="col-md-5 mt-2">
                                 <p><strong>Status:</strong> {product.status}</p>
                                 <p><strong>Publisher:</strong> {product.publisher}</p>
-                                <p ><strong>Categories:</strong> {product.categories.map(category => category.categoryName).join(', ')}</p>
+                                <p><strong>Categories:</strong> {product.categories.map(category => (
+                                    <Link style={{color: '#000F8F'}} key={category.categoryID} to={`/products/${category.categoryID}`}>
+                                        {category.categoryName}
+                                    </Link>
+                                )).reduce((prev, curr) => [prev, ', ', curr])}</p>
                             </div>
                         </div>
 

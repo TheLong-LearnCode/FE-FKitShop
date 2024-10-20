@@ -51,20 +51,6 @@ export default function ProductList() {
 
         <div className="product-list-buttons">
           <button
-            className={`btn-asc btn ${activeButton === 'a-z' ? 'active' : ''}`}
-            onClick={() => handleButtonClick('a-z')}
-          >
-            A - Z
-          </button>
-
-          <button
-            className={`btn-asc btn ${activeButton === 'z-a' ? 'active' : ''}`}
-            onClick={() => handleButtonClick('z-a')}
-          >
-            Z - A
-          </button>
-
-          <button
             className={`btn-asc btn ${activeButton === 'lth' ? 'active' : ''}`}
             onClick={() => handleButtonClick('lth')}
           >

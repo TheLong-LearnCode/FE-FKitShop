@@ -6,6 +6,8 @@ import LazyLoader from "../component/LazyLoader/index.jsx";
 const HomePage = React.lazy(() => import("../page/user/home/HomePage.jsx"));
 const AboutPage = React.lazy(() => import("../page/user/about"));
 const ContactPage = React.lazy(() => import("../page/user/contact/Contact.jsx"));
+const BlogPage = React.lazy(() => import("../page/user/blog/BlogPage.jsx"));
+const BlogDetailsPage = React.lazy(() => import("../page/user/blog/BlogDetails.jsx"));
 
 //login và register dùng chung trang là login
 const LoginPage = React.lazy(() => import("../page/auth/login"));
@@ -38,6 +40,10 @@ const PublicRoutes = [
                 element: <LazyLoader children={<ContactPage />} />,
             },
             {
+                path: "blog",
+                element: <LazyLoader children={<BlogPage />} />,
+            },
+            {
                 path: "login",
                 element: <LazyLoader children={<LoginPage />} />,
             },
@@ -58,6 +64,10 @@ const PublicRoutes = [
             {
                 path: "cart",
                 element: <LazyLoader children={<ProductCartPage />} />,
+            },
+            {
+                path: "blog/:blogID",
+                element: <LazyLoader children={<BlogDetailsPage />} />,
             },
         ]
     },
