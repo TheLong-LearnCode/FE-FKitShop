@@ -29,17 +29,18 @@ export default function HomePage() {
     navigate('/register'); // Navigate to the register pageavigate('/register'); // Navigate to the register page
   }
 
-  const [products, setProducts] = useState([]); // Trạng thái để lưu danh sách sản phẩm
-    const [loading, setLoading] = useState(true); // Trạng thái để theo dõi quá trình tải dữ liệu
-    const [error, setError] = useState(null); // Trạng thái để lưu lỗi nếu có
+  const [Lastestproducts, setLastestProducts] = useState([]);
+  const [Hotestproducts, setHotestProducts] = useState([]);
+  const [loading, setLoading] = useState(true); // Trạng thái để theo dõi quá trình tải dữ liệu
+  const [error, setError] = useState(null); // Trạng thái để lưu lỗi nếu có
 
-    const [activeButton, setActiveButton] = useState('new');
+  const [activeButton, setActiveButton] = useState('new');
 
-    const handleButtonClick = (buttonType) => {
-        setActiveButton(buttonType);
-    };
+  const handleButtonClick = (buttonType) => {
+    setActiveButton(buttonType);
+  };
 
-    //trường hợp chưa login
+  //trường hợp chưa login
   useEffect(() => {
     if (statusData === null || statusData === undefined) {
       const timer = setTimeout(() => {
@@ -52,24 +53,40 @@ export default function HomePage() {
   //console.log('data in homepage: ', data); //-passed:gòm status:success, data.accounts->userdata và error:null
   //empty: status: idle, data: token, error:null
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await api[GET]("product/products");
-                setProducts(response.data.data); // Lưu dữ liệu vào trạng thái
+  useEffect(() => {
+    const fetchLastestProducts = async () => {
+      try {
+        const response = await api[GET]("product/latest");
+        setLastestProducts(response.data.data);
 
-            } catch (err) {
-                setError(err); // Lưu lỗi nếu có
-            } finally {
-                setLoading(false); // Đặt loading thành false sau khi hoàn thành
-            }
-        };
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchProducts(); // Gọi hàm để lấy dữ liệu
-    }, []); // Chạy một lần khi component được mount
+    fetchLastestProducts();
+  }, []);
 
-    if (loading) return <div>Loading...</div>; // Hiển thị loading khi đang tải
-    if (error) return <div>Error: {error.message}</div>; // Hiển thị lỗi nếu có
+  useEffect(() => {
+    const fetchHotestProducts = async () => {
+      try {
+        const response = await api[GET]("product/hot");
+        setHotestProducts(response.data.data);
+
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHotestProducts();
+  }, []);
+
+  if (loading) return <div>Loading...</div>; // Hiển thị loading khi đang tải
+  if (error) return <div>Error: {error.message}</div>; // Hiển thị lỗi nếu có
 
   return (
     <div>
@@ -117,10 +134,18 @@ export default function HomePage() {
           </div>
 
           <div className="row">
-          {products.map((product) => (
-              <CardContent product={product}/>
-          ))}
+            {activeButton === 'new' &&
+              Lastestproducts.map((product) => (
+                <CardContent product={product} />
+              ))
+            }
+            {activeButton === 'hot' &&
+              Hotestproducts.map((product) => (
+                <CardContent product={product} />
+              ))
+            }
           </div>
+
 
         </div>
 
@@ -144,7 +169,7 @@ export default function HomePage() {
               <div className="featured-card">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg" className="card-img-top" alt="Arduino Board" />
                 <div className="card-body text-center">
-                  <Link to='/product' className="featured-card-title">Arduino Board</Link>
+                  <Link className="featured-card-title">Arduino Board</Link>
                 </div>
               </div>
             </div>
@@ -153,7 +178,7 @@ export default function HomePage() {
               <div className="featured-card">
                 <img src="https://ozrobotics.com/wp-content/uploads/2023/01/Robot-STEM-Kit.jpg" className="card-img-top" alt="STEM Robotics Kit" />
                 <div className="card-body text-center">
-                  <Link to='/product' className="featured-card-title">STEM Robotics Kit</Link>
+                  <Link className="featured-card-title">STEM Robotics Kit</Link>
                 </div>
               </div>
             </div>
@@ -162,7 +187,7 @@ export default function HomePage() {
               <div className="featured-card">
                 <img src="https://ohstem.vn/wp-content/uploads/2022/03/kit-hoc-lap-trinh-AIoT-1.jpg" className="card-img-top" alt="AI & IoT" />
                 <div className="card-body text-center">
-                  <Link to='/product' className="featured-card-title">AI & IoT</Link>
+                  <Link className="featured-card-title">AI & IoT</Link>
                 </div>
               </div>
             </div>
@@ -171,14 +196,14 @@ export default function HomePage() {
               <div className="featured-card">
                 <img src="https://vn.element14.com/productimages/large/en_GB/4255998-40.jpg" className="card-img-top" alt="Raspberry Pi" />
                 <div className="card-body text-center">
-                  <Link to='/product' className="featured-card-title">Raspberry Pi</Link>
+                  <Link className="featured-card-title">Raspberry Pi</Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <Button variant="primary" onClick={handleShow} style={{display:'none'}} >
+      <Button variant="primary" onClick={handleShow} style={{ display: 'none' }} >
         Launch demo modal
       </Button>
 

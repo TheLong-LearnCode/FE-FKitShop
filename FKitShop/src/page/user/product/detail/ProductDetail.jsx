@@ -86,6 +86,7 @@ export default function ProductDetail() {
             try {
                 const response = await api[GET](`lab/product/${productID}`);
                 setLabDetails(response.data.data);
+                console.log("Lab details: ", response.data.data);
             } catch (err) {
                 console.error("Error fetching lab details: ", err);
             }
@@ -158,11 +159,15 @@ export default function ProductDetail() {
                             <div className="col-md-5 mt-2">
                                 <p><strong>Status:</strong> {product.status}</p>
                                 <p><strong>Publisher:</strong> {product.publisher}</p>
-                                <p><strong>Categories:</strong> {product.categories.map(category => (
+                                { product.categories.length > 0 
+                                ? <p><strong>Categories:</strong>
+                                
+                                  {product.categories.map(category => (
                                     <Link style={{color: '#000F8F'}} key={category.categoryID} to={`/products/${category.categoryID}`}>
                                         {category.categoryName}
                                     </Link>
                                 )).reduce((prev, curr) => [prev, ', ', curr])}</p>
+                                : null}
                             </div>
                         </div>
 
@@ -252,7 +257,8 @@ export default function ProductDetail() {
                 {activeButton === 'lab' &&
                     <div className="product-detail-content py-2">
                         {labDetails.map((lab) => (
-                            <div key={lab.labID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
+                            lab.fileNamePDF !== null
+                            ?<div key={lab.labID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
                                 <div style={{ margin: '20px' }}>
                                     <h3 style={{ paddingTop: '10px', color: '#000F8F' }}>{lab.name}</h3>
                                     <p><strong>Description:</strong> {lab.description}</p>
@@ -260,6 +266,7 @@ export default function ProductDetail() {
                                 </div>
 
                             </div>
+                            : null
                         ))}
                     </div>
                 }
