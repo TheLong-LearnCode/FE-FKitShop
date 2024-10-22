@@ -16,6 +16,7 @@ export const deleteLab = async (id) => {
 //----------------------DELETE----------------------
 
 //-----------------------PUT-----------------------
+
 export const updateLab = async (formData, labID) => {
   try {
     const response = await api.put(`/lab/${labID}`, 
@@ -83,6 +84,15 @@ export const mergeLabGuide = async (labID, labGuideID) => {
 //-----------------------POST-----------------------
 
 //-----------------------GET-----------------------
+export const getLabByStatus = async (status) => {
+  try {
+    const response = await api[GET](`/lab/status-labs/${status}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching lab by status:", error);
+    throw error;
+  }
+};
 export const getLabByProductID = async (productID) => {
   try {
     const response = await api[GET](`/lab/product/${productID}`);

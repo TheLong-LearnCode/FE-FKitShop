@@ -12,17 +12,21 @@ import {
   Image,
   Carousel,
   Divider,
+  Radio,
+  Upload,
 } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   PlusOutlined,
   PictureOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 
 import { formatCurrency } from "../../../util/CurrencyUnit";
 import { getAllProducts } from "../../../service/productService";
 import "./index.css";
+import { ImageUploader } from "../../../service/uploadImages";
 const { Option } = Select;
 
 const ProductManager = () => {
@@ -34,6 +38,9 @@ const ProductManager = () => {
   const [visibleImages, setVisibleImages] = useState([]); // Trạng thái để hiển thị tất cả hình ảnh của sản phẩm
   const [isImagesModalVisible, setIsImagesModalVisible] = useState(false); // Trạng thái để hiển thị modal xem ảnh
 
+  const [fileList, setFileList] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
     const fetchAllProducts = async () => {
       const response = await getAllProducts();
@@ -42,14 +49,27 @@ const ProductManager = () => {
     fetchAllProducts();
   }, []);
 
-  // Giả lập dữ liệu, trong thực tế bạn sẽ fetch từ API
-  //   useEffect(() => {
-  //     setProducts([
-  //       { id: 1, name: 'Basic IoT Product', price: 99.99, stock: 50, category: 'Starter' },
-  //       { id: 2, name: 'Advanced Sensor Product', price: 149.99, stock: 30, category: 'Advanced' },
-  //       { id: 3, name: 'Smart Home Product', price: 199.99, stock: 20, category: 'Home Automation' },
-  //     ]);
-  //   }, []);
+  // const handleUpload = async (options) => {
+  //   const { onSuccess, onError, file } = options;
+  //   setUploading(true);
+  //   try {
+  //     const response = await uploadImage(file); // Call API to upload the image
+  //     onSuccess(response.data); // Pass the image URL to success callback
+  //     message.success(`${file.name} uploaded successfully.`);
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     message.error(`${file.name} upload failed.`);
+  //     onError(error); // Pass error to error callback
+  //   }
+  //   setUploading(false);
+  // };
+
+  // const uploadProps = {
+  //   customRequest: handleUpload,
+  //   onChange: ({ fileList }) => setFileList(fileList),
+  //   onRemove: (file) =>
+  //     setFileList(fileList.filter((item) => item.uid !== file.uid)),
+  // };
 
   const columns = [
     {
@@ -59,7 +79,7 @@ const ProductManager = () => {
       render: (_, record) => (
         <div style={{ display: "flex", alignItems: "flex-end", gap: "10px" }}>
           <Carousel autoplay style={{ width: "70px", height: "70px" }}>
-            {record.images.slice(0, 3).map((image) => (
+            {record.images?.slice(0, 3).map((image) => (
               <div key={image?.id} style={{ textAlign: "center" }}>
                 <Image
                   src={image?.url}
@@ -98,54 +118,18 @@ const ProductManager = () => {
       key: "price",
       render: (_, record) => <span>{formatCurrency(record.price)}</span>,
     },
-    // {
-    //   title: "Description",
-    //   dataIndex: "description",
-    //   key: "description",
-    //   render: (_, record) => <span>{record.description.slice(0, 50) + '...'}</span>,
-    // },
-    // {
-    //   title: "Publisher",
-    //   dataIndex: "publisher",
-    //   key: "publisher",
-    //   render: (_, record) => <span>{record.publisher}</span>,
-    // },
-    // {
-    //   title: "Discount",
-    //   dataIndex: "discount",
-    //   key: "discount",
-    //   render: (_, record) => <span>{record.discount}</span>,
-    // },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (_, record) => <span>{record.status}</span>,
     },
-    // {
-    //   title: "Weight",
-    //   dataIndex: "weight",
-    //   key: "weight",
-    //   render: (_, record) => <span>{record.weight}</span>,
-    // },
-    // {
-    //   title: "Material",
-    //   dataIndex: "material",
-    //   key: "material",
-    //   render: (_, record) => <span>{record.material}</span>,
-    // },
-    // {
-    //   title: "unitOnOrder",
-    //   dataIndex: "unitOnOrder",
-    //   key: "unitOnOrder",
-    //   render: (_, record) => <span>{record.unitOnOrder}</span>,
-    // },
-    // {
-    //   title: "Dimension",
-    //   dataIndex: "dimension",
-    //   key: "dimension",
-    //   render: (_, record) => <span>{record.dimension}</span>,
-    // },
+    {
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
+      render: (_, record) => <span>{record.type}</span>,
+    },
     {
       title: "Action",
       key: "action",
@@ -242,8 +226,14 @@ const ProductManager = () => {
         onCancel={handleCancel}
       >
         <Form form={form} layout="vertical">
+          {/* Replace this with the reusable ImageUploader component */}
           <Form.Item name="image" label="Image">
-            <Input />
+            <ImageUploader
+              fileList={fileList}
+              setFileList={setFileList}
+              uploading={uploading}
+              setUploading={setUploading}
+            />
           </Form.Item>
           <Form.Item
             name="name"
@@ -291,20 +281,50 @@ const ProductManager = () => {
           >
             <InputNumber min={0} />
           </Form.Item>
+          <Form.Item name="type" label="Type">
+            <Radio.Group>
+              <Radio value="Kit">Kit</Radio>
+              <Radio value="Item">Item</Radio>
+            </Radio.Group>
+          </Form.Item>
           <Form.Item name="weight" label="Weight">
             <InputNumber min={0} />
           </Form.Item>
           <Form.Item name="material" label="Material">
             <Input />
           </Form.Item>
+          {/* Dimension */}
           <Form.Item name="dimension" label="Dimension">
-            <Input />
+            <Input.Group compact>
+              <Form.Item
+                name={["dimension", "length"]}
+                noStyle
+                rules={[
+                  { required: true, message: "Please input the length!" },
+                ]}
+              >
+                <InputNumber placeholder="Length" min={0} />
+              </Form.Item>
+              <span style={{ margin: "0 8px" }}>x</span>
+              <Form.Item
+                name={["dimension", "width"]}
+                noStyle
+                rules={[{ required: true, message: "Please input the width!" }]}
+              >
+                <InputNumber placeholder="Width" min={0} />
+              </Form.Item>
+              <span style={{ marginLeft: "8px" }}>cm</span>
+            </Input.Group>
           </Form.Item>
+          {/* Unit on Order */}
           <Form.Item name="unitOnOrder" label="Unit on Order">
-            <Input />
+            <InputNumber min={0} />
           </Form.Item>
           <Form.Item name="status" label="Status">
-            <Input />
+            <Radio.Group>
+              <Radio value="active">Active</Radio>
+              <Radio value="inactive">Inactive</Radio>
+            </Radio.Group>
           </Form.Item>
           <Form.Item name="type" label="Type">
             <Input />

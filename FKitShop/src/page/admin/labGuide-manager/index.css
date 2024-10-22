@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://cdn.ckeditor.com/4.16.1/standard-all/skins/moono-lisa/editor.css');
+
+.cke_button_icon {
+    width: 20px !important; /* Adjust size */
+    height: 20px !important;
+}
+
+.cke_button {
+    margin: 0 5px !important; /* Add space between buttons */
+}
+
+.cke_toolgroup {
+    display: flex; /* Ensures toolbar buttons are aligned horizontally */
+    align-items: center;
+}
+
+/* Style for the modal containing CKEditor */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Prevent the modal from growing too tall */
+    overflow: hidden;
+}
+
+/* Style for the editor container inside the modal */
+.editor-container__editor {
+    max-height: 400px; /* Set the maximum height for the editor */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    border: 1px solid #ddd; /* Border around the editor */
+}
+
+.modal-body {
+    padding: 20px; /* Add spacing inside modal */
+}
+
+.cke {
+    margin-bottom: 20px; /* Space between CKEditor and buttons */
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end; /* Align OK/Cancel buttons to the right */
+    padding: 10px 20px;
+}
+
+
+.read-the-docs {
+  color: #888;
+}

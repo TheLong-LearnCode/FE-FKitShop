@@ -5,10 +5,11 @@ import LabForm from './LabForm';
 const LabModal = ({ mode, visible, onCancel, onOk, form, products, onFileChange, editingLabId, currentFileName, uploadedFile }) => {
   return (
     <Modal
-      title={mode === "edit" ? "Edit Lab" : "Add New Lab"}
+      title={mode === "edit" ? "Edit Lab" : mode === "view" ? "View Lab" : "Add New Lab"}
       visible={visible}
-      onOk={onOk}
+      onOk={mode === "view" ? null : onOk} // Disable OK button in view mode
       onCancel={onCancel}
+      footer={mode === "view" ? null : undefined}
     >
       <LabForm 
         form={form} 

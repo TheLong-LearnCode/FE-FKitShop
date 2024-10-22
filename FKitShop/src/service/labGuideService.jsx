@@ -1,6 +1,19 @@
 import api from "../config/axios";
 import { GET, POST, DELETE, PUT } from "../constants/httpMethod";
 
+export const uploadImage = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api[POST](`/lab/upload-img`, formData);
+    return response.data.url; // Assuming the response returns the uploaded image URL
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
+};
+
 export const updateLabGuide = async (id, info) => {
   try{
     //info gồm: labID, stepDescription, image
@@ -14,7 +27,7 @@ export const updateLabGuide = async (id, info) => {
 
 export const deleteLabGuide = async (id) => {
   try{
-    const response = await api[DELETE](`/labguide/${id}`);
+    const response = await api[DELETE](`/lab-guide/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting lab guide:", error);
@@ -46,7 +59,7 @@ export const getAllLabGuide = async () => {
 
 export const getLabGuideByLabGuideID = async (id) => {
   try{
-    const response = await api[GET](`/labguide/get/${id}`);
+    const response = await api[GET](`/lab-guide/guide/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching lab guide:", error);

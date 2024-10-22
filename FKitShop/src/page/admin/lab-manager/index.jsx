@@ -6,6 +6,7 @@ import {
   updateLab,
   deleteLab,
   mergeLabGuide,
+  getLabByStatus,
 } from "../../../service/labService";
 import { getAllProducts } from "../../../service/productService";
 import LabTable from "./LabTable";
@@ -17,6 +18,7 @@ import { PlusOutlined } from "@ant-design/icons";
 const LabManager = () => {
   const [labs, setLabs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingLabId, setEditingLabId] = useState(null);
   const [products, setProducts] = useState([]);
@@ -26,15 +28,23 @@ const LabManager = () => {
   const [selectedLabID, setSelectedLabID] = useState(null);
   const [selectedLabGuideIDs, setSelectedLabGuideIDs] = useState([]);
   const [labGuideOptions, setLabGuideOptions] = useState([]);
-
+  const [status, setStatus] = useState("all");
+  const [confirmLoading, setConfirmLoading] = useState(false);
   useEffect(() => {
-    fetchLabs();
+    fetchLabs(status);
     fetchProducts();
-  }, []);
+  }, [status]);
 
-  const fetchLabs = async () => {
-    const response = await getAllLab();
-    setLabs(response);
+  const fetchLabs = async (status) => {
+    let response;
+    if (status === "all") {
+      response = await getAllLab();
+      setLabs(response);
+      console.log("RESPONSE: ", response);
+    } else {
+      response = await getLabByStatus(status);
+      setLabs(response.data);
+    }
   };
 
   const fetchProducts = async () => {
@@ -55,6 +65,10 @@ const LabManager = () => {
     form.setFieldsValue(record);
   };
 
+  const handleStatusChange = (value) => {
+    setStatus(value);
+  };
+
   const handleOk = () => {
     form.validateFields().then(async (values) => {
       const formData = new FormData();
@@ -73,10 +87,6 @@ const LabManager = () => {
           formData.append(key, values[key]); // Append all fields regardless of file changes
         }
       });
-
-      // if (!formData.has("file")) {
-      //   formData.append("file", null); // Đảm bảo trường file luôn có trong formData
-      // }
 
       for (let [key, value] of formData.entries()) {
         console.log(key, typeof value);
@@ -105,18 +115,32 @@ const LabManager = () => {
     });
   };
 
+  const showViewModal = (record) => {
+    setIsViewModalVisible(true);
+    setEditingLabId(record.labID);
+    setCurrentFileName(record.fileNamePDF);
+    form.setFieldsValue(record);
+  };
+
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIsViewModalVisible(false);
   };
 
   const handleDelete = async (labID) => {
-    try {
-      await deleteLab(labID);
-      message.success("Lab deleted successfully");
-      fetchLabs();
-    } catch (error) {
-      message.error("Failed to delete lab");
-    }
+    Modal.confirm({
+      title: "Delete Lab",
+      content: "Are you sure you want to delete this lab?",
+      onOk: async () => {
+        try {
+          const response = await deleteLab(labID);
+          message.success(response.message);
+          fetchLabs();
+        } catch (error) {
+          message.error("Failed to delete lab");
+        }
+      },
+    });
   };
 
   const handleDownloadPDF = async (fileName) => {
@@ -165,7 +189,7 @@ const LabManager = () => {
       const labGuideIdsString = selectedLabGuideIDs.join(",");
       const response = await mergeLabGuide(selectedLabID, labGuideIdsString);
       console.log("RESPONSE: ", response);
-      
+
       message.success("Lab guides merged successfully");
       setIsMergeModalVisible(false);
       setSelectedLabID(null);
@@ -180,6 +204,19 @@ const LabManager = () => {
   return (
     <div style={{ padding: "20px" }}>
       <Space style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Select
+          defaultValue={1} // Default to showing active labs
+          onChange={handleStatusChange}
+          style={{
+            width: 200,
+            marginBottom: "20px",
+            justifySelf: "flex-start",
+          }}
+        >
+          <Select.Option value="all">All Labs</Select.Option>
+          <Select.Option value={1}>Active Labs</Select.Option>
+          <Select.Option value={0}>Deleted Labs</Select.Option>
+        </Select>
         <Button
           type="primary"
           icon={<PlusOutlined />}
@@ -199,14 +236,15 @@ const LabManager = () => {
       </Space>
       <LabTable
         labs={labs}
+        onView={showViewModal}
         onEdit={showEditModal}
         onDelete={handleDelete}
         onDownloadPDF={handleDownloadPDF}
         onFileChange={handleFileChange}
       />
       <LabModal
-        mode={editingLabId ? "edit" : "add"}
-        visible={isModalVisible}
+        mode={isViewModalVisible ? "view" : editingLabId ? "edit" : "add"}
+        visible={isModalVisible || isViewModalVisible}
         onCancel={handleCancel}
         onOk={handleOk}
         form={form}

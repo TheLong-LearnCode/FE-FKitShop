@@ -11,7 +11,7 @@ const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile, 
   };
 
   return (
-    <Form form={form} layout="vertical">
+    <Form form={form} layout="vertical" disabled={mode === "view"}>
       <Form.Item
         name="productID"
         label="Product ID"

@@ -62,7 +62,7 @@ const AdminMenu = () => {
           <Link to="/admin/product-manager/kit-manager">Kit</Link>
         </Menu.Item>
         <Menu.Item key="6" icon={<ToolOutlined />}>
-          <Link to="/admin/product-manager/component-manager">Component</Link>
+          <Link to="/admin/product-manager/item-manager">Item</Link>
         </Menu.Item>
         <Menu.Item key="7" icon={<FilePdfOutlined />}>
           <Link to="/admin/product-manager/lab-manager">Lab</Link>

@@ -18,7 +18,7 @@ const OrderPage = React.lazy(() =>
 const OrderSuccess = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
 
 const KitPage = React.lazy(() => import("../page/admin/kit-manager"));
-const ComponentPage = React.lazy(() => import("../page/admin/component-manager"));
+const ItemPage = React.lazy(() => import("../page/admin/item-manager"));
 const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
 const TagPage = React.lazy(() => import("../page/admin/tag-manager"));
 
@@ -96,11 +96,11 @@ const PrivateRoutes = [
             ),
           },
           {
-            path: "component-manager",
+            path: "item-manager",
             element: (
               <Suspense fallback={null}>
-                <ComponentPage />
-                {/* ComponentPage */}
+                <ItemPage />
+                {/* ItemPage */}
               </Suspense>
             ),
           },
