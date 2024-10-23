@@ -39,13 +39,14 @@ export default function CardContent({ product }) {
         <div className="col-md-3 product-card" key={product.productID}>
             <div className="card">
                 <img className="card-img-top" src={product.images[0].url} alt={product.name} />
+                <button className='like-btn btn'> <i class="bi bi-bag-heart-fill"></i></button>
                 <div className="card-body">
                     <h5 className="card-title">{product.name}</h5>
                     <p className="price">{formatCurrency(product.price)}</p>
                     <div className="card-bottom">
                         <Link to={`/detail/${product.productID}`}><button className="btn view-detail-btn">View details</button></Link>
                         <button className="btn atc-btn" onClick={() => setShowPopup(true)}>
-                            <box-icon name='cart' type='solid' color='#000F8F'></box-icon>
+                            <i class="bi bi-cart-plus-fill"></i>
                         </button>
                     </div>
                 </div>

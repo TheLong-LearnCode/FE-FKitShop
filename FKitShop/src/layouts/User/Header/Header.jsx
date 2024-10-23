@@ -155,7 +155,7 @@ export default function Header() {
                                                 <button onClick={handleLogout} className="dropdown-item">Log Out</button>
                                             </>
                                         )}
-                                        <Link to={'/favoriteList'} className="dropdown-item">Favorite List</Link>
+                                        <Link to={'/favorite'} className="dropdown-item">Favorite List</Link>
                                     </div>
                                 </div>
                             </div>

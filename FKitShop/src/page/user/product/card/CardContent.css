@@ -1,22 +1,24 @@
-
 .product-card {
     margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
 }
 
 .card{
     overflow: hidden;
     min-height: 350px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
 }
 
 .card img{
     width: 100%;
     height: 200px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease-in-out;
     object-fit: cover;
 }
 
-.card img:hover{
+.card:hover img{
     transform: scale(1.1);
 }
 
@@ -48,7 +50,7 @@
     padding: 5px 10px;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 
 .view-detail-btn:hover{
@@ -60,10 +62,39 @@
     display: flex;
     border: 1px solid #000F8F;
     border-radius: 5px;
-    transition: all 0.2s ease-in-out;
-
+    transition: all 0.3s ease-in-out;
+    color: #000F8F;
+    font-size: 1.2rem;
 }
 
 .atc-btn:hover{
-    background-color: #f3f2f2 !important;
+    background-color: #000F8F;
+    color: var(--background-color);
 }
+
+.like-btn {
+    position: absolute;
+    top: 10px;
+    right: -50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border-radius: 100%;
+    font-size: 1.5rem;
+    transition: all 0.3s ease-in-out;
+    z-index: 1;
+}
+
+.product-card:hover .like-btn {
+    right: 10px;
+}
+
+.like-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--background-color);
+}
+
