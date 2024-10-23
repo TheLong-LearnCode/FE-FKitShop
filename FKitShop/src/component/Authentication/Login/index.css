@@ -65,27 +65,21 @@ body {
     /* Loại bỏ hiệu ứng đổ bóng mặc định nếu có */
 }
 
-button {
+.btn-cus{
+    border-radius: 0;
     background-color: gray;
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
-.btn-cus{
-    border-radius: 0;
-}
 
-/* Khi người dùng hover */
-button:hover {
+.btn-cus:hover {
     background-color: var(--primary-color);
-    /* Thay đổi màu nền khi hover */
-    /* Phóng to nhẹ nút */
 }
 
-button:focus {
+.btn-cus:focus {
     outline: none !important;
     box-shadow: none !important;
 }

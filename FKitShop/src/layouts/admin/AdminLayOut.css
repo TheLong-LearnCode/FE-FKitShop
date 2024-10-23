@@ -1,7 +1,7 @@
-body{
+/* body{
     height: 100vh;
     display: flex;
-}
+} */
 
 .menu-layout {
     background-color: #f8f9fa; /* Màu nền sidebar */
@@ -14,4 +14,4 @@ body{
     background-color: #fff; /* Màu nền nội dung */
     height: 100vh; /* Đảm bảo nội dung chiếm toàn bộ chiều cao */
     overflow-y: auto; /* Cho phép cuộn dọc */
-  }
+}

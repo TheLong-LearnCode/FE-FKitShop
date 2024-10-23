@@ -110,7 +110,7 @@ const AdminLayout = () => {
           />
           <Content
             style={{
-              margin: "44px 8px 12px",
+              margin: "20px 8px 12px",
               padding: 24,
               minHeight: 280,
               background: "#fff",
