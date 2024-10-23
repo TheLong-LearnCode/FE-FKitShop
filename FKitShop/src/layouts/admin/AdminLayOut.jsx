@@ -5,14 +5,20 @@ import Menu from "./menu";
 import HeaderLayout from "./header";
 import Loading from "../../component/Loading/Loading";
 import { Outlet } from "react-router-dom";
+import Cookies from "js-cookie";
+import { loadUserFromCookie } from "../../service/authUser";
+import { useDispatch } from "react-redux";
 
 const { Sider, Content } = Layout;
 
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const dispatch = useDispatch();
   useEffect(() => {
+    const token = Cookies.get("token");
+    dispatch(loadUserFromCookie(token));
+    console.log("token in AdminLayout",token);
     // Simulate loading time
     const timer = setTimeout(() => {
       setLoading(false);
@@ -104,7 +110,7 @@ const AdminLayout = () => {
           />
           <Content
             style={{
-              margin: "44px 8px 12px",
+              margin: "20px 8px 12px",
               padding: 24,
               minHeight: 280,
               background: "#fff",

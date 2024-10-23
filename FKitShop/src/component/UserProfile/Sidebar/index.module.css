@@ -1,8 +1,8 @@
-img {
-    max-width: 100%;
+.profile-avatar{
+    width: 100px;
     height: 100px;
 }
 button:focus {
-    outline: none !important;
-    box-shadow: none !important;
+    outline: none;
+    box-shadow: none;
 }

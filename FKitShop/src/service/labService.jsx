@@ -1,9 +1,10 @@
 import api from "../config/axios";
 import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
+import axios from 'axios';
 
 //----------------------DELETE----------------------
 export const deleteLab = async (id) => {
-  try{
+  try {
     //id này là id gì??
     const response = await api[DELETE](`/lab/${id}`);
     return response.data;
@@ -11,37 +12,44 @@ export const deleteLab = async (id) => {
     console.error("Error deleting lab:", error);
     throw error;
   }
-}
+};
 //----------------------DELETE----------------------
 
 //-----------------------PUT-----------------------
-export const updateLab = async (info,labID) => {
-  try{
-    //info gồm: productID, name, description, level, file(.pdf)
-    const response = await api[PUT](`/lab/${labID}`, info);
+
+export const updateLab = async (formData, labID) => {
+  try {
+    const response = await api.put(`/lab/${labID}`, 
+      formData);
     return response.data;
   } catch (error) {
     console.error("Error updating lab:", error);
     throw error;
   }
-}
+};
+
 //-----------------------PUT-----------------------
 
 //-----------------------POST-----------------------
-//id này là id gì??
-export const uploadLab = async (info, id) => {
-  try{
-    //file(.pdf)
-    const response = await api[POST](`/lab/upload-lab/${id}`, info);
+
+export const uploadLab = async (info, labID) => {
+  try {
+    const formData = new FormData();
+    formData.append("pdf", info.file); // Đảm bảo file được thêm vào FormData
+    const response = await api.post(`/lab/upload-lab/${labID}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error uploading lab:", error);
     throw error;
   }
-}
+};
 
 export const createLab = async (info) => {
-  try{
+  try {
     //productID, name, description, level, file(.pdf)
     const response = await api[POST]("/lab/addLab", info);
     return response.data;
@@ -49,10 +57,10 @@ export const createLab = async (info) => {
     console.error("Error creating lab:", error);
     throw error;
   }
-}
+};
 
 export const downloadLab = async (info) => {
-  try{
+  try {
     //accountID, orderID, labID, productID
     const response = await api[POST]("/lab/download", info);
     return response.data;
@@ -60,10 +68,31 @@ export const downloadLab = async (info) => {
     console.error("Error downloading lab:", error);
     throw error;
   }
-}
+};
+
+export const mergeLabGuide = async (labID, labGuideID) => {
+  try {
+    console.log("LAB GUIDE ID: ", labGuideID);
+    
+    const response = await api[POST](`/lab/pdf/create/${labID}`, JSON.stringify(labGuideID));
+    return response.data;
+  } catch (error) {
+    console.error("Error merging lab guide:", error);
+    throw error;
+  }
+};
 //-----------------------POST-----------------------
 
 //-----------------------GET-----------------------
+export const getLabByStatus = async (status) => {
+  try {
+    const response = await api[GET](`/lab/status-labs/${status}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching lab by status:", error);
+    throw error;
+  }
+};
 export const getLabByProductID = async (productID) => {
   try {
     const response = await api[GET](`/lab/product/${productID}`);

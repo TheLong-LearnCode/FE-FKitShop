@@ -1,40 +1,32 @@
-/* font chữ cho các tab bên side bar */
-.size-nav-item {
-    font-size: 1.7rem; 
-    font-weight: bold;
-    background: linear-gradient(to right, blue, purple); /* Màu gradient từ trái sang phải */
-    background-clip: text; /* Clip để chỉ áp dụng gradient cho chữ */
-    -webkit-background-clip: text; /* Duy trì cho trình duyệt Webkit */
-    color: transparent; /* Làm cho màu chữ trong suốt để hiển thị gradient */
-  }
-  /* css cho cả khối nav bên ngoài */
-  .nav-container {
-    border: 2px solid #ddd;  /* Đường viền */
-    border-radius: 10px; /* Độ bo tròn
-    /*padding: 1px; /* Khoảng cách bên trong */
-    background-color: gray  ; /*Màu nền*/
-    /*margin-bottom: 10px; /* Khoảng cách giữa các khung */
-    /*max-height: 100vh; /* Chiều cao tối thiểu là 100% chiều cao viewport */
-    /* overflow-x: auto;  */
-    width: auto;
-  }
-  
-/* css cho mỗi nav-link */
-  .nav-link-item {
-    border: 1px solid #ddd; /* Đường viền */
-    border-radius: 10px; /* Độ bo tròn */
-    padding: 5px 5px; /* Khoảng cách bên trong */
-    background-color: #f8f9fa; /* Màu nền */
-    margin: 3px 0; /* Khoảng cách giữa các khung */
-    transition: background-color 0.3s; /* Hiệu ứng chuyển đổi màu nền */
-  }
-  
-  .nav-link-item:hover {
-    background-color: #9b9fa2; /* Màu nền khi hover */
-  }
-  
+/* font chữ cho các tab bên side bar .size-nav-item {
+  font-size: 1.7rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #007bff, #00ff99);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.nav-container {
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background-color: gray;
+  background-color: gray;
+  width: auto;
+}
 
-  
+.nav-link-item {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 5px 5px;
+  background-color: #f8f9fa;
+  margin: 3px 0;
+  transition: background-color 0.3s;
+}
+
+.nav-link-item:hover {
+  background-color: #9b9fa2;
+}
+
 .ant-menu-item-selected {
   background-color: #1890ff !important;
 }
@@ -57,7 +49,6 @@
   background: #001529;
 }
 
-/* Remove underline on hover for menu items */
 .ant-menu-item a:hover,
 .ant-menu-item-selected a:hover {
   text-decoration: none;
@@ -67,7 +58,6 @@
   text-decoration: none;
 }
 
-/* Remove underline for all anchor tags within the menu */
 .ant-menu a {
   text-decoration: none;
-}
+} */

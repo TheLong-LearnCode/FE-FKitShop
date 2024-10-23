@@ -119,12 +119,35 @@ export const getMyLab = async (id) => {
   }
 };
 
-export const downloadMyLab = async (accountID,orderID,labID,productID,fileNamePDF) => {
-  try{
-    const response = (`http://localhost:8080/fkshop/lab/download?accountID=${accountID}&orderID=${orderID}&labID=${labID}&productID=${productID}&fileName=${fileNamePDF}`);
-    console.log("response in downloadMyLab: ", response);
-    return response;
+// export const downloadMyLab = async (accountID,orderID,labID,productID,fileNamePDF) => {
+//   try{
+//     const response = (`http://localhost:8080/fkshop/lab/download?accountID=${accountID}&orderID=${orderID}&labID=${labID}&productID=${productID}&fileName=${fileNamePDF}`);
+//     console.log("response in downloadMyLab: ", response);
+//     return response;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+export const downloadMyLab = async (accountID, orderID, labID, productID, fileNamePDF) => {
+  try {
+    const response = await api.get('/lab/download', {
+      params: {
+        accountID,
+        orderID,
+        labID,
+        productID,
+        fileName: fileNamePDF,
+      },
+      responseType: 'blob', // Specify the response type for downloading files
+    });
+    
+    // Create a URL from the Blob and return it for downloading
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    console.log("Download URL: ", url);
+    return url;
   } catch (error) {
-    throw error;
+    throw error; // Propagate the error for handling in the calling function
   }
 };
+
