@@ -14,6 +14,7 @@ import { verifyToken } from '../../../service/authUser.jsx';
 export default function OrderView() {
     const dispatch = useDispatch();
     const [activeLink, setActiveLink] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [userInfo, setUserInfo] = useState(null); // Lưu trữ thông tin người dùng sau khi verify token
     const [errors, setErrors] = useState({});
     const cartProducts = useSelector(state => state.cart.products);
@@ -46,6 +47,7 @@ export default function OrderView() {
 
 
         const fetchUserInfo = async () => {
+            setIsLoading(true);
             try {
                 userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
                 console.log("userData after verify token: ", userData);
@@ -55,6 +57,8 @@ export default function OrderView() {
                 //userData.data -> lấy ra userInfo
             } catch (error) {
                 console.error("Error verifying token: ", error);
+            }finally {
+                setIsLoading(false);
             }
         };
         fetchUserInfo(); // Gọi API lấy thông tin người dùng
@@ -65,8 +69,8 @@ export default function OrderView() {
     };
 
     const [formData, setFormData] = useState({
-        fullName: '',
-        phoneNumber: '',
+        fullName: userInfo?.data?.fullName || '',
+        phoneNumber: userInfo?.data?.phoneNumber || '',
         address: '',
         province: '',
         district: '',
@@ -75,6 +79,9 @@ export default function OrderView() {
         payingMethod: '',
         note: ''
     });
+
+    console.log('FormDATA: ' + userInfo?.data?.fullName + ' ' + userInfo?.data?.phoneNumber)
+
 
     useEffect(() => {
         if (cartProducts.length === 0) {
@@ -205,7 +212,9 @@ export default function OrderView() {
         }).format(amount);
     };
 
-
+    if (isLoading) {
+        return <div>Loading...</div>; // Or any loading indicator
+    }
     return (
         <div className="container mt-2">
             <div className='text-center' style={{ width: '100%', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>

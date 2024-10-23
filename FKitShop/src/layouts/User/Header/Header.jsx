@@ -79,7 +79,7 @@ export default function Header() {
                 const activeTags = response.data.filter(item => item.tag.status === 1);
                 const formattedTags = activeTags.map(item => ({
                     name: item.tag.tagName,
-                    categories: item.cates.map(cate => cate.categoryName)
+                    categories: item.cates,
                 }));
                 setProductTags(formattedTags);
             } catch (error) {
@@ -174,9 +174,9 @@ export default function Header() {
                                                     {tag.name}
                                                     {activeTag === tag.name && (
                                                         <div className="categories-list">
-                                                            {tag.categories.map((category, catIndex) => (
-                                                                <Link className="categories-list-cate" key={catIndex} to={`/products/${tag.name.toLowerCase()}/${category.toLowerCase()}`}>
-                                                                    {category}
+                                                            {tag.categories.map((category) => (
+                                                                <Link className="categories-list-cate" key={category.id} to={`/products/${category.categoryID}`}>
+                                                                    {category.categoryName}
                                                                 </Link>
                                                             ))}
                                                         </div>

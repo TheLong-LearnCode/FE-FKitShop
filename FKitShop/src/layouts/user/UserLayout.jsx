@@ -14,7 +14,7 @@ export default function UserLayout() {
   useEffect(() => {
     const token = Cookies.get("token");
     dispatch(loadUserFromCookie(token));
-    console.log("token in UserLayout",token);
+    console.log("token in UserLayout", token);
 
     // Simulate loading time
     const timer = setTimeout(() => {
@@ -23,12 +23,12 @@ export default function UserLayout() {
 
     return () => clearTimeout(timer);
   }, []);
-  
-  if(loading){
+
+  if (loading) {
     return (
       <>
-      <Header/>
-      <Loading/>
+        <Header />
+        <Loading />
       </>
     )
   }
@@ -36,7 +36,7 @@ export default function UserLayout() {
   return (
     <div style={{ width: '100%', height: '100vh' }}>
       <Header />
-      <Outlet/>
+      <Outlet />
       <Footer />
     </div>
   )
