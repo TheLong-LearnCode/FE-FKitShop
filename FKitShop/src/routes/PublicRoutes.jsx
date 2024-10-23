@@ -13,6 +13,7 @@ const BlogDetailsPage = React.lazy(() => import("../page/user/blog/BlogDetails.j
 const LoginPage = React.lazy(() => import("../page/auth/login"));
 const RegisterPage = React.lazy(() => import("../page/auth/login"));
 const ProductListPage = React.lazy(() => import("../page/user/product/list/ProductByCate.jsx"));
+const ProductSearchPage = React.lazy(() => import("../page/user/product/list/ProductByName.jsx"));
 const ProductCardPage = React.lazy(() => import("../page/user/product/detail/ProductDetail"));
 const ProductCartPage = React.lazy(() => import("../page/user/cart/ProductCart"));
 
@@ -68,6 +69,10 @@ const PublicRoutes = [
             {
                 path: "blog/:blogID",
                 element: <LazyLoader children={<BlogDetailsPage />} />,
+            },
+            {
+                path: "search",
+                element: <LazyLoader children={<ProductSearchPage />} />,
             },
         ]
     },

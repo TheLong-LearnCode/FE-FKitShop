@@ -7,6 +7,7 @@ import api from '../../../../config/axios';
 import AddToCartPopup from '../../../../components/AddToCartPopup';
 import { addProductToCart } from '../../../../redux/slices/cartSlice';
 import { useDispatch } from 'react-redux';
+import { message } from 'antd';
 
 export default function CardContent({ product }) {
     const dispatch = useDispatch()
@@ -29,8 +30,7 @@ export default function CardContent({ product }) {
                 quantity: quantity
             }));
         } else {
-            console.error("Missing accountID or productID");
-            // Có thể thêm thông báo lỗi cho người dùng ở đây
+            message.error("Login to add product to cart");
         } 
     };
 
