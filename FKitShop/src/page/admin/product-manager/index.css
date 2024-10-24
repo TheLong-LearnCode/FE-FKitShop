@@ -5,4 +5,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
+.disable-form-layout {
+  background-color: white !important;
+  color: black !important;
+}

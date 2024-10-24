@@ -1,9 +1,9 @@
 import { Button, message, Upload } from "antd";
 import api from "../config/axios";
 import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
-import { UploadOutlined } from "@ant-design/icons";
+import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 
-export const updateImage = async(productID, imageID) => {
+export const updateImage = async (productID, imageID) => {
   try {
     const response = await api[PUT](`/product/${productID}`, formData);
     return response.data;
@@ -11,7 +11,7 @@ export const updateImage = async(productID, imageID) => {
     console.error("Error updating product:", error);
     throw error;
   }
-}
+};
 
 export const updateProduct = async (productID, formData) => {
   try {
@@ -57,6 +57,7 @@ export const addProduct = async (formData) => {
 };
 
 export const ProductUploadImage = ({
+  mode,
   fileList,
   setFileList,
   uploading,
@@ -84,17 +85,19 @@ export const ProductUploadImage = ({
   const uploadProps = {
     customRequest: handleUpload,
     onChange: ({ fileList: newFileList }) => {
-      if (typeof setFileList === 'function') {
+      if (typeof setFileList === "function") {
         setFileList(newFileList);
       } else {
-        console.error('setFileList is not a function');
+        console.error("setFileList is not a function");
       }
     },
     onRemove: (file) => {
-      if (typeof setFileList === 'function') {
-        setFileList(prevFileList => prevFileList.filter((item) => item.uid !== file.uid));
+      if (typeof setFileList === "function") {
+        setFileList((prevFileList) =>
+          prevFileList.filter((item) => item.uid !== file.uid)
+        );
       } else {
-        console.error('setFileList is not a function');
+        console.error("setFileList is not a function");
       }
     },
     fileList,
@@ -103,10 +106,11 @@ export const ProductUploadImage = ({
   };
 
   return (
-    <Upload {...uploadProps}>
-      <Button icon={<UploadOutlined />} loading={uploading} hidden>
-        Upload Images
-      </Button>
+    <Upload {...uploadProps} loading={uploading} disabled={mode==="view"}>
+      <button style={{ border: 0, background: "none" }} type="button">
+        <PlusOutlined />
+        <div style={{ marginTop: 8 }}>Upload</div>
+      </button>
     </Upload>
   );
 };
@@ -130,5 +134,3 @@ export const deleteImages = async (productId, imageIDs) => {
     throw error;
   }
 };
-
-

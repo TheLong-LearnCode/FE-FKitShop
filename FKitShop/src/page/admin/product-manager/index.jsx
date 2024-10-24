@@ -57,7 +57,11 @@ const ProductManager = () => {
 
   const showModal = (mode, product = null) => {
     setModalMode(mode);
-    setSelectedProduct(fetchProductById(product.productID).data);
+    if(mode === "add"){
+      setSelectedProduct(product);
+    } else {
+      setSelectedProduct(fetchProductById(product?.productID).data);
+    }
     setIsModalVisible(true);
   };
 
