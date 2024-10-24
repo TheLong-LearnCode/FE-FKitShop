@@ -6,6 +6,7 @@ import {
   getAllProducts,
   updateProduct,
   deleteProduct,
+  getProductById,
 } from "../../../service/productService";
 import "./index.css";
 import ProductTable from "./ProductTable";
@@ -27,6 +28,7 @@ const ProductManager = () => {
   useEffect(() => {
     fetchAllCategories();
     fetchAllProducts();
+    fetchProductById(selectedProduct?.productID);
   }, []);
 
   const fetchAllCategories = async () => {
@@ -48,9 +50,14 @@ const ProductManager = () => {
     }
   };
 
+  const fetchProductById = async (productId) => {
+    const response = await getProductById(productId);
+    setSelectedProduct(response.data);
+  };
+
   const showModal = (mode, product = null) => {
     setModalMode(mode);
-    setSelectedProduct(product);
+    setSelectedProduct(fetchProductById(product.productID).data);
     setIsModalVisible(true);
   };
 
@@ -72,7 +79,7 @@ const ProductManager = () => {
         response = await addProduct(values);
       } else if (modalMode === "edit") {
         console.log(selectedProduct.productID);
-        
+
         response = await updateProduct(selectedProduct.productID, values);
       }
       message.success(response.message);
