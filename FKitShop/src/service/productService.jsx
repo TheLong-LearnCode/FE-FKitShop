@@ -3,6 +3,16 @@ import api from "../config/axios";
 import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
 import { UploadOutlined } from "@ant-design/icons";
 
+export const updateImage = async(productID, imageID) => {
+  try {
+    const response = await api[PUT](`/product/${productID}`, formData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+}
+
 export const updateProduct = async (productID, formData) => {
   try {
     const response = await api[PUT](`/product/${productID}`, formData);
@@ -110,3 +120,15 @@ export const deleteProduct = async (productId) => {
     throw error;
   }
 };
+
+export const deleteImages = async (productId, imageIDs) => {
+  try {
+    const response = await api[DELETE](`/product/images/`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+};
+
+
