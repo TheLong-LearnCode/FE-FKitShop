@@ -1,76 +1,74 @@
-import React from "react";
-import { Modal, Form, Input, Select, Button } from "antd";
+import { useState, useEffect, useRef } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 import {
-    ClassicEditor,
-    AccessibilityHelp,
-    Autoformat,
-    AutoImage,
-    AutoLink,
-    Autosave,
-    BalloonToolbar,
-    BlockQuote,
-    BlockToolbar,
-    Bold,
-    Code,
-    CodeBlock,
-    Essentials,
-    FontBackgroundColor,
-    FontColor,
-    FontFamily,
-    FontSize,
-    FullPage,
-    GeneralHtmlSupport,
-    Heading,
-    HorizontalLine,
-    HtmlComment,
-    HtmlEmbed,
-    ImageBlock,
-    ImageCaption,
-    ImageInline,
-    ImageInsert,
-    ImageInsertViaUrl,
-    ImageResize,
-    ImageStyle,
-    ImageTextAlternative,
-    ImageToolbar,
-    ImageUpload,
-    Indent,
-    IndentBlock,
-    Italic,
-    Link,
-    LinkImage,
-    List,
-    ListProperties,
-    MediaEmbed,
-    PageBreak,
-    Paragraph,
-    PasteFromOffice,
-    SelectAll,
-    ShowBlocks,
-    SimpleUploadAdapter,
-    SourceEditing,
-    Table,
-    TableCaption,
-    TableCellProperties,
-    TableColumnResize,
-    TableProperties,
-    TableToolbar,
-    TextPartLanguage,
-    TextTransformation,
-    Title,
-    TodoList,
-    Underline,
-    Undo,
-  } from "ckeditor5";
-const { Option } = Select;
+  ClassicEditor,
+  AccessibilityHelp,
+  Autoformat,
+  AutoImage,
+  AutoLink,
+  Autosave,
+  BalloonToolbar,
+  BlockQuote,
+  BlockToolbar,
+  Bold,
+  Code,
+  CodeBlock,
+  Essentials,
+  FontBackgroundColor,
+  FontColor,
+  FontFamily,
+  FontSize,
+  FullPage,
+  GeneralHtmlSupport,
+  Heading,
+  HorizontalLine,
+  HtmlComment,
+  HtmlEmbed,
+  ImageBlock,
+  ImageCaption,
+  ImageInline,
+  ImageInsert,
+  ImageInsertViaUrl,
+  ImageResize,
+  ImageStyle,
+  ImageTextAlternative,
+  ImageToolbar,
+  ImageUpload,
+  Indent,
+  IndentBlock,
+  Italic,
+  Link,
+  LinkImage,
+  List,
+  ListProperties,
+  MediaEmbed,
+  PageBreak,
+  Paragraph,
+  PasteFromOffice,
+  SelectAll,
+  ShowBlocks,
+  SimpleUploadAdapter,
+  SourceEditing,
+  Table,
+  TableCaption,
+  TableCellProperties,
+  TableColumnResize,
+  TableProperties,
+  TableToolbar,
+  TextPartLanguage,
+  TextTransformation,
+  Title,
+  TodoList,
+  Underline,
+  Undo,
+} from "ckeditor5";
 
-export default function LabGuideModal ({
+import "ckeditor5/ckeditor5.css";
+import { Modal, Button, Form, Select, Input } from "antd";
+export default function LabGuideModal({
   isModalVisible,
   isViewMode,
-  editorRef,
   editingGuideId,
   form,
   labs,
@@ -78,7 +76,19 @@ export default function LabGuideModal ({
   setContent,
   handleOk,
   handleCancel,
+  uploadPlugin
 }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  //const editorContainerRef = useRef(null);
+  const editorRef = useRef(null);
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
+
+  useEffect(() => {
+    setIsLayoutReady(true);
+
+    return () => setIsLayoutReady(false);
+  }, []);
+
   const editorConfig = {
     toolbar: {
       items: [
@@ -181,6 +191,7 @@ export default function LabGuideModal ({
       Underline,
       Undo,
     ],
+    extraPlugins: uploadPlugin,
     balloonToolbar: [
       "bold",
       "italic",
@@ -317,76 +328,71 @@ export default function LabGuideModal ({
       ],
     },
   };
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
   return (
-    <Modal
-      title={
-        isViewMode
-          ? "View Lab Guide"
-          : editingGuideId
-          ? "Edit Lab Guide"
-          : "Add New Lab Guide"
-      }
-      open={isModalVisible}
-      onOk={isViewMode ? handleCancel : handleOk}
-      onCancel={handleCancel}
-      width={"80%"}
-      footer={
-        isViewMode
-          ? [
-              <Button key="close" onClick={handleCancel}>
-                Close
-              </Button>,
-            ]
-          : undefined
-      }
-    >
-      <Form form={form} layout="vertical">
-        <Form.Item name="labID" label="Lab ID" rules={[{ required: true }]}>
-          <Select disabled={isViewMode}>
-            {labs.map((lab) => (
-              <Option key={lab.labID} value={lab.labID}>
-                {lab.labID} - {lab.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+    <>
+      <div>
+        {/* <Button type="primary" onClick={showModal}>
+          Open Editor
+        </Button> */}
 
-        <Form.Item
-          name="description"
-          label="Description"
-          rules={[{ required: true }]}
+        <Modal
+          title={
+            isViewMode
+              ? "View Lab Guide"
+              : editingGuideId
+              ? "Edit Lab Guide"
+              : "Add New Lab Guide"
+          }
+          open={isModalVisible}
+          onOk={isViewMode ? handleCancel : handleOk}
+          onCancel={handleCancel}
+          width={"60%"}
         >
-          <Input.TextArea disabled={isViewMode} />
-        </Form.Item>
+          <Form form={form} layout="vertical">
+            <Form.Item name="labID" label="Lab ID" rules={[{ required: true }]}>
+              <Select disabled={isViewMode}>
+                {labs.map((lab) => (
+                  <Option key={lab.labID} value={lab.labID}>
+                    {lab.labID} - {lab.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
 
-        <Form.Item label="Content" required>
-          {/* <CKEditor
-            editor={ClassicEditor}
-            data={content}
-            onChange={(event, editor) => {
-              if (!isViewMode) {
-                const data = editor.getData();
-                setContent(data);
-              }
-            }}
-            config={editorConfiguration}
-            disabled={isViewMode}
-          /> */}
-              <CKEditor
-                editor={ClassicEditor}
-                data={content}
-                onChange={(event, editor) => {
-                  if (!isViewMode) {
-                    const data = editor.getData();
-                    setContent(data);
-                  }
-                }}
-                config={editorConfig}
-                ref={editorRef}
-              />
-        </Form.Item>
-      </Form>
-    </Modal>
+            <Form.Item
+              name="description"
+              label="Description"
+              rules={[{ required: true }]}
+            >
+              <Input.TextArea disabled={isViewMode} />
+            </Form.Item>
+
+            <Form.Item label="Content" required>
+              <div className="editor-container">
+                {isLayoutReady && (
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={content}
+                    onChange={(event, editor) => {
+                      if (!isViewMode) {
+                        const data = editor.getData();
+                        setContent(data);
+                      }
+                    }}
+                    config={editorConfig}
+                    ref={editorRef}
+                    extraPlugins={uploadPlugin}
+                  />
+                )}
+              </div>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
+    </>
   );
-};
+}
