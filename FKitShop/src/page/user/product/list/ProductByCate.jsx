@@ -11,12 +11,15 @@ export default function ProductList() {
   const [cate, setCate] = useState(null);
   const [activeButton, setActiveButton] = useState('');
   const [products, setProducts] = useState([]);
+  const [ascProducts, setAscProducts] = useState([]);
+  const [descProducts, setDescProducts] = useState([]);
 
   useEffect(() => {
     const fetchCategoryName = async () => {
       try {
         const response = await api[GET](`/categories/${categoryID}`);
         setCate(response.data.data);
+        setActiveButton('');
       } catch (err) {
         console.error("Error fetching lab details: ", err);
       }
@@ -39,6 +42,32 @@ export default function ProductList() {
       }
     }
     fetchCateProduct();
+
+  }, [categoryID])
+
+  useEffect(() => {
+    const ascCateProduct = async () => {
+      try {
+        const response = await api[GET](`/product/price-asc/${categoryID}`);
+        setAscProducts(response.data.data);
+      } catch (err) {
+        console.error("Error fetching lab details: ", err);
+      }
+    }
+    ascCateProduct();
+
+  }, [categoryID])
+
+  useEffect(() => {
+    const descCateProduct = async () => {
+      try {
+        const response = await api[GET](`/product/price-desc/${categoryID}`);
+        setDescProducts(response.data.data);
+      } catch (err) {
+        console.error("Error fetching lab details: ", err);
+      }
+    }
+    descCateProduct();
 
   }, [categoryID])
 
@@ -65,9 +94,23 @@ export default function ProductList() {
           </button>
 
           <div className="row mt-3">
-            {products.map((product) => (
-              <CardContent product={product} />
-            ))}
+            {activeButton === '' &&
+              products.map((product) => (
+                <CardContent product={product} />
+              ))
+            }
+
+            {activeButton === 'lth' &&
+              ascProducts.map((product) => (
+                <CardContent product={product} />
+              ))
+            }
+
+            {activeButton === 'htl' &&
+              descProducts.map((product) => (
+                <CardContent product={product} />
+              ))
+            }
           </div>
         </div>
       </div>

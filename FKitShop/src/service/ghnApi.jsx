@@ -15,7 +15,10 @@ const ghnApi = axios.create({
 export const getProvinces = async () => {
   try {
     const response = await ghnApi.get('/province');
-    return response.data.data;
+    return response.data.data.map(province => ({
+      ProvinceID: province.ProvinceID,
+      ProvinceName: province.ProvinceName
+    }));
   } catch (error) {
     console.error('Error fetching provinces:', error);
     throw error;
@@ -25,7 +28,10 @@ export const getProvinces = async () => {
 export const getDistricts = async (provinceId) => {
   try {
     const response = await ghnApi.get('/district', { params: { province_id: provinceId } });
-    return response.data.data;
+    return response.data.data.map(district => ({
+      DistrictID: district.DistrictID,
+      DistrictName: district.DistrictName
+    }));
   } catch (error) {
     console.error('Error fetching districts:', error);
     throw error;
@@ -35,7 +41,10 @@ export const getDistricts = async (provinceId) => {
 export const getWards = async (districtId) => {
   try {
     const response = await ghnApi.get('/ward', { params: { district_id: districtId } });
-    return response.data.data;
+    return response.data.data.map(ward => ({
+      WardCode: ward.WardCode,
+      WardName: ward.WardName
+    }));
   } catch (error) {
     console.error('Error fetching wards:', error);
     throw error;

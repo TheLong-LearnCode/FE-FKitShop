@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import './OrderView.css'; // Đảm bảo bạn tạo file CSS này
-import { getProvinces, getDistricts, getWards } from '../../../service/ghnApi.jsx';
+import { getProvinces, getDistricts, getWards, calculateShippingFee } from '../../../service/ghnApi.jsx';
 import { IDLE } from '../../../redux/constants/status.js';
 import { checkOutOrder, checkOutVNP} from '../../../service/orderService.jsx';
 import { log } from 'react-modal/lib/helpers/ariaAppHider.js';
@@ -69,8 +69,8 @@ export default function OrderView() {
     };
 
     const [formData, setFormData] = useState({
-        fullName: userInfo?.data?.fullName || '',
-        phoneNumber: userInfo?.data?.phoneNumber || '',
+        fullName: '',
+        phoneNumber: '',
         address: '',
         province: '',
         district: '',
@@ -79,6 +79,16 @@ export default function OrderView() {
         payingMethod: '',
         note: ''
     });
+
+    useEffect(() => {
+        if (userInfo?.data) {
+            setFormData(prevState => ({
+                ...prevState,
+                fullName: userInfo.data.fullName || '',
+                phoneNumber: userInfo.data.phoneNumber || ''
+            }));
+        }
+    }, [userInfo]);
 
     console.log('FormDATA: ' + userInfo?.data?.fullName + ' ' + userInfo?.data?.phoneNumber)
 
@@ -106,14 +116,23 @@ export default function OrderView() {
             [name]: value
         }));
 
-        if (name === 'provinceId') {
-            setFormData(prevState => ({ ...prevState, districtId: '', wardCode: '' }));
-            fetchDistricts(value);
-        } else if (name === 'districtId') {
-            setFormData(prevState => ({ ...prevState, wardCode: '' }));
-            fetchWards(value);
-        } else if (name === 'wardCode') {
-            calculateShipping(formData.provinceId);
+        if (name === 'province') {
+            const selectedProvince = provinces.find(p => p.ProvinceName === value);
+            if (selectedProvince) {
+                setFormData(prevState => ({ ...prevState, district: '', ward: '' }));
+                fetchDistricts(selectedProvince.ProvinceID);
+            }
+        } else if (name === 'district') {
+            const selectedDistrict = districts.find(d => d.DistrictName === value);
+            if (selectedDistrict) {
+                setFormData(prevState => ({ ...prevState, ward: '' }));
+                fetchWards(selectedDistrict.DistrictID);
+            }
+        } else if (name === 'ward') {
+            const selectedWard = wards.find(d => d.WardName === value);
+            if (selectedWard) {
+                calculateShipping(formData.province);
+            }
         }
     };
 
@@ -139,10 +158,9 @@ export default function OrderView() {
     const subtotal = cartProducts.reduce((total, product) => total + (product.price * product.quantity), 0);
     const total = subtotal + shippingFee;
 
-    const calculateShipping = (provinceId) => {
-        // ID của Thành phố Hồ Chí Minh (có thể cần điều chỉnh nếu khác)
-        const hcmCityId = "202";
-        const shippingFee = provinceId === hcmCityId ? 25000 : 35000;
+    const calculateShipping = (provinceName) => {
+        const hcmCityId = "Hồ Chí Minh";
+        const shippingFee = provinceName === hcmCityId ? 25000 : 35000;
         setShippingFee(shippingFee);
 
     };
@@ -152,9 +170,9 @@ export default function OrderView() {
         tempErrors.fullName = formData.fullName ? "" : "Full name is required";
         tempErrors.phoneNumber = formData.phoneNumber ? "" : "Phone number is required";
         tempErrors.address = formData.address ? "" : "Address is required";
-        tempErrors.provinceId = formData.provinceId ? "" : "Province is required";
-        tempErrors.districtId = formData.districtId ? "" : "District is required";
-        tempErrors.wardCode = formData.wardCode ? "" : "Ward is required";
+        tempErrors.province = formData.province ? "" : "Province is required";
+        tempErrors.district = formData.district ? "" : "District is required";
+        tempErrors.ward = formData.ward ? "" : "Ward is required";
         setErrors(tempErrors);
         return Object.values(tempErrors).every(x => x === "");
     };
@@ -166,9 +184,9 @@ export default function OrderView() {
             const formData2 = {
                 accountID: userInfo?.data.accountID,
                 name: formData.fullName,
-                province: formData.provinceId,
-                district: formData.districtId,
-                ward: formData.wardCode,
+                province: formData.province,
+                district: formData.district,
+                ward: formData.ward,
                 address: formData.address,
                 payingMethod: paymentMethod,
                 phoneNumber: formData.phoneNumber,
@@ -263,56 +281,56 @@ export default function OrderView() {
                         <div className="row mb-3">
                             <div className="col-md-4">
                                 <select
-                                    className={`form-control ${errors.provinceId ? 'is-invalid' : ''}`}
-                                    name="provinceId"
-                                    value={formData.provinceId}
+                                    className={`form-control ${errors.province ? 'is-invalid' : ''}`}
+                                    name="province"
+                                    value={formData.province}
                                     onChange={handleChange}
                                     required
                                 >
                                     <option value="">Select Province</option>
                                     {provinces.map((province) => (
-                                        <option key={province.ProvinceID} value={province.ProvinceID}>
+                                        <option key={province.ProvinceID} value={province.ProvinceName}>
                                             {province.ProvinceName}
                                         </option>
                                     ))}
                                 </select>
-                                {errors.provinceId && <div className="invalid-feedback">{errors.provinceId}</div>}
+                                {errors.province && <div className="invalid-feedback">{errors.province}</div>}
                             </div>
                             <div className="col-md-4">
                                 <select
-                                    className={`form-control ${errors.districtId ? 'is-invalid' : ''}`}
-                                    name="districtId"
-                                    value={formData.districtId}
+                                    className={`form-control ${errors.district ? 'is-invalid' : ''}`}
+                                    name="district"
+                                    value={formData.district}
                                     onChange={handleChange}
                                     required
-                                    disabled={!formData.provinceId}
+                                    disabled={!formData.province}
                                 >
                                     <option value="">Select District</option>
                                     {districts.map((district) => (
-                                        <option key={district.DistrictID} value={district.DistrictID}>
+                                        <option key={district.DistrictID} value={district.DistrictName}>
                                             {district.DistrictName}
                                         </option>
                                     ))}
                                 </select>
-                                {errors.districtId && <div className="invalid-feedback">{errors.districtId}</div>}
+                                {errors.district && <div className="invalid-feedback">{errors.district}</div>}
                             </div>
                             <div className="col-md-4">
                                 <select
-                                    className={`form-control ${errors.wardCode ? 'is-invalid' : ''}`}
-                                    name="wardCode"
-                                    value={formData.wardCode}
+                                    className={`form-control ${errors.ward ? 'is-invalid' : ''}`}
+                                    name="ward"
+                                    value={formData.ward}
                                     onChange={handleChange}
                                     required
-                                    disabled={!formData.districtId}
+                                    disabled={!formData.district}
                                 >
                                     <option value="">Select Ward</option>
                                     {wards.map((ward) => (
-                                        <option key={ward.WardCode} value={ward.WardCode}>
+                                        <option key={ward.WardCode} value={ward.WardName}>
                                             {ward.WardName}
                                         </option>
                                     ))}
                                 </select>
-                                {errors.wardCode && <div className="invalid-feedback">{errors.wardCode}</div>}
+                                {errors.ward && <div className="invalid-feedback">{errors.ward}</div>}
                             </div>
                         </div>
                         <div className="mb-3">

@@ -8,11 +8,13 @@ const AboutPage = React.lazy(() => import("../page/user/about"));
 const ContactPage = React.lazy(() => import("../page/user/contact/Contact.jsx"));
 const BlogPage = React.lazy(() => import("../page/user/blog/BlogPage.jsx"));
 const BlogDetailsPage = React.lazy(() => import("../page/user/blog/BlogDetails.jsx"));
+const FavoriteProductPage = React.lazy(() => import("../page/user/favorite/FavoriteView.jsx"));
 
 //login và register dùng chung trang là login
 const LoginPage = React.lazy(() => import("../page/auth/login"));
 const RegisterPage = React.lazy(() => import("../page/auth/login"));
 const ProductListPage = React.lazy(() => import("../page/user/product/list/ProductByCate.jsx"));
+const ProductSearchPage = React.lazy(() => import("../page/user/product/list/ProductByName.jsx"));
 const ProductCardPage = React.lazy(() => import("../page/user/product/detail/ProductDetail"));
 const ProductCartPage = React.lazy(() => import("../page/user/cart/ProductCart"));
 
@@ -66,8 +68,16 @@ const PublicRoutes = [
                 element: <LazyLoader children={<ProductCartPage />} />,
             },
             {
+                path: "favorite",
+                element: <LazyLoader children={<FavoriteProductPage />} />,
+            },
+            {
                 path: "blog/:blogID",
                 element: <LazyLoader children={<BlogDetailsPage />} />,
+            },
+            {
+                path: "search",
+                element: <LazyLoader children={<ProductSearchPage />} />,
             },
         ]
     },

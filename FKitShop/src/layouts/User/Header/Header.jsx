@@ -10,6 +10,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { Notification } from '../../../component/UserProfile/UpdateAccount/Notification';
 import { GET } from '../../../constants/httpMethod';
 import api from '../../../config/axios';
+import { message } from 'antd';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
@@ -18,6 +19,8 @@ export default function Header() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [productTags, setProductTags] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
@@ -34,6 +37,8 @@ export default function Header() {
 
         } if (user.status === IDLE && user.data !== null) {
             userToken = user.data;
+        } if (user.data === undefined ){
+            console.log("USER: ", user);
         }
         //console.log("userToken in Header: ", userToken);
         //console.log("user.data: ", user.data);
@@ -90,6 +95,19 @@ export default function Header() {
         fetchTags();
     }, []);
 
+
+    const handleSearch = async (event) => {
+        if (event) {
+            event.preventDefault();
+        }
+        try {
+            const response = await api[GET](`http://localhost:8080/fkshop/product/by-name/${searchTerm}`);
+            navigate('search', { state: { searchResults: response.data.data } });
+        } catch (error) {
+            message.error("Cannot search this");
+        }
+    };
+
     
 
     return (
@@ -101,11 +119,13 @@ export default function Header() {
                             <Link to={'/home'} onClick={() => handleNavClick('Home')}>
                                 <img className='upper-nav-logo' src="/img/Logo.png" alt="shop logo" />
                             </Link>
-                            <form className="upper-nav-search-form">
+                            <form className="upper-nav-search-form" onSubmit={handleSearch}>
                                 <input
-                                    type="search"
-                                    placeholder="Search product..."
-                                    aria-label="Search"
+                                   type="search"
+                                   placeholder="Search product..."
+                                   aria-label="Search"
+                                   value={searchTerm}
+                                   onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                                 <button type="submit">
                                     <box-icon name='search' color='#000000'></box-icon>
@@ -135,7 +155,7 @@ export default function Header() {
                                                 <button onClick={handleLogout} className="dropdown-item">Log Out</button>
                                             </>
                                         )}
-                                        <Link to={'/favoriteList'} className="dropdown-item">Favorite List</Link>
+                                        <Link to={'/favorite'} className="dropdown-item">Favorite List</Link>
                                     </div>
                                 </div>
                             </div>
@@ -218,4 +238,3 @@ export default function Header() {
         </div>
     )
 }
-

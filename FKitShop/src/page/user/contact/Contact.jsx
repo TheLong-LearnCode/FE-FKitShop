@@ -4,7 +4,7 @@ import '../../../util/GlobalStyle/GlobalStyle.css'
 
 export default function Contact() {
   return (
-    <div className="contact-container fixed-header">
+    <div className="fixed-header contact-container">
       <div className="contact-header">
         <h1>Contact Us</h1>
         <p>We'd love to hear from you! Get in touch with FKShop for any questions about our STEM kits.</p>

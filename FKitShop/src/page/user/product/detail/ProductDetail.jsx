@@ -125,8 +125,7 @@ export default function ProductDetail() {
                 quantity: quantity
             }));
         } else {
-            console.error("Missing accountID or productID");
-            // Có thể thêm thông báo lỗi cho người dùng ở đây
+            message.error("Login to add product to cart");         
         }
     };
 
