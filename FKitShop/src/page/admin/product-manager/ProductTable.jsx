@@ -59,12 +59,12 @@ const ProductTable = ({ products, onView, onEdit, onDelete, onViewImages }) => {
       dataIndex: "type",
       key: "type",
     },
-    {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      render: (_, record) => <span>{record.category?.categoryName}</span>,
-    },
+    // {
+    //   title: "Category",
+    //   dataIndex: "category",
+    //   key: "category",
+    //   render: (_, record) => <span>{record.category?.categoryName}</span>,
+    // },
     {
       title: "Action",
       key: "action",

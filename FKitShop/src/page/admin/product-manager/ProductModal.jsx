@@ -18,23 +18,65 @@ const ProductModal = ({
 }) => {
   const [form] = Form.useForm();
 
+  // useEffect(() => {
+  //   if (product && (mode === "edit" || mode === "view")) {
+  //     const dimension = product?.dimension || "0x0x0"; // Default to "0x0x0" if undefined
+  //     const [length, width, height] = dimension.split("x").map(Number);
+  
+  //     form.setFieldsValue({
+  //       ...product,
+  //       dimension: {
+  //         length: length || 0,
+  //         width: width || 0,
+  //         height: height || 0,
+  //       },
+  //       categoryID: product.categories?.map((cat) => cat.categoryID) || [],
+  //     });
+  
+  //     setFileList(
+  //       product.images?.map((img) => ({
+  //         uid: img.id,
+  //         name: img.name,
+  //         status: "done",
+  //         url: img.url,
+  //       })) || []
+  //     );
+  //   } else {
+  //     form.resetFields();
+  //     setFileList([]);
+  //   }
+  // }, [product, mode, form, setFileList]);
   useEffect(() => {
-    if (product && (mode === "edit" || mode === "view")) {
-      form.setFieldsValue({
-        ...product,
-        categoryID: product.category?.map(cat => cat.categoryID) || []
-      });
-      setFileList(product.images?.map(img => ({
+  if (product && (mode === "edit" || mode === "view")) {
+    const dimension = product?.dimension?.replace("cm", "") || "0x0x0"; // Remove 'cm' and default to "0x0x0"
+    //const [length, width, height] = dimension.split("x").map(Number);
+    const [length, width, height] = dimension.split("x").map((dim) => (isNaN(dim) ? 0 : Number(dim)));
+    console.log(length, width, height);
+    
+    form.setFieldsValue({
+      ...product,
+      dimension: {
+        length: length || 0,
+        width: width || 0,
+        height: height || 0,
+      },
+      categoryID: product.categories?.map((cat) => cat.categoryID) || [],
+    });
+
+    setFileList(
+      product.images?.map((img) => ({
         uid: img.id,
         name: img.name,
-        status: 'done',
+        status: "done",
         url: img.url,
-      })) || []);
-    } else {
-      form.resetFields();
-      setFileList([]);
-    }
-  }, [product, mode, form, setFileList]);
+      })) || []
+    );
+  } else {
+    form.resetFields();
+    setFileList([]);
+  }
+}, [product, mode, form, setFileList]);
+
 
   const handleOk = () => {
     if (mode === "view") {
@@ -43,37 +85,37 @@ const ProductModal = ({
     }
     form.validateFields().then((values) => {
       const formData = new FormData();
-
+  
       // Append all form values to FormData
-      Object.keys(values).forEach(key => {
-        if (key === 'categoryID') {
-          formData.append(key, values[key].join(','));
-        } else if (key === 'dimension') {
-          formData.append(key, `${values[key].length}x${values[key].width}cm`);
-        } else if (key !== 'images') { // Skip 'images' field
+      Object.keys(values).forEach((key) => {
+        if (key === "categoryID") {
+          formData.append(key, values[key]);
+        } else if (key === "dimension") {
+          formData.append(key, `${values[key].length}x${values[key].width}x${values[key].height}cm`);
+        } else if (key !== "images") {
+          // Skip 'images' field since it's handled separately
           formData.append(key, values[key]);
         }
       });
-
-      // Append images
-      fileList.forEach((file, index) => {
+  
+      // Append images (without indices, just "images" field)
+      fileList.forEach((file) => {
         if (file.originFileObj) {
-          formData.append(`images[${index}]`, file.originFileObj);
-        } else if (file.url) {
-          // For existing images, you might want to send the URL or ID
-          formData.append(`existingImages[${index}]`, file.url);
+          formData.append("images", file.originFileObj); // key should be 'images' for array upload
         }
       });
-
+  
       // Log formData for debugging
       for (let [key, value] of formData.entries()) {
         console.log(key, value);
       }
-
+  
+      // Submit the form data
       onOk(formData);
       form.resetFields();
     });
   };
+  
 
   return (
     <Modal
@@ -173,6 +215,18 @@ const ProductModal = ({
             >
               <InputNumber
                 placeholder="Width"
+                min={0}
+                disabled={mode === "view"}
+              />
+            </Form.Item>
+            <span style={{ margin: "0 8px" }}>x</span>
+            <Form.Item
+              name={["dimension", "height"]}
+              noStyle
+              rules={[{ required: true, message: "Please input the height!" }]}
+            >
+              <InputNumber
+                placeholder="Height"
                 min={0}
                 disabled={mode === "view"}
               />
