@@ -29,15 +29,21 @@ export default function HomePage() {
     navigate('/register'); // Navigate to the register pageavigate('/register'); // Navigate to the register page
   }
 
+  const [products, setProducts] = useState([]); // Dữ liệu về sản phẩm
   const [Lastestproducts, setLastestProducts] = useState([]);
   const [Hotestproducts, setHotestProducts] = useState([]);
   const [loading, setLoading] = useState(true); // Trạng thái để theo dõi quá trình tải dữ liệu
   const [error, setError] = useState(null); // Trạng thái để lưu lỗi nếu có
 
-  const [activeButton, setActiveButton] = useState('new');
+  const [activeButton, setActiveButton] = useState('');
 
   const handleButtonClick = (buttonType) => {
-    setActiveButton(buttonType);
+    if (activeButton !== buttonType) {
+      setActiveButton(buttonType);
+    } else {
+      setActiveButton('');
+    }
+    
   };
 
   //trường hợp chưa login
@@ -52,6 +58,23 @@ export default function HomePage() {
 
   //console.log('data in homepage: ', data); //-passed:gòm status:success, data.accounts->userdata và error:null
   //empty: status: idle, data: token, error:null
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api[GET]("product/products");
+        setProducts(response.data.data);
+
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
 
   useEffect(() => {
     const fetchLastestProducts = async () => {
@@ -134,6 +157,11 @@ export default function HomePage() {
           </div>
 
           <div className="row">
+          {activeButton === '' &&
+              products.map((product) => (
+                <CardContent product={product} />
+              ))
+            }
             {activeButton === 'new' &&
               Lastestproducts.map((product) => (
                 <CardContent product={product} />

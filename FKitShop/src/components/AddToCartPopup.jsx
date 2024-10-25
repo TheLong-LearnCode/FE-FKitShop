@@ -7,41 +7,6 @@ import { verifyToken } from '../service/authUser';
 
 const AddToCartPopup = ({ product, onClose, onAddToCart }) => {
     const [quantity, setQuantity] = useState(1);
-    const [userInfo, setUserInfo] = useState(null);
-    const dispatch = useDispatch();
-
-    const user = useSelector((state) => state.auth);
-    console.log("user in PRODUCTDETAIL: ", user);
-    const userDataStatus = useSelector((state) => state.auth.data);
-
-    var userToken;
-    var userData;
-    useEffect(() => {
-        console.log("user.data.token: ", user.data?.token);
-        if (user.data !== null) {
-            userToken = user.data?.token;
-
-        } if (user.status === IDLE && user.data !== null) {
-            userToken = user.data;
-        }
-        console.log("userToken in PRODUCTDETAIL: ", userToken);
-        console.log("user.data in PRODUCTDETAIL: ", user.data);
-
-
-        const fetchUserInfo = async () => {
-            try {
-                userData = await verifyToken(userToken); // Gọi hàm verifyToken để lấy dữ liệu
-                console.log("userData after verify token: ", userData);
-
-                setUserInfo(userData); // Lưu thông tin user vào state
-                console.log("userData after SETUSERINFO: ", userData);
-                //userData.data -> lấy ra userInfo
-            } catch (error) {
-                console.error("Error verifying token: ", error);
-            }
-        };
-        fetchUserInfo(); // Gọi API lấy thông tin người dùng
-    }, [user.data]); //user.data là thông tin người dùng
 
 
     useEffect(() => {
@@ -96,7 +61,7 @@ const AddToCartPopup = ({ product, onClose, onAddToCart }) => {
                     </div>
                 </div>
                 {product.quantity > 0 ?
-                    <button onClick={() => onAddToCart(userInfo?.data?.accountID, quantity)} className="add-to-cart-btn">Add to Cart</button>
+                    <button onClick={() => onAddToCart(quantity)} className="add-to-cart-btn">Add to Cart</button>
                     : 
                     <button className='out-of-stock-btn'>Out of Stock</button>
                 }
