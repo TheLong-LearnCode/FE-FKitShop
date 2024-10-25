@@ -1,6 +1,11 @@
-import React from 'react';
-import { Table, Space, Button, Image, Carousel } from 'antd';
-import { EyeOutlined, EditOutlined, DeleteOutlined, PictureOutlined } from '@ant-design/icons';
+import React from "react";
+import { Table, Space, Button, Image, Carousel } from "antd";
+import {
+  EyeOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  PictureOutlined,
+} from "@ant-design/icons";
 import { formatCurrency } from "../../../util/CurrencyUnit";
 
 const ProductTable = ({ products, onView, onEdit, onDelete, onViewImages }) => {
@@ -19,7 +24,7 @@ const ProductTable = ({ products, onView, onEdit, onDelete, onViewImages }) => {
                   alt={record.name}
                   width={70}
                   height={70}
-                  style={{ objectFit: "cover", justifyContent: "center" }}
+                  style={{ objectFit: "cover", alignItems: "center" }}
                   fallback="https://s3.ap-southeast-2.amazonaws.com/fkshop/Product/no-image.png"
                 />
               </div>
@@ -53,18 +58,19 @@ const ProductTable = ({ products, onView, onEdit, onDelete, onViewImages }) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status) => (
+        <span
+          className={status === "active" ? "active-status" : "inactive-status"}
+        >
+          {status}
+        </span>
+      ),
     },
     {
       title: "Type",
       dataIndex: "type",
       key: "type",
     },
-    // {
-    //   title: "Category",
-    //   dataIndex: "category",
-    //   key: "category",
-    //   render: (_, record) => <span>{record.category?.categoryName}</span>,
-    // },
     {
       title: "Action",
       key: "action",
@@ -72,13 +78,24 @@ const ProductTable = ({ products, onView, onEdit, onDelete, onViewImages }) => {
         <Space size="middle">
           <Button icon={<EyeOutlined />} onClick={() => onView(record)} />
           <Button icon={<EditOutlined />} onClick={() => onEdit(record)} />
-          <Button icon={<DeleteOutlined />} onClick={() => onDelete(record.id)} danger />
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={() => onDelete(record.productID)}
+            danger
+          />
         </Space>
       ),
     },
   ];
 
-  return <Table columns={columns} dataSource={products} rowKey="id" pagination={{ pageSize: 4 }} />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={products}
+      rowKey="id"
+      pagination={{ pageSize: 4 }}
+    />
+  );
 };
 
 export default ProductTable;

@@ -1,11 +1,28 @@
 import { Button, message, Upload } from "antd";
 import api from "../config/axios";
 import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
-import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 
-export const updateImage = async (productID, imageID) => {
+export const addImages = async(productID, formData) => {
   try {
-    const response = await api[PUT](`/product/${productID}`, formData);
+    const response = await api[PUT](`/product/add-images/${productID}`, formData);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding images to product:", error);
+    throw error;
+  }
+}
+
+export const updateImage = async (productID, imageID, formData) => {
+  try {
+    const response = await api[PUT](
+      `/product/image/${productID}/${imageID}`,
+      formData
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating product:", error);
@@ -62,16 +79,41 @@ export const ProductUploadImage = ({
   setFileList,
   uploading,
   setUploading,
+  setDeletedImages,
+  setUpdatedImages,
+
 }) => {
+  // const handleUpload = async (options) => {
+  //   const { onSuccess, onError, file } = options;
+  //   setUploading(true);
+  //   try {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       const base64 = e.target.result;
+  //       onSuccess({ url: base64, originFileObj: file });
+  //       message.success(`${file.name} uploaded successfully.`);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     message.error(`${file.name} upload failed.`);
+  //     onError(error);
+  //   }
+  //   setUploading(false);
+  // };
   const handleUpload = async (options) => {
     const { onSuccess, onError, file } = options;
     setUploading(true);
+  
     try {
       const reader = new FileReader();
       reader.onload = (e) => {
         const base64 = e.target.result;
         onSuccess({ url: base64, originFileObj: file });
-        message.success(`${file.name} uploaded successfully.`);
+        message.success(`${file.name} marked for update.`);
+        
+        // Store updated images with their original UIDs
+        setUpdatedImages((prev) => [...prev, { uid: file.uid, file }]);
       };
       reader.readAsDataURL(file);
     } catch (error) {
@@ -79,11 +121,18 @@ export const ProductUploadImage = ({
       message.error(`${file.name} upload failed.`);
       onError(error);
     }
+  
     setUploading(false);
   };
 
   const uploadProps = {
     customRequest: handleUpload,
+    onPreview: (file) => {
+      window.open(file.url); // Preview image in a new tab
+    },
+    beforeUpload: () => {
+      false;
+    },
     onChange: ({ fileList: newFileList }) => {
       if (typeof setFileList === "function") {
         setFileList(newFileList);
@@ -91,14 +140,28 @@ export const ProductUploadImage = ({
         console.error("setFileList is not a function");
       }
     },
-    onRemove: (file) => {
-      if (typeof setFileList === "function") {
-        setFileList((prevFileList) =>
-          prevFileList.filter((item) => item.uid !== file.uid)
-        );
-      } else {
-        console.error("setFileList is not a function");
-      }
+    // onRemove: async (file) => {
+    //   try {
+    //     const data = {
+    //       productID: productID,
+    //       imageIDs: `${file.uid}`,
+    //     };
+    //     console.log(data);
+
+    //     const response = await deleteImages(data);
+    //     message.success(response.message);
+
+    //     setFileList(fileList.filter((item) => item.uid !== file.uid));
+    //   } catch (error) {
+    //     console.error("Error deleting image:", error);
+    //     message.error(`${file.name} delete failed.`);
+    //   }
+    // },
+    onRemove: async (file) => {
+      // Store the deleted image UID in the deletedImages array
+      setDeletedImages((prev) => [...prev, file.uid]);
+      setFileList(fileList.filter((item) => item.uid !== file.uid));
+      message.success(`${file.name} marked for deletion.`);
     },
     fileList,
     multiple: true,
@@ -106,7 +169,7 @@ export const ProductUploadImage = ({
   };
 
   return (
-    <Upload {...uploadProps} loading={uploading} disabled={mode==="view"}>
+    <Upload {...uploadProps} loading={uploading} disabled={mode === "view"}>
       <button style={{ border: 0, background: "none" }} type="button">
         <PlusOutlined />
         <div style={{ marginTop: 8 }}>Upload</div>
@@ -125,9 +188,13 @@ export const deleteProduct = async (productId) => {
   }
 };
 
-export const deleteImages = async (productId, imageIDs) => {
+export const deleteImages = async (data) => {
   try {
-    const response = await api[DELETE](`/product/images/`, data);
+    console.log("data: ", data);
+
+    const response = await api[DELETE](`/product/images`, {
+      data: data,
+    });
     return response.data;
   } catch (error) {
     console.error("Error deleting product:", error);
