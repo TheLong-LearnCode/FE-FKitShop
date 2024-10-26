@@ -37,7 +37,7 @@ export default function Header() {
 
         } if (user.status === IDLE && user.data !== null) {
             userToken = user.data;
-        } if (user.data === undefined ){
+        } if (user.data === undefined) {
             console.log("USER: ", user);
         }
         //console.log("userToken in Header: ", userToken);
@@ -108,7 +108,7 @@ export default function Header() {
         }
     };
 
-    
+
 
     return (
         <div>
@@ -121,11 +121,11 @@ export default function Header() {
                             </Link>
                             <form className="upper-nav-search-form" onSubmit={handleSearch}>
                                 <input
-                                   type="search"
-                                   placeholder="Search product..."
-                                   aria-label="Search"
-                                   value={searchTerm}
-                                   onChange={(e) => setSearchTerm(e.target.value)}
+                                    type="search"
+                                    placeholder="Search product..."
+                                    aria-label="Search"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                                 <button type="submit">
                                     <box-icon name='search' color='#000000'></box-icon>
