@@ -1,356 +1,115 @@
-import { useState, useEffect, useRef } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
+import React, { useState, useEffect } from "react";
+import { Button, Input, Modal, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import TagTable from "./TagTable";
+import TagModal from "./TagModal";
+import { createTag, deleteTag, getAllTags, updateTag } from "../../../service/tagService";
+import "./index.css";
+const { Search } = Input;
 
-import {
-  ClassicEditor,
-  AccessibilityHelp,
-  Autoformat,
-  AutoImage,
-  AutoLink,
-  Autosave,
-  BalloonToolbar,
-  BlockQuote,
-  BlockToolbar,
-  Bold,
-  Code,
-  CodeBlock,
-  Essentials,
-  FontBackgroundColor,
-  FontColor,
-  FontFamily,
-  FontSize,
-  FullPage,
-  GeneralHtmlSupport,
-  Heading,
-  HorizontalLine,
-  HtmlComment,
-  HtmlEmbed,
-  ImageBlock,
-  ImageCaption,
-  ImageInline,
-  ImageInsert,
-  ImageInsertViaUrl,
-  ImageResize,
-  ImageStyle,
-  ImageTextAlternative,
-  ImageToolbar,
-  ImageUpload,
-  Indent,
-  IndentBlock,
-  Italic,
-  Link,
-  LinkImage,
-  List,
-  ListProperties,
-  MediaEmbed,
-  PageBreak,
-  Paragraph,
-  PasteFromOffice,
-  SelectAll,
-  ShowBlocks,
-  SimpleUploadAdapter,
-  SourceEditing,
-  Table,
-  TableCaption,
-  TableCellProperties,
-  TableColumnResize,
-  TableProperties,
-  TableToolbar,
-  TextPartLanguage,
-  TextTransformation,
-  Title,
-  TodoList,
-  Underline,
-  Undo,
-} from "ckeditor5";
+const TagManager = () => {
+  const [tags, setTags] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMode, setModalMode] = useState("add");
+  const [selectedTag, setSelectedTag] = useState(null);
 
-import "ckeditor5/ckeditor5.css";
-import { Modal, Button } from "antd";
-export default function TagManager() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  //const editorContainerRef = useRef(null);
-  const editorRef = useRef(null);
-  const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const fetchAllTags = async () => {
+    const response = await getAllTags();
+    setTags(response);
+  };
+
+  const fetchTagById = async () => {
+    if (selectedTag) {
+      const response = await fetchTagById(selectedTag.tagID);
+      setSelectedTag(response);
+    }
+  };
 
   useEffect(() => {
-    setIsLayoutReady(true);
-
-    return () => setIsLayoutReady(false);
+    fetchAllTags();
   }, []);
 
-  const editorConfig = {
-    toolbar: {
-      items: [
-        "undo",
-        "redo",
-        "|",
-        "sourceEditing",
-        "showBlocks",
-        "textPartLanguage",
-        "|",
-        "heading",
-        "|",
-        "fontSize",
-        "fontFamily",
-        "fontColor",
-        "fontBackgroundColor",
-        "|",
-        "bold",
-        "italic",
-        "underline",
-        "code",
-        "|",
-        "horizontalLine",
-        "pageBreak",
-        "link",
-        "insertImage",
-        "insertImageViaUrl",
-        "mediaEmbed",
-        "insertTable",
-        "blockQuote",
-        "codeBlock",
-        "htmlEmbed",
-        "|",
-        "bulletedList",
-        "numberedList",
-        "todoList",
-        "outdent",
-        "indent",
-      ],
-      shouldNotGroupWhenFull: true,
-    },
-    plugins: [
-      AccessibilityHelp,
-      Autoformat,
-      AutoImage,
-      AutoLink,
-      Autosave,
-      BalloonToolbar,
-      BlockQuote,
-      BlockToolbar,
-      Bold,
-      Code,
-      CodeBlock,
-      Essentials,
-      FontBackgroundColor,
-      FontColor,
-      FontFamily,
-      FontSize,
-      FullPage,
-      GeneralHtmlSupport,
-      Heading,
-      HorizontalLine,
-      HtmlComment,
-      HtmlEmbed,
-      ImageBlock,
-      ImageCaption,
-      ImageInline,
-      ImageInsert,
-      ImageInsertViaUrl,
-      ImageResize,
-      ImageStyle,
-      ImageTextAlternative,
-      ImageToolbar,
-      ImageUpload,
-      Indent,
-      IndentBlock,
-      Italic,
-      Link,
-      LinkImage,
-      List,
-      ListProperties,
-      MediaEmbed,
-      PageBreak,
-      Paragraph,
-      PasteFromOffice,
-      SelectAll,
-      ShowBlocks,
-      SimpleUploadAdapter,
-      SourceEditing,
-      Table,
-      TableCaption,
-      TableCellProperties,
-      TableColumnResize,
-      TableProperties,
-      TableToolbar,
-      TextPartLanguage,
-      TextTransformation,
-      Title,
-      TodoList,
-      Underline,
-      Undo,
-    ],
-    balloonToolbar: [
-      "bold",
-      "italic",
-      "|",
-      "link",
-      "insertImage",
-      "|",
-      "bulletedList",
-      "numberedList",
-    ],
-    blockToolbar: [
-      "fontSize",
-      "fontColor",
-      "fontBackgroundColor",
-      "|",
-      "bold",
-      "italic",
-      "|",
-      "link",
-      "insertImage",
-      "insertTable",
-      "|",
-      "bulletedList",
-      "numberedList",
-      "outdent",
-      "indent",
-    ],
-    fontFamily: {
-      supportAllValues: true,
-    },
-    fontSize: {
-      options: [10, 12, 14, "default", 18, 20, 22],
-      supportAllValues: true,
-    },
-    heading: {
-      options: [
-        {
-          model: "paragraph",
-          title: "Paragraph",
-          class: "ck-heading_paragraph",
-        },
-        {
-          model: "heading1",
-          view: "h1",
-          title: "Heading 1",
-          class: "ck-heading_heading1",
-        },
-        {
-          model: "heading2",
-          view: "h2",
-          title: "Heading 2",
-          class: "ck-heading_heading2",
-        },
-        {
-          model: "heading3",
-          view: "h3",
-          title: "Heading 3",
-          class: "ck-heading_heading3",
-        },
-        {
-          model: "heading4",
-          view: "h4",
-          title: "Heading 4",
-          class: "ck-heading_heading4",
-        },
-        {
-          model: "heading5",
-          view: "h5",
-          title: "Heading 5",
-          class: "ck-heading_heading5",
-        },
-        {
-          model: "heading6",
-          view: "h6",
-          title: "Heading 6",
-          class: "ck-heading_heading6",
-        },
-      ],
-    },
-    htmlSupport: {
-      allow: [
-        {
-          name: /^.*$/,
-          styles: true,
-          attributes: true,
-          classes: true,
-        },
-      ],
-    },
-    image: {
-      toolbar: [
-        "toggleImageCaption",
-        "imageTextAlternative",
-        "|",
-        "imageStyle:inline",
-        "imageStyle:wrapText",
-        "imageStyle:breakText",
-        "|",
-        "resizeImage",
-      ],
-    },
-    initialData: "",
-    link: {
-      addTargetToExternalLinks: true,
-      defaultProtocol: "https://",
-      decorators: {
-        toggleDownloadable: {
-          mode: "manual",
-          label: "Downloadable",
-          attributes: {
-            download: "file",
-          },
-        },
-      },
-    },
-    list: {
-      properties: {
-        styles: true,
-        startIndex: true,
-        reversed: true,
-      },
-    },
-    menuBar: {
-      isVisible: true,
-    },
-    placeholder: "Type or paste your content here!",
-    table: {
-      contentToolbar: [
-        "tableColumn",
-        "tableRow",
-        "mergeTableCells",
-        "tableProperties",
-        "tableCellProperties",
-      ],
-    },
-  };
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showModal = (mode, tag = null) => {
+    setModalMode(mode);
+    setSelectedTag(tag);
+    setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    setSelectedTag(null);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleModalOk = async (values) => {
+    if (modalMode === "add") {
+      const response = await createTag(values);
+      message.success(response.message);
+    } else if (modalMode === "edit") {
+      console.log(values);
+
+      const response = await updateTag(selectedTag.tag.tagID, values);
+      setTags(
+        tags.map((tag) =>
+          tag.tagID === selectedTag.tagID ? { ...tag, ...values } : tag
+        )
+      );
+      message.success(response.message);
+    }
+    fetchAllTags();
+    setIsModalVisible(false);
+  };
+
+  const handleDelete = (tag) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this tag?",
+      content: "This action cannot be undone.",
+      onOk: async () => {
+        const response = await deleteTag(tag.tag.tagID);
+        fetchAllTags();
+        message.success(response.message);
+      },
+    });
   };
 
   return (
-    <div>
-      <Button type="primary" onClick={showModal}>
-        Open Editor
-      </Button>
-
-      <Modal
-        title="CKEditor in Modal"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={"60%"}
-      >
-        <div className="editor-container">
-          {isLayoutReady && (
-            <CKEditor
-              editor={ClassicEditor}
-              config={editorConfig}
-              ref={editorRef}
-            />
-          )}
+    <div className="container mt-4">
+      <div className="row center mb-3">
+        <div className="col-md-6">
+          <Search
+            placeholder="Search"
+            onSearch={(value) => console.log(value)}
+            style={{ width: 200 }}
+          />
         </div>
-      </Modal>
+      </div>
+      <div className="d-flex align-center mb-3">
+        <h2>
+          <strong>Tags</strong>
+        </h2>
+        <Button
+          className="ml-auto"
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => showModal("add")}
+        >
+          Add New
+        </Button>
+      </div>
+      <TagTable
+        tags={tags}
+        onView={(tag) => showModal("view", tag)}
+        onEdit={(tag) => showModal("edit", tag)}
+        onDelete={handleDelete}
+      />
+      <TagModal
+        visible={isModalVisible}
+        mode={modalMode}
+        tag={selectedTag}
+        onCancel={handleModalCancel}
+        onOk={handleModalOk}
+      />
     </div>
   );
-}
+};
+
+export default TagManager;

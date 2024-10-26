@@ -40,10 +40,11 @@ const CategoryModal = ({ visible, mode, category, onCancel, onOk }) => {
         </Form.Item>
         <Form.Item name="tagID" label="Select Tag" rules={[{ required: true }]}>
           <Select disabled={mode === 'view'}>
-            <Option value="tagID1">tag name 1</Option>
-            <Option value="tagID2">tag name 2</Option>
-            <Option value="tagID3">tag name 3</Option>
-            <Option value="tagID4">tag name 4</Option>
+            {category?.map(category => (
+              <Select.Option key={category.categoryID} value={category.tagID}>
+                {category.tagID}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item name="categoryName" label="Category Name" rules={[{ required: true }]}>
@@ -54,8 +55,8 @@ const CategoryModal = ({ visible, mode, category, onCancel, onOk }) => {
         </Form.Item>
         <Form.Item name="status" label="Status" rules={[{ required: true }]}>
           <Select disabled={mode === 'view'}>
-            <Option value="Active">Active</Option>
-            <Option value="Inactive">Inactive</Option>
+            <Option value="1">Active</Option>
+            <Option value="0">Inactive</Option>
           </Select>
         </Form.Item>
       </Form>

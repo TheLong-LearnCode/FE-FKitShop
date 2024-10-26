@@ -71,11 +71,14 @@ const AdminMenu = () => {
           <Link to="/admin/product-manager/labGuide-manager">Lab Guide</Link>
         </Menu.Item>
       </SubMenu>
-      <Menu.Item key="8" icon={<ApartmentOutlined />}>
+      <Menu.Item key="8" icon={<TagsOutlined />}>
+        <Link to="/admin/tag-manager">Tag</Link>
+      </Menu.Item>
+      <Menu.Item key="9" icon={<ApartmentOutlined />}>
         <Link to="/admin/category-manager">Category</Link>
       </Menu.Item>
-      <Menu.Item key="9" icon={<TagsOutlined />}>
-        <Link to="/admin/tag-manager">Tag</Link>
+      <Menu.Item key="11" icon={<FileTextOutlined />}>
+        <Link to="/admin/blog-manager">Blog</Link>
       </Menu.Item>
       <Menu.Item key="10" icon={<CarOutlined />}>
         <Link to="/admin/delivery-manager">Delivery</Link>

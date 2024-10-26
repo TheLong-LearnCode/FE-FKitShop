@@ -3,7 +3,8 @@ import { Button, Input, Modal, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import CategoryTable from './CategoryTable';
 import CategoryModal from './CategoryModal';
-import { getAllCategories } from '../../../service/categoryService';
+import { deleteCategory, getAllCategories, updateCategory } from '../../../service/categoryService';
+import { getAllTags } from '../../../service/tagService';
 
 const { Search } = Input;
 
@@ -12,12 +13,14 @@ const CategoryManager = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMode, setModalMode] = useState('add');
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const fetchAllCategories = async () => {
+    const response = await getAllCategories();
+    setCategories(response);
+  };
+  const fetchAllTags = async () => {
+    const response = await getAllTags();
+  };
   useEffect(() => {
-    const fetchAllCategories = async () => {
-      const response = await getAllCategories();
-      setCategories(response);
-    };
     fetchAllCategories();
   }, []);
 
@@ -32,27 +35,30 @@ const CategoryManager = () => {
     setSelectedCategory(null);
   };
 
-  const handleModalOk = (values) => {
+  const handleModalOk = async (values) => {
     if (modalMode === 'add') {
       const newCategory = { ...values, categoryID: Date.now() };
       setCategories([...categories, newCategory]);
       message.success('Category added successfully');
     } else if (modalMode === 'edit') {
+      const response = await updateCategory(selectedCategory.categoryID, values);
       setCategories(categories.map(cat => 
         cat.categoryID === selectedCategory.categoryID ? { ...cat, ...values } : cat
       ));
-      message.success('Category updated successfully');
+      message.success(response.message);
     }
     setIsModalVisible(false);
   };
 
-  const handleDelete = (category) => {
+  const handleDelete = async(category) => {
+    const response = await deleteCategory(category.categoryID);
     Modal.confirm({
       title: 'Are you sure you want to delete this category?',
       content: 'This action cannot be undone.',
       onOk() {
-        setCategories(categories.filter(cat => cat.categoryID !== category.categoryID));
-        message.success('Category deleted successfully');
+        //setCategories(categories.filter(cat => cat.categoryID !== category.categoryID));
+        fetchAllCategories();
+        message.success(response.message);
       },
     });
   };
