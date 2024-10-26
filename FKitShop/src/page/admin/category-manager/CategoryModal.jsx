@@ -1,13 +1,23 @@
-import React, { useEffect } from 'react';
-import { Modal, Form, Input, Select } from 'antd';
-
+import React, { useEffect } from "react";
+import { Modal, Form, Input, Select, Radio } from "antd";
+import "./index.css";
 const { Option } = Select;
 
-const CategoryModal = ({ visible, mode, category, onCancel, onOk }) => {
+const CategoryModal = ({
+  visible,
+  mode,
+  tags,
+  products,
+  category,
+  onCancel,
+  onOk,
+}) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (category && (mode === 'edit' || mode === 'view')) {
+    if (category && (mode === "edit" || mode === "view")) {
+      console.log("category:", category);
+
       form.setFieldsValue(category);
     } else {
       form.resetFields();
@@ -15,12 +25,27 @@ const CategoryModal = ({ visible, mode, category, onCancel, onOk }) => {
   }, [category, mode, form]);
 
   const handleOk = () => {
-    if (mode === 'view') {
+    if (mode === "view") {
       onCancel();
       return;
     }
-    form.validateFields().then(values => {
-      onOk(values);
+    form.validateFields().then((values) => {
+      const productIDList = [];
+      console.log(values);
+      
+      values.products.forEach((id) => {
+        productIDList.push(id);
+      });
+      const categoryData =
+        mode === "add"
+          ? {
+              tagID: values.tagID,
+              categoryName: values.categoryName,
+              description: values.description,
+              productID: productIDList,
+            }
+          : { ...values };
+      onOk(categoryData);
       form.resetFields();
     });
   };
@@ -28,36 +53,59 @@ const CategoryModal = ({ visible, mode, category, onCancel, onOk }) => {
   return (
     <Modal
       visible={visible}
-      title={mode === 'add' ? 'Add Category' : mode === 'edit' ? 'Edit Category' : 'View Category'}
+      title={
+        mode === "add"
+          ? "Add Category"
+          : mode === "edit"
+          ? "Edit Category"
+          : "View Category"
+      }
       onCancel={onCancel}
       onOk={handleOk}
-      okText={mode === 'view' ? 'Close' : 'Save'}
-      cancelText={mode === 'view' ? null : 'Cancel'}
+      okText={mode === "view" ? "Close" : "Save"}
+      cancelText={mode === "view" ? null : "Cancel"}
     >
       <Form form={form} layout="vertical">
-        <Form.Item name="categoryID" label="CategoryID">
+        <Form.Item name="categoryID" label="CategoryID" hidden={mode === "add"}>
           <Input disabled />
         </Form.Item>
         <Form.Item name="tagID" label="Select Tag" rules={[{ required: true }]}>
-          <Select disabled={mode === 'view'}>
-            {category?.map(category => (
-              <Select.Option key={category.categoryID} value={category.tagID}>
-                {category.tagID}
+          <Select disabled={mode === "view"}>
+            {tags?.map((tags) => (
+              <Select.Option key={tags.tag.tagID} value={tags.tag.tagID}>
+                {tags.tag.tagName}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="categoryName" label="Category Name" rules={[{ required: true }]}>
-          <Input disabled={mode === 'view'} />
+        <Form.Item
+          name="categoryName"
+          label="Category Name"
+          rules={[{ required: true }]}
+        >
+          <Input disabled={mode === "view"} />
         </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Input.TextArea disabled={mode === 'view'} />
+        <Form.Item
+          name="description"
+          label="Description"
+          rules={[{ required: true }]}
+        >
+          <Input.TextArea disabled={mode === "view"} />
         </Form.Item>
-        <Form.Item name="status" label="Status" rules={[{ required: true }]}>
-          <Select disabled={mode === 'view'}>
-            <Option value="1">Active</Option>
-            <Option value="0">Inactive</Option>
+        <Form.Item name="products" label="Select Products" rules={[{ required: true }]}>
+          <Select disabled={mode === "view"} mode="multiple">
+            {products?.map((product) => (
+              <Select.Option key={product.productID} value={product.productID}>
+                {product.name}
+              </Select.Option>
+            ))}
           </Select>
+        </Form.Item>
+        <Form.Item name="status" label="Status" hidden={mode === "add"}>
+          <Radio.Group disabled={mode === "view"}>
+            <Radio value={1}>Active</Radio>
+            <Radio value={0}>Inactive</Radio>
+          </Radio.Group>
         </Form.Item>
       </Form>
     </Modal>

@@ -8,7 +8,17 @@ const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
     { title: "TagID", dataIndex: "tagID", key: "tagID" },
     { title: "Category Name", dataIndex: "categoryName", key: "categoryName" },
     { title: "Description", dataIndex: "description", key: "description" },
-    { title: "Status", dataIndex: "status", key: "status" },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) =>
+        status === 1 ? (
+          <span className="active-status">Active</span>
+        ) : (
+          <span className="inactive-status">Inactive</span>
+        ),
+    },
     {
       title: "Action",
       key: "action",
@@ -31,7 +41,7 @@ const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
       columns={columns}
       dataSource={categories}
       rowKey="categoryID"
-      pagination={{ pageSize: 5 }}
+      pagination={{ pageSize: 4 }}
     />
   );
 };

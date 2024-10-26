@@ -1,356 +1,109 @@
-import { useState, useEffect, useRef } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
+import React, { useState, useEffect } from "react";
+import { Button, Input, Modal, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import BlogTable from "./BlogTable";
+import BlogModal from "./BlogModal";
+import { createBlog, deleteBlog, getAllBlogs, updateBlog } from "../../../service/blogService";
+import { getAllTags } from "../../../service/tagService";
 
-import {
-  ClassicEditor,
-  AccessibilityHelp,
-  Autoformat,
-  AutoImage,
-  AutoLink,
-  Autosave,
-  BalloonToolbar,
-  BlockQuote,
-  BlockToolbar,
-  Bold,
-  Code,
-  CodeBlock,
-  Essentials,
-  FontBackgroundColor,
-  FontColor,
-  FontFamily,
-  FontSize,
-  FullPage,
-  GeneralHtmlSupport,
-  Heading,
-  HorizontalLine,
-  HtmlComment,
-  HtmlEmbed,
-  ImageBlock,
-  ImageCaption,
-  ImageInline,
-  ImageInsert,
-  ImageInsertViaUrl,
-  ImageResize,
-  ImageStyle,
-  ImageTextAlternative,
-  ImageToolbar,
-  ImageUpload,
-  Indent,
-  IndentBlock,
-  Italic,
-  Link,
-  LinkImage,
-  List,
-  ListProperties,
-  MediaEmbed,
-  PageBreak,
-  Paragraph,
-  PasteFromOffice,
-  SelectAll,
-  ShowBlocks,
-  SimpleUploadAdapter,
-  SourceEditing,
-  Table,
-  TableCaption,
-  TableCellProperties,
-  TableColumnResize,
-  TableProperties,
-  TableToolbar,
-  TextPartLanguage,
-  TextTransformation,
-  Title,
-  TodoList,
-  Underline,
-  Undo,
-} from "ckeditor5";
+const { Search } = Input;
 
-import "ckeditor5/ckeditor5.css";
-import { Modal, Button } from "antd";
-export default function TagManager() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  //const editorContainerRef = useRef(null);
-  const editorRef = useRef(null);
-  const [isLayoutReady, setIsLayoutReady] = useState(false);
+const BlogManager = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalMode, setModalMode] = useState("add");
+  const [selectedBlog, setSelectedBlog] = useState(null);
+  const [tags, setTags] = useState([]);
+
+  const fetchAllBlogs = async () => {
+    const response = await getAllBlogs();
+    const blogList = response.map(item=>item.blog);
+    setBlogs(blogList);
+  };
+
+  const fetchAllTags = async () => {
+    const response = await getAllTags();
+    const tagList = response.flatMap(item=>item.tag);
+    console.log("tagList: ", tagList);
+    
+    setTags(tagList);
+  };
 
   useEffect(() => {
-    setIsLayoutReady(true);
-
-    return () => setIsLayoutReady(false);
+    fetchAllBlogs();
+    fetchAllTags();
   }, []);
 
-  const editorConfig = {
-    toolbar: {
-      items: [
-        "undo",
-        "redo",
-        "|",
-        "sourceEditing",
-        "showBlocks",
-        "textPartLanguage",
-        "|",
-        "heading",
-        "|",
-        "fontSize",
-        "fontFamily",
-        "fontColor",
-        "fontBackgroundColor",
-        "|",
-        "bold",
-        "italic",
-        "underline",
-        "code",
-        "|",
-        "horizontalLine",
-        "pageBreak",
-        "link",
-        "insertImage",
-        "insertImageViaUrl",
-        "mediaEmbed",
-        "insertTable",
-        "blockQuote",
-        "codeBlock",
-        "htmlEmbed",
-        "|",
-        "bulletedList",
-        "numberedList",
-        "todoList",
-        "outdent",
-        "indent",
-      ],
-      shouldNotGroupWhenFull: true,
-    },
-    plugins: [
-      AccessibilityHelp,
-      Autoformat,
-      AutoImage,
-      AutoLink,
-      Autosave,
-      BalloonToolbar,
-      BlockQuote,
-      BlockToolbar,
-      Bold,
-      Code,
-      CodeBlock,
-      Essentials,
-      FontBackgroundColor,
-      FontColor,
-      FontFamily,
-      FontSize,
-      FullPage,
-      GeneralHtmlSupport,
-      Heading,
-      HorizontalLine,
-      HtmlComment,
-      HtmlEmbed,
-      ImageBlock,
-      ImageCaption,
-      ImageInline,
-      ImageInsert,
-      ImageInsertViaUrl,
-      ImageResize,
-      ImageStyle,
-      ImageTextAlternative,
-      ImageToolbar,
-      ImageUpload,
-      Indent,
-      IndentBlock,
-      Italic,
-      Link,
-      LinkImage,
-      List,
-      ListProperties,
-      MediaEmbed,
-      PageBreak,
-      Paragraph,
-      PasteFromOffice,
-      SelectAll,
-      ShowBlocks,
-      SimpleUploadAdapter,
-      SourceEditing,
-      Table,
-      TableCaption,
-      TableCellProperties,
-      TableColumnResize,
-      TableProperties,
-      TableToolbar,
-      TextPartLanguage,
-      TextTransformation,
-      Title,
-      TodoList,
-      Underline,
-      Undo,
-    ],
-    balloonToolbar: [
-      "bold",
-      "italic",
-      "|",
-      "link",
-      "insertImage",
-      "|",
-      "bulletedList",
-      "numberedList",
-    ],
-    blockToolbar: [
-      "fontSize",
-      "fontColor",
-      "fontBackgroundColor",
-      "|",
-      "bold",
-      "italic",
-      "|",
-      "link",
-      "insertImage",
-      "insertTable",
-      "|",
-      "bulletedList",
-      "numberedList",
-      "outdent",
-      "indent",
-    ],
-    fontFamily: {
-      supportAllValues: true,
-    },
-    fontSize: {
-      options: [10, 12, 14, "default", 18, 20, 22],
-      supportAllValues: true,
-    },
-    heading: {
-      options: [
-        {
-          model: "paragraph",
-          title: "Paragraph",
-          class: "ck-heading_paragraph",
-        },
-        {
-          model: "heading1",
-          view: "h1",
-          title: "Heading 1",
-          class: "ck-heading_heading1",
-        },
-        {
-          model: "heading2",
-          view: "h2",
-          title: "Heading 2",
-          class: "ck-heading_heading2",
-        },
-        {
-          model: "heading3",
-          view: "h3",
-          title: "Heading 3",
-          class: "ck-heading_heading3",
-        },
-        {
-          model: "heading4",
-          view: "h4",
-          title: "Heading 4",
-          class: "ck-heading_heading4",
-        },
-        {
-          model: "heading5",
-          view: "h5",
-          title: "Heading 5",
-          class: "ck-heading_heading5",
-        },
-        {
-          model: "heading6",
-          view: "h6",
-          title: "Heading 6",
-          class: "ck-heading_heading6",
-        },
-      ],
-    },
-    htmlSupport: {
-      allow: [
-        {
-          name: /^.*$/,
-          styles: true,
-          attributes: true,
-          classes: true,
-        },
-      ],
-    },
-    image: {
-      toolbar: [
-        "toggleImageCaption",
-        "imageTextAlternative",
-        "|",
-        "imageStyle:inline",
-        "imageStyle:wrapText",
-        "imageStyle:breakText",
-        "|",
-        "resizeImage",
-      ],
-    },
-    initialData: "",
-    link: {
-      addTargetToExternalLinks: true,
-      defaultProtocol: "https://",
-      decorators: {
-        toggleDownloadable: {
-          mode: "manual",
-          label: "Downloadable",
-          attributes: {
-            download: "file",
-          },
-        },
-      },
-    },
-    list: {
-      properties: {
-        styles: true,
-        startIndex: true,
-        reversed: true,
-      },
-    },
-    menuBar: {
-      isVisible: true,
-    },
-    placeholder: "Type or paste your content here!",
-    table: {
-      contentToolbar: [
-        "tableColumn",
-        "tableRow",
-        "mergeTableCells",
-        "tableProperties",
-        "tableCellProperties",
-      ],
-    },
-  };
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showModal = (mode, blog = null) => {
+    setModalMode(mode);
+    setSelectedBlog(blog);
+    setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    setSelectedBlog(null);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleModalOk = async (values) => {
+    if (modalMode === "add") {
+      // const response = await createBlog(values);
+      // message.success(response.message);
+    } else if (modalMode === "edit") {
+      const response = await updateBlog(selectedBlog.blogID, values);
+      setBlogs(
+        blogs.map((blog) =>
+          blog.blogID === selectedBlog.blogID ? { ...blog, ...values } : blog
+        )
+      );
+      message.success(response.message);
+    }
+    fetchAllBlogs();
+    setIsModalVisible(false);
+  };
+
+  const handleDelete = async (blog) => {
+    const response = await deleteBlog(blog.blogID);
+    Modal.confirm({
+      title: "Are you sure you want to delete this blog?",
+      content: "This action cannot be undone.",
+      onOk() {
+        fetchAllBlogs();
+        message.success(response.message);
+      },
+    });
   };
 
   return (
-    <div>
-      <Button type="primary" onClick={showModal}>
-        Open Editor
-      </Button>
-
-      <Modal
-        title="CKEditor in Modal"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={"60%"}
-      >
-        <div className="editor-container">
-          {isLayoutReady && (
-            <CKEditor
-              editor={ClassicEditor}
-              config={editorConfig}
-              ref={editorRef}
-            />
-          )}
-        </div>
-      </Modal>
+    <div className="container mt-4">
+      <div className="d-flex align-center mb-3">
+        <h2><strong>Blogs</strong></h2>
+        <Button
+          className="ml-auto"
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => showModal("add")}
+        >
+          Add New
+        </Button>
+      </div>
+      <BlogTable
+        blogs={blogs}
+        tags={tags}
+        onView={(blog) => showModal("view", blog)}
+        onEdit={(blog) => showModal("edit", blog)}
+        onDelete={handleDelete}
+      />
+      <BlogModal
+        visible={isModalVisible}
+        mode={modalMode}
+        tags={tags}
+        blog={selectedBlog}
+        onCancel={handleModalCancel}
+        onOk={handleModalOk}
+      />
     </div>
   );
-}
+};
+
+export default BlogManager;

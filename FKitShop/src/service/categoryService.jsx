@@ -1,6 +1,17 @@
 import api from "../config/axios";
 import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
 
+//POST
+export const createCategory = async(data) => {
+  try {
+    const response = await api[POST]("/categories", data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//DELETE
 export const deleteCategory = async (categoryID) => {
   try {
     const response = await api[DELETE](`/categories/${categoryID}`);
