@@ -56,28 +56,6 @@ const OrderDetails = ({
     fetchAddressDetails();
   }, [selectedOrder]);
   ///----------------------------------------------------------
-  const menu = (productId) => (
-    <Menu>
-      <Menu.SubMenu key="question" title="Make a Question">
-        <Menu.Item key="questionView">View</Menu.Item>
-        <Menu.Item
-          key="questionNew"
-          onClick={() => showModal("Question", productId)}
-        >
-          New
-        </Menu.Item>
-      </Menu.SubMenu>
-      <Menu.SubMenu key="support" title="Comming Soon..." disabled={true}>
-        <Menu.Item key="supportView">View</Menu.Item>
-        <Menu.Item
-          key="supportNew"
-          onClick={() => showModal("Support", productId)}
-        >
-          New
-        </Menu.Item>
-      </Menu.SubMenu>
-    </Menu>
-  );
 
   const detailColumns = [
     {
@@ -116,15 +94,6 @@ const OrderDetails = ({
       title: "Total",
       key: "total",
       render: (_, record) => formatCurrency(record.price),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Dropdown overlay={menu(record.productID)} trigger={["click"]}>
-          <Button icon={<UnorderedListOutlined />} />
-        </Dropdown>
-      ),
     },
   ];
 

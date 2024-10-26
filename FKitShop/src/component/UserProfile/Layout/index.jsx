@@ -13,6 +13,7 @@ import { setUser } from '../../../redux/slices/authSlice'; // Import the action 
 import { IDLE, SUCCESSFULLY } from '../../../redux/constants/status';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getUserByAccountID } from '../../../service/userService';
+import Question from '../Question/Question';
 
 export default function UserProfile() {
     const [activeTab, setActiveTab] = useState('information'); // State to manage the active tab
@@ -114,6 +115,7 @@ export default function UserProfile() {
                                 {activeTab === 'updateAccount' && <UpdateAccount userInfo={userFinalInfo}/>}
                                 {activeTab === 'changePassword' && <ChangePassword userInfo={userFinalInfo}/>}
                                 {activeTab === 'myLab' && <MyLab userInfo={userFinalInfo}/>}
+                                {activeTab === 'question' && <Question userInfo={userFinalInfo}/>}
                             </div>
                         </div>
                     </div>

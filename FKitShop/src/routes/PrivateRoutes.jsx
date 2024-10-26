@@ -233,6 +233,14 @@ const PrivateRoutes = [
           </Suspense>
         ),
       },
+      {
+        path: "question",
+        element: (
+          <Suspense fallback={null}>
+            <UserProfilePage />
+          </Suspense>
+        ),
+      },
     ],
   },
   {

@@ -48,6 +48,15 @@ export default function ProfileSidebar({ activeTab, setActiveTab, userInfo }) {
 
       <button
         className={clsx("btn btn-outline-dark w-100 mb-2", {
+          active: activeTab === "question",
+        })}
+        onClick={handleOnclick("question")}
+      >
+        Question
+      </button>
+
+      <button
+        className={clsx("btn btn-outline-dark w-100 mb-2", {
           active: activeTab === "updateAccount",
         })}
         onClick={handleOnclick("updateAccount")}
@@ -72,6 +81,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab, userInfo }) {
       >
         My Lab
       </button>
+
     </div>
   );
 }

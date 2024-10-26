@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, Button } from 'antd';
 import { formatCurrency } from "../../../util/CurrencyUnit";
 
 const OrderList = ({ filteredOrders, showOrderDetails, pageSize }) => {
+
   const columns = [
     {
       title: "Order ID",
@@ -35,9 +36,18 @@ const OrderList = ({ filteredOrders, showOrderDetails, pageSize }) => {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button onClick={() => showOrderDetails(record.orders.ordersID)}>
-          View
-        </Button>
+        <div>
+          <Button onClick={() => showOrderDetails(record.orders.ordersID)}>
+            View
+          </Button>
+
+          <Button 
+          style={{marginLeft: '5px'}}
+          onClick={() => showOrderDetails(record.orders.ordersID)}>
+            Feedback
+          </Button>
+        </div>
+
       ),
     },
   ];
@@ -45,7 +55,7 @@ const OrderList = ({ filteredOrders, showOrderDetails, pageSize }) => {
   return (
     <Table
       columns={columns}
-      
+
       dataSource={filteredOrders}
       rowKey={(record) => record.orders.ordersID}
       pagination={{ pageSize: pageSize }}
