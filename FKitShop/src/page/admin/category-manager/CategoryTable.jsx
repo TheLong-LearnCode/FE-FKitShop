@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Button, Space } from "antd";
-import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EyeOutlined, EditOutlined, DeleteOutlined, ToolOutlined } from "@ant-design/icons";
 
 const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
   const columns = [
@@ -25,7 +25,7 @@ const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
       render: (_, record) => (
         <Space size="small">
           <Button icon={<EyeOutlined />} onClick={() => onView(record)} />
-          <Button icon={<EditOutlined />} onClick={() => onEdit(record)} />
+          <Button icon={<ToolOutlined />} onClick={() => onEdit(record)} />
           <Button
             icon={<DeleteOutlined />}
             onClick={() => onDelete(record)}

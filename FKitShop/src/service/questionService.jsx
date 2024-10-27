@@ -3,7 +3,7 @@ import { GET, PUT, POST, DELETE } from "../constants/httpMethod";
 
 export const getAllQuestions = async () => {
   try {
-    const response = await api[GET]("questions/all");
+    const response = await api[GET]("questions");
     return response.data;
   } catch (error) {
     throw error;
@@ -19,9 +19,9 @@ export const getQuestionByID = async (questionID) => {
   }
 };
 
-export const updateQuestionStatus = async (questionInfo) => {
+export const updateResponse = async (id, questionInfo) => {
   try {
-    const response = await api[PUT]("questions/status", questionInfo);
+    const response = await api[PUT](`questions/${id}`, questionInfo);
     return response.data;
   } catch (error) {
     throw error;
