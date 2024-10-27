@@ -70,22 +70,24 @@ const ProductManager = () => {
     const response = await deleteImages(data);
     message.success(response.data);
   };
-  const handleDelete = async (id) => {
-    try {
-      Modal.confirm({
-        title: "Confirm Delete",
-        content: "Are you sure you want to delete this product?",
-        onOk: async () => {
-          console.log("selected product: ", id);
-          
-          const response = await deleteProduct(id);
-          message.success(response.message);
-          fetchAllProducts(); // Refresh the product list
-        },
-      });
-    } catch (error) {
-      message.error("Failed to delete product");
-    }
+  const handleDelete = async (product) => {
+    console.log("selected product: ", product);
+    
+    Modal.confirm({
+      title: "Confirm Delete",
+      content: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `Are you sure you want to delete product <strong style="color: red;">${product.name}</strong>?`,
+          }}
+        />
+      ),
+      onOk: async () => {
+        const response = await deleteProduct(product.productID);
+        message.success(response.message);
+        fetchAllProducts(); // Refresh the product list
+      },
+    });
   };
 
   const showModal = (mode, product) => {
@@ -165,20 +167,20 @@ const ProductManager = () => {
         onCancel={() => setIsImagesModalVisible(false)}
         footer={null}
       >
-          <Carousel autoplay>
-            {visibleImages.map((image) => (
-              <div key={image?.id} style={{ textAlign: "center" }}>
-                <Image
-                  src={image?.url}
-                  alt="product image"
-                  width={300}
-                  height={300}
-                  style={{ objectFit: "cover", alignContent: "center" }}
-                  fallback="https://s3.ap-southeast-2.amazonaws.com/fkshop/Product/no-image.png"
-                />
-              </div>
-            ))}
-          </Carousel>
+        <Carousel autoplay>
+          {visibleImages.map((image) => (
+            <div key={image?.id} style={{ textAlign: "center" }}>
+              <Image
+                src={image?.url}
+                alt="product image"
+                width={300}
+                height={300}
+                style={{ objectFit: "cover", alignContent: "center" }}
+                fallback="https://s3.ap-southeast-2.amazonaws.com/fkshop/Product/no-image.png"
+              />
+            </div>
+          ))}
+        </Carousel>
       </Modal>
     </div>
   );

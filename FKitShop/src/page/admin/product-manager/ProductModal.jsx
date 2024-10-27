@@ -98,11 +98,8 @@ const ProductModal = ({
         }
       });
 
-      if (deletedImages.length > 0) {
-        console.log(deletedImages);
-        
-        const imageIDs = deletedImages.join(",");
-        await deleteImages({ productID: product?.productID, imageIDs });
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
       }
 
       // Handle updated images if there are any
@@ -110,10 +107,22 @@ const ProductModal = ({
         const formData = new FormData();
         formData.append("images", file); // Add new image file
         for (let [key, value] of formData.entries()) {
-          console.log(key, value);
+          console.log(key, value, typeof value);
         }
+        console.log("mode: ", mode);
+      }
+      if (mode === "edit") {
+        if (deletedImages.length > 0) {
+          console.log(deletedImages);
 
-        await addImages(product?.productID, formData);
+          const imageIDs = deletedImages.join(",");
+          console.log("imageIDs: ", imageIDs);
+          await deleteImages({ productID: product?.productID, imageIDs });
+        }
+        if (updatedImages.length > 0) {
+          await addImages(product?.productID, formData);
+        }
+        console.log("formData in addImages: ", formData);
       }
 
       // Log formData for debugging
@@ -213,6 +222,7 @@ const ProductModal = ({
               >
                 <InputNumber
                   min={0}
+                  step={1000}
                   disabled={mode === "view"}
                   className="product-details-number"
                   formatter={(value) =>
@@ -231,7 +241,15 @@ const ProductModal = ({
                 }
                 rules={[{ required: true }]}
               >
-                <InputNumber min={0} disabled={mode === "view"} />
+                <InputNumber
+                  min={0}
+                  step={1}
+                  disabled={mode === "view"}
+                  formatter={(value) => `${Math.floor(value)}`} // Làm tròn xuống thành số nguyên
+                  parser={(value) =>
+                    parseInt(value.replace(/\D/g, ""), 10) || 0
+                  } // Chặn ký tự không phải số
+                />
               </Form.Item>
             </Card>
           </Col>
@@ -248,10 +266,12 @@ const ProductModal = ({
                   min={0}
                   disabled={mode === "view"}
                   className="product-details-number"
-                  formatter={(value) =>
-                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  formatter={
+                    (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") // Thêm dấu phẩy cho hàng ngàn
                   }
-                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                  parser={
+                    (value) => parseInt(value.replace(/\D/g, ""), 10) || 0 // Loại bỏ ký tự không phải số và chuyển về số nguyên
+                  }
                 />
               </Form.Item>
 
@@ -329,6 +349,7 @@ const ProductModal = ({
                     <InputNumber
                       placeholder="Length"
                       min={0}
+                      step={0.1}
                       disabled={mode === "view"}
                     />
                   </Form.Item>
@@ -343,6 +364,7 @@ const ProductModal = ({
                     <InputNumber
                       placeholder="Width"
                       min={0}
+                      step={0.1}
                       disabled={mode === "view"}
                     />
                   </Form.Item>
@@ -357,6 +379,7 @@ const ProductModal = ({
                     <InputNumber
                       placeholder="Height"
                       min={0}
+                      step={0.1}
                       disabled={mode === "view"}
                     />
                   </Form.Item>
@@ -372,7 +395,7 @@ const ProductModal = ({
                   </span>
                 }
               >
-                <InputNumber min={0} disabled={mode === "view"} />
+                <InputNumber min={0} step={0.1} disabled={mode === "view"} />
               </Form.Item>
 
               <Form.Item name="material" label="Material">

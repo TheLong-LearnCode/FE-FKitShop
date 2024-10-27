@@ -38,6 +38,11 @@ const ProductTable = ({ products, onView, onEdit, onDelete, onViewImages }) => {
       ),
     },
     {
+      title: "Product ID",
+      dataIndex: "productID",
+      key: "productID",
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
@@ -80,8 +85,9 @@ const ProductTable = ({ products, onView, onEdit, onDelete, onViewImages }) => {
           <Button icon={<EditOutlined />} onClick={() => onEdit(record)} />
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => onDelete(record.productID)}
+            onClick={() => onDelete(record)}
             danger
+            disabled={record.status === "inactive"}
           />
         </Space>
       ),

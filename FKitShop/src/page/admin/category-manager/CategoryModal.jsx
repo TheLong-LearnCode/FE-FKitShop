@@ -30,19 +30,13 @@ const CategoryModal = ({
       return;
     }
     form.validateFields().then((values) => {
-      const productIDList = [];
       console.log(values);
-      
-      values.products.forEach((id) => {
-        productIDList.push(id);
-      });
       const categoryData =
         mode === "add"
           ? {
               tagID: values.tagID,
               categoryName: values.categoryName,
               description: values.description,
-              productID: productIDList,
             }
           : { ...values };
       onOk(categoryData);
@@ -91,15 +85,6 @@ const CategoryModal = ({
           rules={[{ required: true }]}
         >
           <Input.TextArea disabled={mode === "view"} />
-        </Form.Item>
-        <Form.Item name="products" label="Select Products" rules={[{ required: true }]}>
-          <Select disabled={mode === "view"} mode="multiple">
-            {products?.map((product) => (
-              <Select.Option key={product.productID} value={product.productID}>
-                {product.name}
-              </Select.Option>
-            ))}
-          </Select>
         </Form.Item>
         <Form.Item name="status" label="Status" hidden={mode === "add"}>
           <Radio.Group disabled={mode === "view"}>

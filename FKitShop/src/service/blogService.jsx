@@ -11,9 +11,9 @@ export const deleteBlog = async (id) => {
   }
 };
 
-export const updateBlog = async (id) => {
+export const updateBlog = async (id, data) => {
   try {
-    const response = await api[PUT](`/blogs/${id}`);
+    const response = await api[PUT](`/blogs/${id}`, data);
     return response.data;
   } catch (err) {
     console.error("Error updating blog:", err);

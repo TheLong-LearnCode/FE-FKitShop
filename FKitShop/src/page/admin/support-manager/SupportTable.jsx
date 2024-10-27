@@ -53,7 +53,7 @@ export default function SupportTable({
       dataIndex: ["supporting", "countSupport"],
       key: "availableSupport",
       render: (countSupport, record) => {
-        return `#${5 - countSupport}`;
+        return `${countSupport}`;
       },
     },
     {

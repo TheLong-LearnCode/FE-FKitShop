@@ -19,7 +19,7 @@ export const deleteLab = async (id) => {
 
 export const updateLab = async (formData, labID) => {
   try {
-    const response = await api.put(`/lab/${labID}`, 
+    const response = await api[PUT](`/lab/${labID}`, 
       formData);
     return response.data;
   } catch (error) {
@@ -36,7 +36,7 @@ export const uploadLab = async (info, labID) => {
   try {
     const formData = new FormData();
     formData.append("pdf", info.file); // Đảm bảo file được thêm vào FormData
-    const response = await api.post(`/lab/upload-lab/${labID}`, formData, {
+    const response = await api[POST](`/lab/upload-lab/${labID}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

@@ -32,7 +32,7 @@ const CategoryManager = () => {
   const fetchAllProducts = async () => {
     const response = await getAllProducts();
     setProducts(response.data);
-  }
+  };
   useEffect(() => {
     fetchAllTags();
     fetchAllCategories();
@@ -74,12 +74,18 @@ const CategoryManager = () => {
     setIsModalVisible(false);
   };
 
-  const handleDelete = async (category) => {
-    const response = await deleteCategory(category.categoryID);
+  const handleDelete = (category) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this category?",
-      content: "This action cannot be undone.",
-      onOk() {
+      title: "Confirm Delete",
+      content: (
+        <div
+        dangerouslySetInnerHTML={{
+          __html: `Are you sure you want to delete category <strong style="color: red;">${selectedCategory.categoryName}</strong>?`,
+        }}
+        />
+      ),
+      onOk: async() => {
+        const response = await deleteCategory(category.categoryID);
         //setCategories(categories.filter(cat => cat.categoryID !== category.categoryID));
         fetchAllCategories();
         message.success(response.message);

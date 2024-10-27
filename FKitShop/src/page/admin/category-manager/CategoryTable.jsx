@@ -13,7 +13,7 @@ const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
       dataIndex: "status",
       key: "status",
       render: (status) =>
-        status === 1 ? (
+        (status === 1)  ? (
           <span className="active-status">Active</span>
         ) : (
           <span className="inactive-status">Inactive</span>

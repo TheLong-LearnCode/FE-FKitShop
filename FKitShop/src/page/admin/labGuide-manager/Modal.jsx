@@ -386,6 +386,7 @@ export default function LabGuideModal({
                     config={editorConfig}
                     ref={editorRef}
                     extraPlugins={uploadPlugin}
+                    disabled={isViewMode}
                   />
                 )}
               </div>
