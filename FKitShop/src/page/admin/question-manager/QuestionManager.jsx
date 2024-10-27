@@ -3,7 +3,13 @@ import { Container, Row, Col } from "react-bootstrap";
 import QuestionTable from "./QuestionTable";
 import QuestionFormModal from "./QuestionFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
-import { getAllQuestions, updateQuestionStatus, getQuestionByID } from "../../../service/questionService";
+import {
+  getAllQuestions,
+  updateResponse,
+  getQuestionByID,
+} from "../../../service/questionService";
+import "./index.css";
+import { message } from "antd";
 
 export default function QuestionManager() {
   const [questions, setQuestions] = useState([]);
@@ -20,12 +26,7 @@ export default function QuestionManager() {
   const fetchAllQuestions = async () => {
     try {
       const response = await getAllQuestions();
-      if (response.data && Array.isArray(response.data)) {
-        setQuestions(response.data);
-      }
-      console.log("RESPONSE.DATA: ", response.data);
-      
-      Notification(response.message, "", 4, "success");
+      setQuestions(response);
     } catch (error) {
       console.error("Error fetching questions:", error);
       Notification("Error fetching questions", "", 4, "error");
@@ -37,25 +38,32 @@ export default function QuestionManager() {
     setSelectedQuestion(null);
   };
 
-  const handleUpdateQuestionStatus = async (question, status) => {
+  const handleResponse = async (question) => {
+    console.log("Question: ", question);
+    const data = {
+      labID: selectedQuestion.labID,
+      accountID: selectedQuestion.accountID,
+      description: question.description,
+      response: question.response,
+    };
+    console.log("DATA: ", data);
+    
     try {
-      const response = await updateQuestionStatus({
-        questionID: question.questionID,
-        status: status,
-      });
+      const response = await updateResponse(question.questionID, data);
       Notification(response.message, "", 4, "success");
-
       fetchAllQuestions();
+      setShowModal(false);
     } catch (error) {
       console.log("Error updating question status:", error);
       Notification("Error updating question status", "", 4, "warning");
     }
   };
 
-  const handleViewQuestionDetails = async (question) => {
+  const handleShowModal = async (mode, question = null) => {
     try {
       const response = await getQuestionByID(question.questionID);
-      setSelectedQuestion(response);
+      setSelectedQuestion(response.data);
+      setMode(mode);
       setShowModal(true);
     } catch (error) {
       console.error("Error fetching question details:", error);
@@ -92,8 +100,9 @@ export default function QuestionManager() {
         questions={questions}
         currentPage={currentPage}
         questionsPerPage={questionsPerPage}
-        handleViewQuestionDetails={handleViewQuestionDetails}
-        handleUpdateQuestionStatus={handleUpdateQuestionStatus}
+        //onView={(category) => showModal("view", category)}
+        handleView={question => handleShowModal("view", question)}
+        handleResponse={question => handleShowModal("edit", question)}
         handleDelete={handleDelete}
         onPageChange={handlePageChange}
       />
@@ -102,7 +111,9 @@ export default function QuestionManager() {
         mode={mode}
         selectedQuestion={selectedQuestion}
         showModal={showModal}
+        handleShowModal={handleShowModal}
         handleCloseModal={handleCloseModal}
+        onOk={handleResponse}
       />
     </Container>
   );

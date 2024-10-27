@@ -1,84 +1,94 @@
-import React from "react";
-import { Modal, Form, Input, Select, Button } from "antd";
+import React, { useState, useEffect, useRef } from "react";
+import { Modal, Form, Input, Select, Radio } from "antd";
+
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 import {
-    ClassicEditor,
-    AccessibilityHelp,
-    Autoformat,
-    AutoImage,
-    AutoLink,
-    Autosave,
-    BalloonToolbar,
-    BlockQuote,
-    BlockToolbar,
-    Bold,
-    Code,
-    CodeBlock,
-    Essentials,
-    FontBackgroundColor,
-    FontColor,
-    FontFamily,
-    FontSize,
-    FullPage,
-    GeneralHtmlSupport,
-    Heading,
-    HorizontalLine,
-    HtmlComment,
-    HtmlEmbed,
-    ImageBlock,
-    ImageCaption,
-    ImageInline,
-    ImageInsert,
-    ImageInsertViaUrl,
-    ImageResize,
-    ImageStyle,
-    ImageTextAlternative,
-    ImageToolbar,
-    ImageUpload,
-    Indent,
-    IndentBlock,
-    Italic,
-    Link,
-    LinkImage,
-    List,
-    ListProperties,
-    MediaEmbed,
-    PageBreak,
-    Paragraph,
-    PasteFromOffice,
-    SelectAll,
-    ShowBlocks,
-    SimpleUploadAdapter,
-    SourceEditing,
-    Table,
-    TableCaption,
-    TableCellProperties,
-    TableColumnResize,
-    TableProperties,
-    TableToolbar,
-    TextPartLanguage,
-    TextTransformation,
-    Title,
-    TodoList,
-    Underline,
-    Undo,
-  } from "ckeditor5";
-const { Option } = Select;
+  ClassicEditor,
+  AccessibilityHelp,
+  Autoformat,
+  AutoImage,
+  AutoLink,
+  Autosave,
+  BalloonToolbar,
+  BlockQuote,
+  BlockToolbar,
+  Bold,
+  Code,
+  CodeBlock,
+  Essentials,
+  FontBackgroundColor,
+  FontColor,
+  FontFamily,
+  FontSize,
+  FullPage,
+  GeneralHtmlSupport,
+  Heading,
+  HorizontalLine,
+  HtmlComment,
+  HtmlEmbed,
+  ImageBlock,
+  ImageCaption,
+  ImageInline,
+  ImageInsert,
+  ImageInsertViaUrl,
+  ImageResize,
+  ImageStyle,
+  ImageTextAlternative,
+  ImageToolbar,
+  ImageUpload,
+  Indent,
+  IndentBlock,
+  Italic,
+  Link,
+  LinkImage,
+  List,
+  ListProperties,
+  MediaEmbed,
+  PageBreak,
+  Paragraph,
+  PasteFromOffice,
+  SelectAll,
+  ShowBlocks,
+  SimpleUploadAdapter,
+  SourceEditing,
+  Table,
+  TableCaption,
+  TableCellProperties,
+  TableColumnResize,
+  TableProperties,
+  TableToolbar,
+  TextPartLanguage,
+  TextTransformation,
+  Title,
+  TodoList,
+  Underline,
+  Undo,
+} from "ckeditor5";
+import "ckeditor5/ckeditor5.css";
 
-export default function LabGuideModal ({
-  isModalVisible,
-  isViewMode,
-  editorRef,
-  editingGuideId,
-  form,
-  labs,
-  content,
-  setContent,
-  handleOk,
-  handleCancel,
+export default function BlogModal({
+  visible,
+  mode,
+  blog,
+  tags,
+  user,
+  onCancel,
+  onOk,
+  uploadPlugin,
 }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(true);
+  const editorRef = useRef(null);
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    setIsLayoutReady(true);
+
+    return () => setIsLayoutReady(false);
+  }, []);
+
   const editorConfig = {
     toolbar: {
       items: [
@@ -181,6 +191,7 @@ export default function LabGuideModal ({
       Underline,
       Undo,
     ],
+    extraPlugins: uploadPlugin,
     balloonToolbar: [
       "bold",
       "italic",
@@ -317,76 +328,126 @@ export default function LabGuideModal ({
       ],
     },
   };
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const [form] = Form.useForm();
+  useEffect(() => {
+    console.log("blog: ", blog);
+    if (blog && (mode === "edit" || mode === "view")) {
+      setIsViewMode(true);
+      form.setFieldsValue({
+        ...blog,
+        tagID: blog.tags?.map((tag) => tag.tagID) || [], // Lấy tagID của từng tag từ blog
+      });
+      //set riêng field content
+      setContent(blog.content); 
+    } else {
+      form.resetFields();
+    }
+  }, [blog, mode, form]);
+
+  const handleOk = () => {
+    if (mode === "view") {
+      onCancel();
+      return;
+    }
+    form.validateFields().then((values) => {
+      console.log("values", values);
+      console.log("CONTENT: ", content);
+      const updatedValues = {
+        ...values,
+        content: content,
+      };
+
+      const formData = new FormData();
+      Object.keys(updatedValues).forEach((key) => {
+        if (key === "toDelete") {
+          formData.append(key, Number(updatedValues[key]));
+        } else {
+          if (key !== "blogID") {
+            formData.append(key, updatedValues[key]);
+          }
+        }
+      });
+      formData.append("accountID", user.accountID);
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value, typeof value);
+      }
+      onOk(formData);
+      form.resetFields();
+    });
+  };
 
   return (
     <Modal
+      visible={visible}
       title={
-        isViewMode
-          ? "View Lab Guide"
-          : editingGuideId
-          ? "Edit Lab Guide"
-          : "Add New Lab Guide"
+        mode === "add"
+          ? "Add Blog"
+          : mode === "edit"
+          ? "Edit Blog"
+          : "View Blog"
       }
-      open={isModalVisible}
-      onOk={isViewMode ? handleCancel : handleOk}
-      onCancel={handleCancel}
-      width={"80%"}
-      footer={
-        isViewMode
-          ? [
-              <Button key="close" onClick={handleCancel}>
-                Close
-              </Button>,
-            ]
-          : undefined
-      }
+      onCancel={onCancel}
+      onOk={handleOk}
+      okText={mode === "view" ? "Close" : "Save"}
+      cancelText={mode === "view" ? null : "Cancel"}
     >
       <Form form={form} layout="vertical">
-        <Form.Item name="labID" label="Lab ID" rules={[{ required: true }]}>
-          <Select disabled={isViewMode}>
-            {labs.map((lab) => (
-              <Option key={lab.labID} value={lab.labID}>
-                {lab.labID} - {lab.name}
-              </Option>
-            ))}
-          </Select>
+        <Form.Item name="blogID" label="Blog ID" hidden={mode === "add"}>
+          <Input disabled />
         </Form.Item>
-
-        <Form.Item
-          name="description"
-          label="Description"
-          rules={[{ required: true }]}
-        >
-          <Input.TextArea disabled={isViewMode} />
+        <Form.Item name="blogName" label="Blog Name" rules={[{ required: true}]}>
+          <Input disabled={mode === "view"} />
         </Form.Item>
-
-        <Form.Item label="Content" required>
-          {/* <CKEditor
-            editor={ClassicEditor}
-            data={content}
-            onChange={(event, editor) => {
-              if (!isViewMode) {
-                const data = editor.getData();
-                setContent(data);
-              }
-            }}
-            config={editorConfiguration}
-            disabled={isViewMode}
-          /> */}
+        <Form.Item name="content" label="Content">
+          <div className="editor-container">
+            {isLayoutReady && (
               <CKEditor
                 editor={ClassicEditor}
                 data={content}
                 onChange={(event, editor) => {
-                  if (!isViewMode) {
+                  if (mode !== "view") {
                     const data = editor.getData();
                     setContent(data);
                   }
                 }}
                 config={editorConfig}
                 ref={editorRef}
+                extraPlugins={uploadPlugin}
+                disabled={mode==="view"}
+                rules={[{ required: true }]}
               />
+            )}
+          </div>
+        </Form.Item>
+        <Form.Item name="tagID" label="Select Tags">
+          <Select disabled={mode === "view"} mode="multiple">
+            {tags?.map((tag) => (
+              <Select.Option key={tag.tagID} value={tag.tagID}>
+                {tag.tagName}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item name="status" label="Status" rules={[{ required: true }]}>
+          <Radio.Group disabled={mode === "view"}>
+            <Radio value="draft">Draft</Radio>
+            <Radio value="published">Published</Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          name="toDelete"
+          label="Availability"
+          rules={[{ required: true }]}
+        >
+          <Radio.Group disabled={mode === "view"}>
+            <Radio value={1}>Yes</Radio>
+            <Radio value={0}>No</Radio>
+          </Radio.Group>
         </Form.Item>
       </Form>
     </Modal>
   );
-};
+}

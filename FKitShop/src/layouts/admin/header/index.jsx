@@ -30,6 +30,7 @@ export default function HeaderLayout() {
 
   const handleViewProfile = () => {
     // Implement view profile logic here
+    
     console.log("View profile clicked");
   };
 

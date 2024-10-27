@@ -7,6 +7,7 @@ import {
   updateProduct,
   deleteProduct,
   getProductById,
+  deleteImages,
 } from "../../../service/productService";
 import "./index.css";
 import ProductTable from "./ProductTable";
@@ -24,6 +25,9 @@ const ProductManager = () => {
   const [uploading, setUploading] = useState(false);
   const [visibleImages, setVisibleImages] = useState([]);
   const [isImagesModalVisible, setIsImagesModalVisible] = useState(false);
+
+  const [deletedImages, setDeletedImages] = useState([]);
+  const [updatedImages, setUpdatedImages] = useState([]);
 
   useEffect(() => {
     fetchAllCategories();
@@ -45,6 +49,7 @@ const ProductManager = () => {
     try {
       const response = await getAllProducts();
       setProducts(response.data);
+      message.success(response.message);
     } catch (error) {
       message.error("Failed to fetch products");
     }
@@ -55,16 +60,44 @@ const ProductManager = () => {
     setSelectedProduct(response.data);
   };
 
-  const showModal = (mode, product = null) => {
-    setModalMode(mode);
-    setSelectedProduct(fetchProductById(product.productID).data);
-    setIsModalVisible(true);
-  };
-
   const handleUpload = async (file) => {
     const response = await ProductUploadImage(file);
     setFileList([...fileList, response]);
     return response;
+  };
+
+  const handleDeleteImages = async (data) => {
+    const response = await deleteImages(data);
+    message.success(response.data);
+  };
+  const handleDelete = async (product) => {
+    console.log("selected product: ", product);
+    
+    Modal.confirm({
+      title: "Confirm Delete",
+      content: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `Are you sure you want to delete product <strong style="color: red;">${product.name}</strong>?`,
+          }}
+        />
+      ),
+      onOk: async () => {
+        const response = await deleteProduct(product.productID);
+        message.success(response.message);
+        fetchAllProducts(); // Refresh the product list
+      },
+    });
+  };
+
+  const showModal = (mode, product) => {
+    setModalMode(mode);
+    if (mode === "add") {
+      setSelectedProduct(null);
+    } else {
+      setSelectedProduct(fetchProductById(product?.productID));
+    }
+    setIsModalVisible(true);
   };
 
   const handleModalCancel = () => {
@@ -88,22 +121,6 @@ const ProductManager = () => {
       message.error("Operation failed");
     }
     setIsModalVisible(false);
-  };
-
-  const handleDelete = async () => {
-    try {
-      Modal.confirm({
-        title: "Confirm Delete",
-        content: "Are you sure you want to delete this product?",
-        onOk: async () => {
-          await deleteProduct(selectedProduct.productID);
-          message.success("Product deleted successfully");
-          fetchAllProducts(); // Refresh the product list
-        },
-      });
-    } catch (error) {
-      message.error("Failed to delete product");
-    }
   };
 
   const handleViewImages = (images) => {
@@ -139,13 +156,16 @@ const ProductManager = () => {
         setFileList={setFileList}
         uploading={uploading}
         setUploading={setUploading}
+        deletedImages={deletedImages}
+        updatedImages={updatedImages}
+        setDeletedImages={setDeletedImages}
+        setUpdatedImages={setUpdatedImages}
       />
       <Modal
         title="All Images"
         visible={isImagesModalVisible}
         onCancel={() => setIsImagesModalVisible(false)}
         footer={null}
-        style={{ alignItems: "center" }}
       >
         <Carousel autoplay>
           {visibleImages.map((image) => (

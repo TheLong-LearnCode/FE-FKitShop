@@ -1,8 +1,15 @@
 import React from "react";
-import { Form, Input, Select, Upload, Button } from "antd";
+import { Form, Input, Select, Upload, Button, Radio } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile, mode }) => {
+const LabForm = ({
+  form,
+  products,
+  onFileChange,
+  currentFileName,
+  uploadedFile,
+  mode,
+}) => {
   const normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
@@ -24,6 +31,12 @@ const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile, 
             </Select.Option>
           ))}
         </Select>
+      </Form.Item>
+      <Form.Item name="status" label="Status" hidden={mode === "add"}>
+        <Radio.Group disabled={mode === "view"}>
+          <Radio value={1}>Active</Radio>
+          <Radio value={0}>Inactive</Radio>
+        </Radio.Group>
       </Form.Item>
       <Form.Item name="name" label="Name" rules={[{ required: true }]}>
         <Input />
@@ -55,7 +68,11 @@ const LabForm = ({ form, products, onFileChange, currentFileName, uploadedFile, 
           fileList={uploadedFile ? [uploadedFile] : []}
         >
           <Button icon={<UploadOutlined />}>
-            {mode === "edit" ? (currentFileName ? "Change PDF" : "Upload PDF") : "Upload PDF"}
+            {mode === "edit"
+              ? currentFileName
+                ? "Change PDF"
+                : "Upload PDF"
+              : "Upload PDF"}
           </Button>
         </Upload>
       </Form.Item>
