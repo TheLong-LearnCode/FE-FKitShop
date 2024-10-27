@@ -68,7 +68,7 @@ export default function ProductCart() {
     }).format(amount);
   };
 
-  const handleIncreaseQuantity = (product) => {
+  const handleIncreaseQuantity = async (product) => {
     dispatch(
       updateProductInCart({
         accountID: userInfo?.data?.accountID,

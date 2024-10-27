@@ -115,7 +115,7 @@ export default function CardContent({ product }) {
     };
 
     return (
-        <div className="col-md-3 product-card" key={product.productID}>
+        <div className="col-lg-3 col-md-4 product-card" key={product.productID}>
             <div className="card">
                 <img className="card-img-top" src={product.images[0].url} alt={product.name} />
                 <button

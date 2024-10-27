@@ -38,6 +38,7 @@ ul {
     width: 100%;
     max-width: 600px;
     margin: 0 50px;
+    position: relative;
 }
 
 .upper-nav-search-form input {
@@ -189,3 +190,53 @@ ul {
     z-index: 999;
 }
 
+.upper-nav-search-form {
+    position: relative;
+}
+
+.suggestions {
+    position: absolute;
+    top: 62%;
+    left: 29.2%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    width: 40%;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    text-decoration: none;
+    color: #000F8F;
+    transition: background-color 0.3s;
+}
+
+.suggestion-item:hover {
+    background-color: #f5f5f5;
+}
+
+.suggestion-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.suggestion-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.suggestion-name {
+    font-weight: bold;
+}
+
+.suggestion-price {
+    color: var(--secondary-color);
+}

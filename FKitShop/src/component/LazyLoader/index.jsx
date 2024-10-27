@@ -21,8 +21,11 @@ const LazyLoader = ({ children }) => {
                         <Spin size="large" />
                     </div>
                 </>
-            }>
+            }> 
+            <div style={{minHeight: '100%'}}>
                 {children}
+            </div>
+                
         </Suspense>
     )
 }

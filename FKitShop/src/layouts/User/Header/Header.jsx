@@ -11,6 +11,7 @@ import { Notification } from '../../../component/UserProfile/UpdateAccount/Notif
 import { GET } from '../../../constants/httpMethod';
 import api from '../../../config/axios';
 import { message } from 'antd';
+import { formatCurrency } from '../../../util/CurrencyUnit';
 
 export default function Header() {
     const [isPending, startTransition] = useTransition();
@@ -20,7 +21,7 @@ export default function Header() {
     const dispatch = useDispatch();
     const [productTags, setProductTags] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [suggestedProducts, setSuggestedProducts] = useState([]); // State để lưu sản phẩm gợi ý
 
     // Lấy thông tin người dùng từ Redux Store
     const user = useSelector((state) => state.auth);
@@ -95,20 +96,31 @@ export default function Header() {
         fetchTags();
     }, []);
 
+    // Hàm tìm kiếm sản phẩm gợi ý
+    const handleSearchChange = async (event) => {
+        const value = event.target.value;
+        setSearchTerm(value);
 
-    const handleSearch = async (event) => {
-        if (event) {
-            event.preventDefault();
+        if (value.trim() === '') {
+            setSuggestedProducts([]);
+            return;
         }
+
         try {
-            const response = await api[GET](`http://localhost:8080/fkshop/product/by-name/${searchTerm}`);
-            navigate('search', { state: { searchResults: response.data.data } });
+            const response = await api[GET](`product/by-name/${value}`);
+            setSuggestedProducts(response.data.data); // Giới hạn 5 sản phẩm gợi ý
         } catch (error) {
             message.error("Cannot search this");
         }
     };
 
-
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        if (searchTerm.trim() !== '') {
+            navigate('search', { state: { searchResults: suggestedProducts } });
+            setSearchTerm(null);
+        }
+    };
 
     return (
         <div>
@@ -119,18 +131,33 @@ export default function Header() {
                             <Link to={'/home'} onClick={() => handleNavClick('Home')}>
                                 <img className='upper-nav-logo' src="/img/Logo.png" alt="shop logo" />
                             </Link>
-                            <form className="upper-nav-search-form" onSubmit={handleSearch}>
+                            <form className="upper-nav-search-form" onSubmit={handleSearchSubmit}>
                                 <input
                                     type="search"
                                     placeholder="Search product..."
                                     aria-label="Search"
                                     value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onChange={handleSearchChange}
                                 />
                                 <button type="submit">
                                     <box-icon name='search' color='#000000'></box-icon>
                                 </button>
                             </form>
+                            
+                            {/* Hiển thị sản phẩm gợi ý */}
+                            {searchTerm && suggestedProducts.length > 0 && (
+                                <div className="suggestions">
+                                    {suggestedProducts.map((product) => (
+                                        <Link key={product.productID} to={`/detail/${product.productID}`} className="suggestion-item" style={{ textDecoration: 'none' }}>
+                                            <img src={product.images[0].url} alt={product.name} className="suggestion-image" />
+                                            <div className="suggestion-details">
+                                                <span className="suggestion-name">{product.name}</span>
+                                                <span className="suggestion-price">{formatCurrency(product.price)}</span>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
 
                             <div className='upper-nav-user-actions'>
                                 <Link to={'/cart'} className='upper-nav-item'>
