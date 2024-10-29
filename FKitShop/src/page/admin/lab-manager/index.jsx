@@ -14,6 +14,7 @@ import LabModal from "./LabModal";
 import { downloadMyLab } from "../../../service/userService";
 import { getLabGuideByLabID } from "../../../service/labGuideService";
 import { PlusOutlined } from "@ant-design/icons";
+import "./index.css";
 
 const LabManager = () => {
   const [labs, setLabs] = useState([]);
@@ -30,10 +31,6 @@ const LabManager = () => {
   const [labGuideOptions, setLabGuideOptions] = useState([]);
   const [status, setStatus] = useState("all");
   const [confirmLoading, setConfirmLoading] = useState(false);
-  useEffect(() => {
-    fetchLabs(status);
-    fetchProducts();
-  }, [status]);
 
   const fetchLabs = async (status) => {
     let response;
@@ -49,8 +46,16 @@ const LabManager = () => {
 
   const fetchProducts = async () => {
     const response = await getAllProducts();
-    setProducts(response.data);
+    // const response = await getActiveProduct();
+    const productTypeKit = response.data.filter(
+      (product) => product.type === "kit"
+    );
+    setProducts(productTypeKit);
   };
+  useEffect(() => {
+    fetchLabs(status);
+    fetchProducts();
+  }, [status]);
 
   const showModal = () => {
     setIsModalVisible(true);

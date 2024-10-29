@@ -1,84 +1,111 @@
 import React from "react";
 import { Table, Button, Dropdown, Menu } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  DownOutlined,
+  EyeOutlined,
+  ToolOutlined,
+} from "@ant-design/icons";
 
 export default function QuestionTable({
   questions,
   currentPage,
   questionsPerPage,
-  handleViewQuestionDetails,
-  handleUpdateQuestionStatus,
+  handleView,
+  handleResponse,
   handleDelete,
   onPageChange,
 }) {
-  const statusOptions = ["pending", "answered", "closed"];
-
   const columns = [
-    {
-      title: "No",
-      dataIndex: "index",
-      key: "index",
-      render: (_, __, index) => (currentPage - 1) * questionsPerPage + index + 1,
-    },
+    // {
+    //   title: "No",
+    //   dataIndex: "index",
+    //   key: "index",
+    //   render: (_, __, index) =>
+    //     (currentPage - 1) * questionsPerPage + index + 1,
+    // },
     {
       title: "Question ID",
       dataIndex: "questionID",
       key: "questionID",
     },
+    // {
+    //   title: "Lab ID",
+    //   dataIndex: "labID",
+    //   key: "labID",
+    // },
+    { title: "Lab Name", dataIndex: "labName", key: "labName" },
     {
-      title: "User Name",
-      dataIndex: "userName",
-      key: "userName",
+      title: "Customer Name",
+      dataIndex: "customerName",
+      key: "customerName",
     },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-    },
-    {
-      title: "Date Posted",
-      dataIndex: "datePosted",
-      key: "datePosted",
-      render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) => new Date(a.datePosted) - new Date(b.datePosted),
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => statusOptions[status] || 'Unknown',
-      sorter: (a, b) => a.status - b.status,
+      render: (status) =>
+        status === 1 ? (
+          <span className="active-status">Answered</span>
+        ) : (
+          <span className="inactive-status">Not yet</span>
+        ),
+    },
+    // {
+    //   title: "Response message",
+    //   dataIndex: "response",
+    //   key: "response",
+    // },
+    {
+      title: "Date Posted",
+      dataIndex: "postDate",
+      key: "postDate",
+      render: (date) =>
+        new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(new Date(date)),
+      sorter: (a, b) => new Date(a.createDate) - new Date(b.createDate),
+    },
+    {
+      title: "Response Date",
+      dataIndex: "responseDate",
+      key: "responseDate",
+      render: (date) =>
+        new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(new Date(date)),
+      sorter: (a, b) => new Date(a.createDate) - new Date(b.createDate),
     },
     {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
         <>
-          <Button type="primary" onClick={() => handleViewQuestionDetails(record)} style={{ marginRight: 8 }}>
-            View
-          </Button>
-          <Dropdown
-            overlay={
-              <Menu>
-                {statusOptions.map((status, index) => (
-                  <Menu.Item
-                    key={status}
-                    onClick={() => handleUpdateQuestionStatus(record, index)}
-                    disabled={record.status === index}
-                  >
-                    {status}
-                  </Menu.Item>
-                ))}
-              </Menu>
-            }
-          >
-            <Button>
-              Set Status <DownOutlined />
-            </Button>
-          </Dropdown>
-          <Button danger onClick={() => handleDelete(record)} disabled={record.status === 2} style={{ marginLeft: 8 }}>
-            Delete
-          </Button>
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => handleView(record)}
+            style={{ marginRight: 8 }}
+          ></Button>
+          <Button
+            icon={<ToolOutlined />}
+            onClick={() => handleResponse(record)}
+          ></Button>
+          <Button
+            icon={<DeleteOutlined />}
+            danger
+            onClick={() => handleDelete(record)}
+            disabled={record.status === 2}
+            style={{ marginLeft: 8 }}
+          ></Button>
         </>
       ),
     },

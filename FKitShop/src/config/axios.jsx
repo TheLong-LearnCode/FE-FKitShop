@@ -20,7 +20,7 @@ const handleBefore = (config) => {
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
-
+  
   if (config.data instanceof FormData) {
     // Remove Content-Type to let the browser set it (with boundary for multipart/form-data)
     delete config.headers["Content-Type"];

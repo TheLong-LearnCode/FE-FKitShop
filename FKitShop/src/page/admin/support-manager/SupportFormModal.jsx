@@ -43,11 +43,10 @@ export default function SupportFormModal({
     },
     {
       title: "Support Times",
-      dataIndex: ["supporting", "countSupport"],
+      dataIndex: "supporting",
       key: "countSupport",
-      render: (countSupport, record) => {
-        return `#${5 - countSupport}`;
-      },
+      render: (supporting, record) =>
+        `#${supporting.countSupport}/${record.maxSupTimes}`,
     },
     {
       title: "Status",

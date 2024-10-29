@@ -22,6 +22,7 @@ const ItemPage = React.lazy(() => import("../page/admin/item-manager"));
 const LabPage = React.lazy(() => import("../page/admin/lab-manager"));
 const TagPage = React.lazy(() => import("../page/admin/tag-manager"));
 
+const BlogPage = React.lazy(() => import("../page/admin/blog-manager"));
 const CategoryPage = React.lazy(() => import("../page/admin/category-manager"));
 const ProductPage = React.lazy(() => import("../page/admin/product-manager"));
 const DeliveryPage = React.lazy(() => import("../page/admin/delivery-manager"));
@@ -135,6 +136,14 @@ const PrivateRoutes = [
         element: (
           <Suspense fallback={null}>
             <TagPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "blog-manager",
+        element: (
+          <Suspense fallback={null}>
+            <BlogPage />
           </Suspense>
         ),
       },

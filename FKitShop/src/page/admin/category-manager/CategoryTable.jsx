@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Button, Space } from "antd";
-import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EyeOutlined, EditOutlined, DeleteOutlined, ToolOutlined } from "@ant-design/icons";
 
 const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
   const columns = [
@@ -8,14 +8,24 @@ const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
     { title: "TagID", dataIndex: "tagID", key: "tagID" },
     { title: "Category Name", dataIndex: "categoryName", key: "categoryName" },
     { title: "Description", dataIndex: "description", key: "description" },
-    { title: "Status", dataIndex: "status", key: "status" },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) =>
+        (status === 1)  ? (
+          <span className="active-status">Active</span>
+        ) : (
+          <span className="inactive-status">Inactive</span>
+        ),
+    },
     {
       title: "Action",
       key: "action",
       render: (_, record) => (
         <Space size="small">
           <Button icon={<EyeOutlined />} onClick={() => onView(record)} />
-          <Button icon={<EditOutlined />} onClick={() => onEdit(record)} />
+          <Button icon={<ToolOutlined />} onClick={() => onEdit(record)} />
           <Button
             icon={<DeleteOutlined />}
             onClick={() => onDelete(record)}
@@ -31,7 +41,7 @@ const CategoryTable = ({ categories, onView, onEdit, onDelete }) => {
       columns={columns}
       dataSource={categories}
       rowKey="categoryID"
-      pagination={{ pageSize: 5 }}
+      pagination={{ pageSize: 4 }}
     />
   );
 };

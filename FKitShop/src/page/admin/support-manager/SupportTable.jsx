@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Table, Button, Dropdown, Menu, DatePicker, Tabs, Badge } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import "./SupportTable.css";
-
+import UpdateDateModal from "./UpdateDateModal";
 const { TabPane } = Tabs;
 
 export default function SupportTable({
@@ -18,17 +18,44 @@ export default function SupportTable({
   const [datePickerOpen, setDatePickerOpen] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState({});
   const [activeTab, setActiveTab] = useState("all");
+  const [isDateModalVisible, setIsDateModalVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   const statusOptions = ["received", "approved", "done", "canceled"];
 
+  const openDateModal = (record) => {
+    setSelectedRecord(record);
+    setIsDateModalVisible(true);
+  };
+
+  const closeDateModal = () => {
+    setIsDateModalVisible(false);
+    setSelectedRecord(null);
+  };
+
+  const onUpdateDate = (date) => {
+    if (selectedRecord) {
+      handleUpdateSupportDate(selectedRecord, date);
+    }
+  };
+
   const handleDatePickerOpen = (record, open) => {
-    setDatePickerOpen(prev => ({ ...prev, [record.supporting.supportingID]: open }));
+    setDatePickerOpen((prev) => ({
+      ...prev,
+      [record.supporting.supportingID]: open,
+    }));
   };
 
   const handleDateChange = (record, date) => {
     handleUpdateSupportDate(record, date);
-    setDatePickerOpen(prev => ({ ...prev, [record.supporting.supportingID]: false }));
-    setDropdownOpen(prev => ({ ...prev, [record.supporting.supportingID]: false }));
+    setDatePickerOpen((prev) => ({
+      ...prev,
+      [record.supporting.supportingID]: false,
+    }));
+    setDropdownOpen((prev) => ({
+      ...prev,
+      [record.supporting.supportingID]: false,
+    }));
   };
 
   const columns = [
@@ -49,29 +76,50 @@ export default function SupportTable({
       key: "customerName",
     },
     {
-      title: "Available Support",
-      dataIndex: ["supporting", "countSupport"],
-      key: "availableSupport",
-      render: (countSupport, record) => {
-        return `#${5 - countSupport}`;
-      },
+      title: "Support Times",
+      dataIndex: "supporting",
+      key: "countSupport",
+      render: (supporting, record) =>
+        `#${supporting.countSupport}/${record.maxSupTimes}`,
     },
     {
       title: "Request Date",
       dataIndex: ["supporting", "postDate"],
       key: "requestDate",
       render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) => new Date(a.supporting.postDate) - new Date(b.supporting.postDate),
+      sorter: (a, b) =>
+        new Date(a.supporting.postDate) - new Date(b.supporting.postDate),
     },
+    // {
+    //   title: "Expected Date",
+    //   dataIndex: ["supporting", "expectedSpDate"],
+    //   key: "expectedDate",
+    //   render: (date) => date ? new Date(date).toLocaleDateString() : 'N/A',
+    //   sorter: (a, b) => {
+    //     if (!a.supporting.expectedSpDate) return -1;
+    //     if (!b.supporting.expectedSpDate) return 1;
+    //     return new Date(a.supporting.expectedSpDate) - new Date(b.supporting.expectedSpDate);
+    //   },
+    // },
     {
       title: "Expected Date",
       dataIndex: ["supporting", "expectedSpDate"],
       key: "expectedDate",
-      render: (date) => date ? new Date(date).toLocaleDateString() : 'N/A',
+      render: (date) =>
+        date
+          ? new Intl.DateTimeFormat("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            }).format(new Date(date))
+          : "N/A",
       sorter: (a, b) => {
         if (!a.supporting.expectedSpDate) return -1;
         if (!b.supporting.expectedSpDate) return 1;
-        return new Date(a.supporting.expectedSpDate) - new Date(b.supporting.expectedSpDate);
+        return (
+          new Date(a.supporting.expectedSpDate) -
+          new Date(b.supporting.expectedSpDate)
+        );
       },
     },
     // {
@@ -86,12 +134,21 @@ export default function SupportTable({
       key: "actions",
       render: (_, record) => (
         <>
-          <Button type="primary" onClick={() => handleViewSupportDetails(record)} style={{ marginRight: 8 }}>
+          <Button
+            type="primary"
+            onClick={() => handleViewSupportDetails(record)}
+            style={{ marginRight: 8 }}
+          >
             View
           </Button>
           <Dropdown
             open={dropdownOpen[record.supporting.supportingID]}
-            onOpenChange={(open) => setDropdownOpen(prev => ({ ...prev, [record.supporting.supportingID]: open }))}
+            onOpenChange={(open) =>
+              setDropdownOpen((prev) => ({
+                ...prev,
+                [record.supporting.supportingID]: open,
+              }))
+            }
             overlay={
               <Menu>
                 <Menu.SubMenu key="setStatus" title="Set Status">
@@ -100,7 +157,10 @@ export default function SupportTable({
                       key={status}
                       onClick={() => {
                         handleUpdateSupportStatus(record, index);
-                        setDropdownOpen(prev => ({ ...prev, [record.supporting.supportingID]: false }));
+                        setDropdownOpen((prev) => ({
+                          ...prev,
+                          [record.supporting.supportingID]: false,
+                        }));
                       }}
                       disabled={record.supporting.status === index}
                     >
@@ -108,24 +168,26 @@ export default function SupportTable({
                     </Menu.Item>
                   ))}
                 </Menu.SubMenu>
-                <Menu.Item key="updateDate" onClick={(e) => e.domEvent.stopPropagation()}>
-                  <DatePicker
-                    open={datePickerOpen[record.supporting.supportingID]}
-                    onOpenChange={(open) => handleDatePickerOpen(record, open)}
-                    onChange={(date) => handleDateChange(record, date)}
-                    onClick={(e) => e.stopPropagation()}
-                    placeholder="Update Support Date"
-                  />
+                <Menu.Item
+                  key="updateDate"
+                  onClick={() => openDateModal(record)}
+                >
+                  Update Date
                 </Menu.Item>
               </Menu>
             }
-            trigger={['click']}
+            trigger={["click"]}
           >
             <Button>
               Actions <DownOutlined />
             </Button>
           </Dropdown>
-          <Button danger onClick={() => handleDelete(record)} disabled={record.supporting.status === 2} style={{ marginLeft: 8 }}>
+          <Button
+            danger
+            onClick={() => handleDelete(record)}
+            disabled={record.supporting.status === 2}
+            style={{ marginLeft: 8 }}
+          >
             Delete
           </Button>
         </>
@@ -138,7 +200,9 @@ export default function SupportTable({
       return supports;
     } else {
       const statusIndex = statusOptions.indexOf(status);
-      return supports.filter((support) => support.supporting.status === statusIndex);
+      return supports.filter(
+        (support) => support.supporting.status === statusIndex
+      );
     }
   };
 
@@ -152,20 +216,20 @@ export default function SupportTable({
       done: 0,
       canceled: 0,
     };
-    
+
     supports.forEach((support) => {
       const status = statusOptions[support.supporting.status];
       if (status) {
         counts[status]++;
       }
     });
-    
+
     return counts;
   }, [supports]);
 
   const renderTabTitle = (title, count) => (
     <span>
-      {title} <Badge count={count} style={{ backgroundColor: '#52c41a' }} />
+      {title} <Badge count={count} style={{ backgroundColor: "#52c41a" }} />
     </span>
   );
 
@@ -178,10 +242,19 @@ export default function SupportTable({
           className="custom-tabs"
         >
           <TabPane tab={renderTabTitle("All", statusCounts.all)} key="all" />
-          <TabPane tab={renderTabTitle("Received", statusCounts.received)} key="received" />
-          <TabPane tab={renderTabTitle("Approved", statusCounts.approved)} key="approved" />
+          <TabPane
+            tab={renderTabTitle("Received", statusCounts.received)}
+            key="received"
+          />
+          <TabPane
+            tab={renderTabTitle("Approved", statusCounts.approved)}
+            key="approved"
+          />
           <TabPane tab={renderTabTitle("Done", statusCounts.done)} key="done" />
-          <TabPane tab={renderTabTitle("Canceled", statusCounts.canceled)} key="canceled" />
+          <TabPane
+            tab={renderTabTitle("Canceled", statusCounts.canceled)}
+            key="canceled"
+          />
         </Tabs>
       </div>
       <Table
@@ -195,11 +268,11 @@ export default function SupportTable({
           onChange: onPageChange,
         }}
       />
-      {/* <div className="status-count">
-        {activeTab !== 'all' && (
-          <p>Total {activeTab}: {statusCounts[activeTab]}</p>
-        )}
-      </div> */}
+      <UpdateDateModal
+        visible={isDateModalVisible}
+        onClose={closeDateModal}
+        onUpdateDate={onUpdateDate}
+      />
     </div>
   );
 }

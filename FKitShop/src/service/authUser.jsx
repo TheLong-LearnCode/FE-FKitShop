@@ -50,7 +50,7 @@ export const verifyToken = async (token) => {
         Authorization: `Bearer ${token}` // Thêm token vào header
       },
     });
-    console.log("response after verifyToken: ", response);
+    console.log("response after verifyToken: ", response.data);
     return response.data; // Trả về dữ liệu từ phản hồi
   } catch (error) {
     console.log("error: ", error);

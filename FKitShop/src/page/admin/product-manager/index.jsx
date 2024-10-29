@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, message, Image, Carousel } from "antd";
+import { Button, Modal, message, Image, Carousel, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   addProduct,
@@ -7,6 +7,7 @@ import {
   updateProduct,
   deleteProduct,
   getProductById,
+  deleteImages,
 } from "../../../service/productService";
 import "./index.css";
 import ProductTable from "./ProductTable";
@@ -24,6 +25,10 @@ const ProductManager = () => {
   const [uploading, setUploading] = useState(false);
   const [visibleImages, setVisibleImages] = useState([]);
   const [isImagesModalVisible, setIsImagesModalVisible] = useState(false);
+
+  const [deletedImages, setDeletedImages] = useState([]);
+  const [updatedImages, setUpdatedImages] = useState([]);
+  const [filterType, setFilterType] = useState("all");
 
   useEffect(() => {
     fetchAllCategories();
@@ -45,26 +50,58 @@ const ProductManager = () => {
     try {
       const response = await getAllProducts();
       setProducts(response.data);
+      message.success(response.message);
     } catch (error) {
       message.error("Failed to fetch products");
     }
   };
+  const handleTypeChange = (value) => {
+    setFilterType(value);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    if (filterType === "all") return true;
+    return product.type === filterType;
+  });
 
   const fetchProductById = async (productId) => {
     const response = await getProductById(productId);
     setSelectedProduct(response.data);
   };
 
-  const showModal = (mode, product = null) => {
-    setModalMode(mode);
-    setSelectedProduct(fetchProductById(product.productID).data);
-    setIsModalVisible(true);
-  };
-
   const handleUpload = async (file) => {
     const response = await ProductUploadImage(file);
     setFileList([...fileList, response]);
     return response;
+  };
+  const handleDelete = async (product) => {
+    console.log("selected product: ", product);
+
+    Modal.confirm({
+      title: "Confirm Delete",
+      content: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `Are you sure you want to delete product <strong style="color: red;">${product.name}</strong>?`,
+          }}
+        />
+      ),
+      onOk: async () => {
+        const response = await deleteProduct(product.productID);
+        message.success(response.message);
+        fetchAllProducts(); // Refresh the product list
+      },
+    });
+  };
+
+  const showModal = (mode, product) => {
+    setModalMode(mode);
+    if (mode === "add") {
+      setSelectedProduct(null);
+    } else {
+      setSelectedProduct(fetchProductById(product?.productID));
+    }
+    setIsModalVisible(true);
   };
 
   const handleModalCancel = () => {
@@ -90,22 +127,6 @@ const ProductManager = () => {
     setIsModalVisible(false);
   };
 
-  const handleDelete = async () => {
-    try {
-      Modal.confirm({
-        title: "Confirm Delete",
-        content: "Are you sure you want to delete this product?",
-        onOk: async () => {
-          await deleteProduct(selectedProduct.productID);
-          message.success("Product deleted successfully");
-          fetchAllProducts(); // Refresh the product list
-        },
-      });
-    } catch (error) {
-      message.error("Failed to delete product");
-    }
-  };
-
   const handleViewImages = (images) => {
     setVisibleImages(images);
     setIsImagesModalVisible(true);
@@ -113,55 +134,69 @@ const ProductManager = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => showModal("add", null, categories)}
-        style={{ marginBottom: "20px" }}
-      >
-        Add New Product
-      </Button>
-      <ProductTable
-        products={products}
-        onView={(product) => showModal("view", product)}
-        onEdit={(product) => showModal("edit", product)}
-        onDelete={handleDelete}
-        onViewImages={handleViewImages}
-      />
-      <ProductModal
-        visible={isModalVisible}
-        mode={modalMode}
-        product={selectedProduct}
-        categories={categories}
-        onCancel={handleModalCancel}
-        onOk={handleModalOk}
-        fileList={fileList}
-        setFileList={setFileList}
-        uploading={uploading}
-        setUploading={setUploading}
-      />
-      <Modal
-        title="All Images"
-        visible={isImagesModalVisible}
-        onCancel={() => setIsImagesModalVisible(false)}
-        footer={null}
-        style={{ alignItems: "center" }}
-      >
-        <Carousel autoplay>
-          {visibleImages.map((image) => (
-            <div key={image?.id} style={{ textAlign: "center" }}>
-              <Image
-                src={image?.url}
-                alt="product image"
-                width={300}
-                height={300}
-                style={{ objectFit: "cover", alignContent: "center" }}
-                fallback="https://s3.ap-southeast-2.amazonaws.com/fkshop/Product/no-image.png"
-              />
-            </div>
-          ))}
-        </Carousel>
-      </Modal>
+      <div style={{ marginBottom: "20px" }}>
+        <Select
+          value={filterType}
+          onChange={handleTypeChange}
+          style={{ width: 200 }}
+        >
+          <Option value="all">All</Option>
+          <Option value="kit">Kit</Option>
+          <Option value="item">Item</Option>
+        </Select>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => showModal("add", null, categories)}
+          style={{ marginBottom: "20px" }}
+        >
+          Add New Product
+        </Button>
+        <ProductTable
+          products={filteredProducts}
+          onView={(product) => showModal("view", product)}
+          onEdit={(product) => showModal("edit", product)}
+          onDelete={handleDelete}
+          onViewImages={handleViewImages}
+        />
+        <ProductModal
+          visible={isModalVisible}
+          mode={modalMode}
+          product={selectedProduct}
+          categories={categories}
+          onCancel={handleModalCancel}
+          onOk={handleModalOk}
+          fileList={fileList}
+          setFileList={setFileList}
+          uploading={uploading}
+          setUploading={setUploading}
+          deletedImages={deletedImages}
+          updatedImages={updatedImages}
+          setDeletedImages={setDeletedImages}
+          setUpdatedImages={setUpdatedImages}
+        />
+        <Modal
+          title="All Images"
+          visible={isImagesModalVisible}
+          onCancel={() => setIsImagesModalVisible(false)}
+          footer={null}
+        >
+          <Carousel autoplay>
+            {visibleImages.map((image) => (
+              <div key={image?.id} style={{ textAlign: "center" }}>
+                <Image
+                  src={image?.url}
+                  alt="product image"
+                  width={300}
+                  height={300}
+                  style={{ objectFit: "cover", alignContent: "center" }}
+                  fallback="https://s3.ap-southeast-2.amazonaws.com/fkshop/Product/no-image.png"
+                />
+              </div>
+            ))}
+          </Carousel>
+        </Modal>
+      </div>
     </div>
   );
 };

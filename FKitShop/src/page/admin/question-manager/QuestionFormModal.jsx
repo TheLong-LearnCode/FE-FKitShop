@@ -1,82 +1,83 @@
-import React from "react";
-import { Modal, Button, Table, Row, Col } from "antd";
-import { getModalHeaderMode } from "../../../util/GetModalHeaderMode";
+import React, { useEffect } from "react";
+import { Modal, Form, Input, Radio } from "antd";
 
 export default function QuestionFormModal({
   mode,
   showModal,
   handleCloseModal,
   selectedQuestion,
+  onOk,
 }) {
-  if (!selectedQuestion || !selectedQuestion.data) return null;
+  const [form] = Form.useForm();
 
-  const {
-    questionID,
-    userName,
-    title,
-    content,
-    datePosted,
-    status,
-    answers,
-  } = selectedQuestion.data;
+  useEffect(() => {
+    if (selectedQuestion && (mode === "edit" || mode === "view")) {
+      form.setFieldsValue(selectedQuestion);
+    } else {
+      form.resetFields();
+    }
+  }, [selectedQuestion, mode, form]);
 
-  const columns = [
-    {
-      title: "Answer ID",
-      dataIndex: "answerID",
-      key: "answerID",
-    },
-    {
-      title: "Content",
-      dataIndex: "content",
-      key: "content",
-    },
-    {
-      title: "Date Posted",
-      dataIndex: "datePosted",
-      key: "datePosted",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "User Name",
-      dataIndex: "userName",
-      key: "userName",
-    },
-  ];
+  const handleOk = () => {
+    if (mode === "view") {
+      handleCloseModal();
+      return;
+    }
+    form.validateFields().then((values) => {
+      // const data = {
+      //   questionID: values.questionID,
+      //   labName: values.labName,
+      //   customerName: values.customerName,
+      //   description: values.description,
+      //   response: values.response,
+      //   status: values.status,
+      // };
+      onOk(values); // Pass form values to the parent component's function (onOk)
+      form.resetFields();
+    });
+  };
 
   return (
     <Modal
-      open={showModal}
+      visible={showModal}
+      title={mode === "view" ? "View Question" : "Response Question"}
       onCancel={handleCloseModal}
-      width="80%"
-      title={<h4>Question Details</h4>}
-      footer={null}
+      onOk={handleOk}
+      okText={mode === "view" ? "Close" : "Submit"}
+      cancelText={mode === "view" ? null : "Cancel"}
+      width="60%"
     >
-      <Row gutter={16}>
-        <Col span={12}>
-          <p><strong>Question ID:</strong> {questionID}</p>
-          <p><strong>User Name:</strong> {userName}</p>
-          <p><strong>Title:</strong> {title}</p>
-          <p><strong>Date Posted:</strong> {new Date(datePosted).toLocaleString()}</p>
-          <p><strong>Status:</strong> {['Pending', 'Answered', 'Closed'][status]}</p>
-        </Col>
-        <Col span={12}>
-          <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-            <img src="/img/user.png" alt="User Avatar" style={{ width: "100px", height: "100px" }}/>
-          </div>
-        </Col>
-      </Row>
-
-      <h4>Question Content:</h4>
-      <p>{content}</p>
-
-      <h4>Answers:</h4>
-      <Table
-        columns={columns}
-        dataSource={answers}
-        rowKey="answerID"
-        pagination={false}
-      />
+      <Form form={form} layout="vertical">
+        <Form.Item
+          name="questionID"
+          label="Question ID"
+          hidden={mode === "add"}
+        >
+          <Input disabled />
+        </Form.Item>
+        <Form.Item name="labName" label="Lab Name">
+          <Input disabled={true} />
+        </Form.Item>
+        <Form.Item name="customerName" label="Customer Name">
+          <Input disabled={true} />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Input.TextArea disabled={true} />
+        </Form.Item>
+        <Form.Item
+          name="response"
+          label="Response"
+          rules={[{ required: true, message: "Response is required" }]}
+        >
+          <Input.TextArea placeholder="Enter your response" disabled={mode === "view"}/>
+        </Form.Item>
+        <Form.Item name="status" label="Status">
+          <Radio.Group disabled={mode !== "edit"}>
+            <Radio value={1}>Answered</Radio>
+            <Radio value={0}>Not yet</Radio>
+          </Radio.Group>
+        </Form.Item>
+      </Form>
     </Modal>
   );
 }

@@ -42,10 +42,10 @@ const AdminMenu = () => {
         title="Lab Support"
         className="dark-submenu"
       >
-        <Menu.Item key="11" icon={<CustomerServiceOutlined />}>
+        <Menu.Item key="4" icon={<CustomerServiceOutlined />}>
           <Link to="/admin/lab-support/support-manager">Support</Link>
         </Menu.Item>
-        <Menu.Item key="12" icon={<QuestionCircleOutlined />}>
+        <Menu.Item key="5" icon={<QuestionCircleOutlined />}>
           <Link to="/admin/lab-support/question-manager">Question</Link>
         </Menu.Item>
       </SubMenu>
@@ -55,33 +55,36 @@ const AdminMenu = () => {
         title="Product Manager"
         className="dark-submenu"
       >
-        <Menu.Item key="4" icon={<ProjectOutlined />}>
-          <Link to="/admin/product-manager/">All</Link>
+        <Menu.Item key="6" icon={<ProjectOutlined />}>
+          <Link to="/admin/product-manager/">Kit & Item</Link>
         </Menu.Item>
-        <Menu.Item key="5" icon={<RobotOutlined />}>
+        {/* <Menu.Item key="7" icon={<RobotOutlined />}>
           <Link to="/admin/product-manager/kit-manager">Kit</Link>
         </Menu.Item>
-        <Menu.Item key="6" icon={<ToolOutlined />}>
+        <Menu.Item key="8" icon={<ToolOutlined />}>
           <Link to="/admin/product-manager/item-manager">Item</Link>
-        </Menu.Item>
-        <Menu.Item key="7" icon={<FilePdfOutlined />}>
+        </Menu.Item> */}
+        <Menu.Item key="9" icon={<FilePdfOutlined />}>
           <Link to="/admin/product-manager/lab-manager">Lab</Link>
         </Menu.Item>
-        <Menu.Item key="13" icon={<BookOutlined />}>
+        <Menu.Item key="10" icon={<BookOutlined />}>
           <Link to="/admin/product-manager/labGuide-manager">Lab Guide</Link>
         </Menu.Item>
       </SubMenu>
-      <Menu.Item key="8" icon={<ApartmentOutlined />}>
-        <Link to="/admin/category-manager">Category</Link>
-      </Menu.Item>
-      <Menu.Item key="9" icon={<TagsOutlined />}>
+      <Menu.Item key="11" icon={<TagsOutlined />}>
         <Link to="/admin/tag-manager">Tag</Link>
       </Menu.Item>
-      <Menu.Item key="10" icon={<CarOutlined />}>
-        <Link to="/admin/delivery-manager">Delivery</Link>
+      <Menu.Item key="12" icon={<ApartmentOutlined />}>
+        <Link to="/admin/category-manager">Category</Link>
       </Menu.Item>
+      <Menu.Item key="13" icon={<FileTextOutlined />}>
+        <Link to="/admin/blog-manager">Blog</Link>
+      </Menu.Item>
+      {/* <Menu.Item key="14" icon={<CarOutlined />}>
+        <Link to="/admin/delivery-manager">Delivery</Link>
+      </Menu.Item> */}
 
-      <Menu.Item key="14" icon={<CommentOutlined />}>
+      <Menu.Item key="15" icon={<CommentOutlined />}>
         <Link to="/admin/feedback-manager">Feedback</Link>
       </Menu.Item>
     </Menu>

@@ -28,7 +28,7 @@ export default function Purchase({ userInfo }) {
     processing: 0,
     delivering: 0,
     delivered: 0,
-    canceled: 0
+    cancel: 0
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFeedBackModal, setisFeedBackModal] = useState(false);
@@ -51,7 +51,7 @@ export default function Purchase({ userInfo }) {
         processing: 0,
         delivering: 0,
         delivered: 0,
-        canceled: 0
+        cancel: 0
       };
 
       response.data.forEach(order => {
