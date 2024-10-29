@@ -5,6 +5,7 @@ import './ProductByCate.css'
 import api from '../../../../config/axios';
 import { GET } from '../../../../constants/httpMethod';
 import CardContent from '../card/CardContent';
+import { Pagination } from 'antd';
 
 export default function ProductList() {
   const { categoryID } = useParams()
@@ -13,6 +14,23 @@ export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [ascProducts, setAscProducts] = useState([]);
   const [descProducts, setDescProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+
+  // Lấy sản phẩm cho trang hiện tại
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentAscProducts = ascProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentDescProducts = descProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
     const fetchCategoryName = async () => {
@@ -72,7 +90,7 @@ export default function ProductList() {
   }, [categoryID])
 
   return (
-    <div className='fixed-header' style={{ minHeight: '350px' }}>
+    <div className='fixed-header mb-3' style={{ minHeight: '350px' }}>
       <div className="container-xl product-list-container">
         <h2 key={cate?.categoryID}>
           <span></span>{cate?.categoryName}
@@ -95,22 +113,32 @@ export default function ProductList() {
 
           <div className="row mt-3">
             {activeButton === '' &&
-              products.map((product) => (
+              currentProducts.map((product) => (
                 <CardContent product={product} />
               ))
             }
 
             {activeButton === 'lth' &&
-              ascProducts.map((product) => (
+              currentAscProducts.map((product) => (
                 <CardContent product={product} />
               ))
             }
 
             {activeButton === 'htl' &&
-              descProducts.map((product) => (
+              currentDescProducts.map((product) => (
                 <CardContent product={product} />
               ))
             }
+          </div>
+
+          <div className='col-md-12 d-flex justify-content-center' style={{ marginTop: '20px' }}>
+            <Pagination
+              current={currentPage}
+              pageSize={productsPerPage}
+              total={products.length}
+              onChange={handlePageChange}
+              showSizeChanger={false} // Ẩn tùy chọn thay đổi kích thước trang
+            />
           </div>
         </div>
       </div>

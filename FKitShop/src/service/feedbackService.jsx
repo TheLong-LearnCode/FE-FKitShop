@@ -1,5 +1,24 @@
 import api from "../config/axios";
 import { DELETE, GET, POST, PUT } from "../constants/httpMethod";
+      
+      
+export const createFeedback = async (feedbackInfo) => {
+    try {
+      const response = await api[POST]("feedbacks", feedbackInfo);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+export const getFeedbackByProductID = async (productID) => {
+    try {
+      const response = await api[GET](`feedbacks/byProductID/${productID}`);
+       return response.data;
+    } catch (error) {
+      throw error;
+    }
+}
 
 export const deleteFeedback = async (id) => {
   try {
@@ -19,14 +38,6 @@ export const updateFeedback = async (id, data) => {
     }
   }
 
-export const createFeedback = async () => {
-    try {
-      const response = await api[POST]("/feedbacks");
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
 
 export const getAllFeedbacks = async () => {
   try {
@@ -35,6 +46,7 @@ export const getAllFeedbacks = async () => {
   } catch (error) {
     throw error;
   }
-};
+}
+
 
 

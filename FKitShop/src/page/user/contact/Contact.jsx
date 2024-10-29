@@ -11,7 +11,7 @@ export default function Contact() {
           <p>We'd love to hear from you! Get in touch with FKShop for any questions about our STEM kits.</p>
         </div>
         <div className="contact-content">
-          <div className="contact-info">
+          <div className="contact-info ml-2 mr-2">
             <h2>Contact Information</h2>
             <p><i className="fas fa-map-marker-alt contact-info-icon"></i>Lot E2a-7, Road D1, D1 Street, Long Thanh My, Thu Duc City, Ho Chi Minh City</p>
             <p><i className="fas fa-phone contact-info-icon"></i>0344017063</p>
@@ -22,7 +22,7 @@ export default function Contact() {
               <a href="#" className="social-icon"><i className="fab fa-instagram"></i></a>
             </div>
           </div>
-          <form className="contact-form">
+          <form className="contact-form ml-2 mr-2">
             <h2>Send us a message</h2>
             <input type="text" placeholder="Your Name" required />
             <input type="email" placeholder="Your Email" required />

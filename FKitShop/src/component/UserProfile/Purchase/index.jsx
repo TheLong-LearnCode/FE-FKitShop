@@ -8,11 +8,12 @@ import {
   getOrderDetailsByOrderID,
 } from "../../../service/orderService";
 import { getProductById } from "../../../service/productService";
-import { createSupport } from "../../../service/supportService";
+import { createFeedback} from "../../../service/feedbackService";
 import { getLabByAccountID } from "../../../service/labService";
 import OrderTabs from './OrderTabs';
 import OrderList from './OrderList';
 import OrderDetails from './OrderDetails';
+import FeedbackDetail from "./FeedbackDetail";
 import SupportModal from './SupportModal';
 
 export default function Purchase({ userInfo }) {
@@ -30,10 +31,10 @@ export default function Purchase({ userInfo }) {
     cancel: 0
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isSupportModalVisible, setIsSupportModalVisible] = useState(false);
-  const [modalType, setModalType] = useState("");
+  const [isFeedBackModal, setisFeedBackModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectedProductID, setSelectedProductID] = useState(null);
+  const [rating, setRating] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -43,7 +44,7 @@ export default function Purchase({ userInfo }) {
       const response = await getOrdersByAccountID(userInfo.accountID);
       setAllOrders(response.data);
       setFilteredOrders(response.data);
-      
+
       const counts = {
         all: response.data.length,
         pending: 0,
@@ -52,14 +53,14 @@ export default function Purchase({ userInfo }) {
         delivered: 0,
         cancel: 0
       };
-      
+
       response.data.forEach(order => {
         const status = order.orders.status.toLowerCase();
         if (counts.hasOwnProperty(status)) {
           counts[status]++;
         }
       });
-      
+
       setTabCounts(counts);
     }
   }, [userInfo]);
@@ -72,6 +73,7 @@ export default function Purchase({ userInfo }) {
     if (id) {
       const orderId = id.split('=')[1];
       showOrderDetails(orderId);
+      showFeedbackDetails(orderId);
     }
   }, [id]);
 
@@ -84,6 +86,23 @@ export default function Purchase({ userInfo }) {
       setFilteredOrders(filtered);
     }
   };
+
+  const showFeedbackDetails = async (orderId) => {
+    const details = await getOrderDetailsByOrderID(orderId);
+    const detailsWithImages = await Promise.all(
+      details.data.map(async (detail) => {
+        const product = await getProductById(detail.productID);
+        return {
+          ...detail,
+          image: product.data.images[0]?.url,
+          productName: product.data.name,
+        };
+      })
+    );
+    setOrderDetails(detailsWithImages);
+    setisFeedBackModal(true)
+
+  }
 
   const showOrderDetails = useCallback(async (orderId) => {
     const details = await getOrderDetailsByOrderID(orderId);
@@ -109,48 +128,40 @@ export default function Purchase({ userInfo }) {
     navigate('/user/purchase', { replace: true });
   };
 
-  const showSupportModal = (type, productId) => {
-    setModalType(type);
-    setSelectedProductId(productId);
-    setIsSupportModalVisible(true);
-  };
+  const handleFeedbackCancel = () => {
+    setisFeedBackModal(false);
+    setSelectedProductID(null);
+    setModalContent("");
+    setRating(0);
+  }
 
-  const handleSupportOk = async () => {
-    if (modalType === "Support") {
-      try {
-        const res = await getLabByAccountID(userInfo.accountID);
-        const orderLabs = res.data.orderLabs;
-        const matchingLabs = orderLabs.filter(
-          (order) => order.lab.productID === selectedProductId
-        );
-        const labIDs = matchingLabs.map((lab) => lab.lab.labID);
-        if (labIDs.length > 0) {
-          await createSupport({
-            accountID: userInfo.accountID,
-            labID: labIDs[0],
-            description: modalContent,
-          });
-          message.success("Support request created successfully");
-        } else {
-          message.error(
-            "No matching lab found for this product. This is a component, not a kit"
-          );
-        }
-      } catch (error) {
-        console.error("Error creating support request:", error);
-        message.error("Failed to create support request");
-      }
-    } else {
-      message.info("Question submission not implemented yet");
+  const handleFeedbackOk = async () => {
+    try {
+      await createFeedback({
+        accountID: userInfo.accountID,
+        productID: selectedProductID,
+        description: modalContent,
+        rate: rating,
+      });
+      message.success('Feedback submitted successfully!');
+      setisFeedBackModal(false);
+      setSelectedProductID(null);
+      setModalContent("");
+      setRating(0);
+    } catch (error) {
+      console.error('Failed to submit feedback:', error);
+      message.error('Failed to submit feedback!');
     }
-    setIsSupportModalVisible(false);
-    setModalContent("");
-  };
+  }
 
-  const handleSupportCancel = () => {
-    setIsSupportModalVisible(false);
-    setModalContent("");
-  };
+
+  // const showSupportModal = (type, productId) => {
+  //   setModalType(type);
+  //   setSelectedProductId(productId);
+  //   setIsSupportModalVisible(true);
+  // };
+
+
 
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
@@ -162,11 +173,29 @@ export default function Purchase({ userInfo }) {
         <OrderTabs activeTab={activeTab} tabCounts={tabCounts} onTabChange={handleTabChange} />
       </div>
 
-      <OrderList 
-        filteredOrders={filteredOrders} 
-        showOrderDetails={showOrderDetails} 
+      <OrderList
+        filteredOrders={filteredOrders}
+        showOrderDetails={showOrderDetails}
+        showFeedbackDetails={showFeedbackDetails}
         pageSize={5}
       />
+      <Modal
+        title='Feedback'
+        open={isFeedBackModal}
+        onCancel={handleFeedbackCancel}
+        onOk={handleFeedbackOk}
+        style={{ marginTop: "3%" }}
+      >
+        <FeedbackDetail
+          orderDetails={orderDetails}
+          selectedProductID={selectedProductID}
+          setSelectedProductID={setSelectedProductID}
+          modalContent={modalContent}
+          setModalContent={setModalContent}
+          rating={rating}
+          setRating={setRating}
+        />
+      </Modal>
 
       <Modal
         visible={isModalVisible}
@@ -175,11 +204,11 @@ export default function Purchase({ userInfo }) {
         footer={null}
         style={{ marginTop: "3%" }}
       >
+
         {selectedOrder && (
           <OrderDetails
             selectedOrder={selectedOrder}
             orderDetails={orderDetails}
-            showModal={showSupportModal}
             currentPage={currentPage}
             pageSize={2}
             handleTableChange={handleTableChange}
@@ -187,14 +216,14 @@ export default function Purchase({ userInfo }) {
         )}
       </Modal>
 
-      <SupportModal
+      {/* <SupportModal
         isModalVisible={isSupportModalVisible}
         modalType={modalType}
         modalContent={modalContent}
         handleOk={handleSupportOk}
         handleCancel={handleSupportCancel}
         setModalContent={setModalContent}
-      />
+      /> */}
     </div>
   );
 }

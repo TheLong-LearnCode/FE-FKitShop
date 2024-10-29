@@ -3,6 +3,7 @@ import '../../../util/GlobalStyle/GlobalStyle.css';
 import './BlogPage.css';
 import api from '../../../config/axios';
 import { GET } from '../../../constants/httpMethod';
+import { Link } from 'react-router-dom';
 
 export default function BlogPage() {
     const [blogs, setBlogs] = useState(null);
@@ -27,11 +28,11 @@ export default function BlogPage() {
             <div className='blog-container container'>
               <div className="row">
                 {blogs && blogs.map((blog) =>(
-                    <div className="col-sm-3" key={blog.blogID}>
+                    <div className="col-lg-3 col-md-4" key={blog.blogID}>
                         <div className="blog-card">
                           <img src={blog.image} alt={blog.blogName} />
                           <h3 style={{color: '#000F8F'}}>{blog.blogName}</h3>
-                          <a href={`/blog/${blog.blogID}`}>Read It</a>
+                          <Link to={`/blog/${blog.blogID}`}>Read It</Link>
                         </div>
                     </div>
                  )
