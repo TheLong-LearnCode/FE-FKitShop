@@ -6,9 +6,9 @@ import { DELETE, GET, POST, PUT } from "../constants/httpMethod";
 //------------------##-----------USER--------------##-------------------
 // khách hàng yêu cầu hỗ trợ
 //supportInfo: {accountID, labID, description}
-export const createFeedback = async (feedbackInfo) => {
+export const createSupport = async (supportInfo) => {
   try {
-    const response = await api[POST]("feedbacks", feedbackInfo);
+    const response = await api[POST]("support/create", supportInfo);
     return response.data;
   } catch (error) {
     throw error;

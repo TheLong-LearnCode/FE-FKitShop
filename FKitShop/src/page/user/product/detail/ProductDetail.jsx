@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { IDLE } from '../../../../redux/constants/status';
 import { verifyToken } from '../../../../service/authUser';
 import { addProductToCart } from '../../../../redux/slices/cartSlice';
-import { message } from 'antd';
+import { message, Rate } from 'antd';
+import { getFeedbackByProductID } from '../../../../service/feedbackService';
 
 export default function ProductDetail() {
     const [product, setProduct] = useState(null); // Khởi tạo là null thay vì mảng rỗng
@@ -18,6 +19,7 @@ export default function ProductDetail() {
     const [selectedImage, setSelectedImage] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [labDetails, setLabDetails] = useState(null);
+    const [feedbacks, setFeedbacks] = useState([]);
 
     const { productID } = useParams()
     const dispatch = useDispatch()
@@ -94,6 +96,19 @@ export default function ProductDetail() {
         fetchLabDetails();
     }, [productID]);
 
+    useEffect(() => {
+        const fetchFeedback = async () => {
+            try {
+                const response = await getFeedbackByProductID(productID);
+                setFeedbacks(response.data);
+            } catch (err) {
+                console.error("Error fetching feedback: ", err);
+            }
+        }
+        fetchFeedback();
+
+    }, [productID]);
+
     const handleButtonClick = (buttonType) => {
         setActiveButton(buttonType);
     }
@@ -125,7 +140,7 @@ export default function ProductDetail() {
                 quantity: quantity
             }));
         } else {
-            message.error("Login to add product to cart");         
+            message.error("Login to add product to cart");
         }
     };
 
@@ -158,15 +173,15 @@ export default function ProductDetail() {
                             <div className="col-md-5 mt-2">
                                 <p><strong>Status:</strong> {product.status}</p>
                                 <p><strong>Publisher:</strong> {product.publisher}</p>
-                                { product.categories.length > 0 
-                                ? <p><strong>Categories:</strong>
-                                
-                                  {product.categories.map(category => (
-                                    <Link style={{color: '#000F8F'}} key={category.categoryID} to={`/products/${category.categoryID}`}>
-                                        {category.categoryName}
-                                    </Link>
-                                )).reduce((prev, curr) => [prev, ', ', curr])}</p>
-                                : null}
+                                {product.categories.length > 0
+                                    ? <p><strong>Categories:</strong>
+
+                                        {product.categories.map(category => (
+                                            <Link style={{ color: '#000F8F' }} key={category.categoryID} to={`/products/${category.categoryID}`}>
+                                                {category.categoryName}
+                                            </Link>
+                                        )).reduce((prev, curr) => [prev, ', ', curr])}</p>
+                                    : null}
                             </div>
                         </div>
 
@@ -257,17 +272,45 @@ export default function ProductDetail() {
                     <div className="product-detail-content py-2">
                         {labDetails.map((lab) => (
                             lab.fileNamePDF !== null
-                            ?<div key={lab.labID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
-                                <div style={{ margin: '20px' }}>
-                                    <h3 style={{ paddingTop: '10px', color: '#000F8F' }}>{lab.name}</h3>
-                                    <p><strong>Description:</strong> {lab.description}</p>
-                                    <p style={{ paddingBottom: '10px' }}><strong>Level:</strong> <strong style={{ color: 'red' }}>{lab.level}</strong></p>
-                                </div>
+                                ? <div key={lab.labID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
+                                    <div style={{ margin: '20px' }}>
+                                        <h3 style={{ paddingTop: '10px', color: '#000F8F' }}>{lab.name}</h3>
+                                        <p><strong>Description:</strong> {lab.description}</p>
+                                        <p style={{ paddingBottom: '10px' }}><strong>Level:</strong> <strong style={{ color: 'red' }}>{lab.level}</strong></p>
+                                    </div>
 
-                            </div>
-                            : null
+                                </div>
+                                : null
                         ))}
                     </div>
+                }
+            </div>
+
+            <div className="container mt-4 mb-2" style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
+                <h3 style={{ paddingTop: '10px' }}>Feedback</h3>
+                {feedbacks.length === 0 ?
+                    <div className="no-feedback-message" style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+                        <h3>No Feedback Here</h3>
+                        <p>Be the first to leave a feedback for this product!</p>
+                    </div>
+
+                    : <div className="product-detail-content pb-1">
+                        {feedbacks.map((fb) => (
+                            <div key={fb.feedback.feedbackID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
+                                <div style={{ margin: '20px' }}>
+                                    <h5 style={{ paddingTop: '10px', color: '#000F8F' }}>{fb.customerName}</h5>
+                                    <Rate
+                                        tooltips={['Very bad', 'Bad', 'Okay', 'Good', 'Very good']}
+                                        value={fb.feedback.rate}
+                                        allowClear={false}
+                                        className='pb-1'
+                                    ></Rate>
+                                    <p className='pb-2'>{fb.feedback.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                 }
             </div>
         </div>

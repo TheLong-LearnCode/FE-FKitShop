@@ -68,7 +68,7 @@ export default function Header() {
         startTransition(() => {
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
             Notification("Notification", "LOG OUT SUCCESSFULLY", 3, "success")
-            navigate('/');  // Điều hướng về trang đăng nhập
+            navigate('/login')  // Điều hướng về trang đăng nhập
         });
     };
 

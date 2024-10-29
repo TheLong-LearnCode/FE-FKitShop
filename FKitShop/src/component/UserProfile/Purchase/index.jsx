@@ -8,7 +8,7 @@ import {
   getOrderDetailsByOrderID,
 } from "../../../service/orderService";
 import { getProductById } from "../../../service/productService";
-import { createFeedback} from "../../../service/supportService";
+import { createFeedback} from "../../../service/feedbackService";
 import { getLabByAccountID } from "../../../service/labService";
 import OrderTabs from './OrderTabs';
 import OrderList from './OrderList';

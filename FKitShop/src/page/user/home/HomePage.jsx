@@ -10,32 +10,46 @@ import { GET } from '../../../constants/httpMethod';
 import api from '../../../config/axios';
 import Button from 'react-bootstrap/esm/Button';
 import Modal from 'react-bootstrap/esm/Modal';
+import { Pagination } from 'antd';
 
 export default function HomePage() {
   const data = useSelector(state => state.auth);
   const statusData = useSelector(state => state.auth.data);
-
-
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
-  const handleLogin = () => {
-    setShow(false); // Close the modal
-    navigate('/login'); // Navigate to the login page
-  }
-  const handleRegister = () => {
-    setShow(false);
-    navigate('/register'); // Navigate to the register pageavigate('/register'); // Navigate to the register page
-  }
-
   const [products, setProducts] = useState([]); // Dữ liệu về sản phẩm
   const [Lastestproducts, setLastestProducts] = useState([]);
   const [Hotestproducts, setHotestProducts] = useState([]);
   const [loading, setLoading] = useState(true); // Trạng thái để theo dõi quá trình tải dữ liệu
   const [error, setError] = useState(null); // Trạng thái để lưu lỗi nếu có
-
   const [activeButton, setActiveButton] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12; // Số sản phẩm trên mỗi trang
+
+  // Tính toán chỉ số sản phẩm để hiển thị
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+
+  const handleLogin = () => {
+    setShow(false); // Close the modal
+    navigate('/login'); // Navigate to the login page
+  }
+
+  const handleRegister = () => {
+    setShow(false);
+    navigate('/register'); // Navigate to the register pageavigate('/register'); // Navigate to the register page
+  }
 
   const handleButtonClick = (buttonType) => {
     if (activeButton !== buttonType) {
@@ -43,7 +57,7 @@ export default function HomePage() {
     } else {
       setActiveButton('');
     }
-    
+
   };
 
   //trường hợp chưa login
@@ -157,11 +171,12 @@ export default function HomePage() {
           </div>
 
           <div className="row">
-          {activeButton === '' &&
-              products.map((product) => (
-                <CardContent product={product} />
+            {activeButton === '' &&
+              currentProducts.map((product) => (
+                <CardContent key={product.id} product={product} />
               ))
             }
+
             {activeButton === 'new' &&
               Lastestproducts.map((product) => (
                 <CardContent product={product} />
@@ -174,6 +189,18 @@ export default function HomePage() {
             }
           </div>
 
+          {activeButton === '' && currentProducts.length > 0 && (
+            <div className='col-md-12 d-flex justify-content-center' style={{ paddingBottom: '10px' }}>
+              <Pagination
+              current={currentPage}
+              pageSize={productsPerPage}
+              total={products.length}
+              onChange={handlePageChange}
+              showSizeChanger={false} // Ẩn tùy chọn thay đổi kích thước trang
+            />
+            </div>
+            
+          )}
 
         </div>
 
@@ -187,7 +214,8 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="container mt-5 featured-content">
+
+        <div className="container mt-4 featured-content mb-2">
           <h2 >
             <span></span>Featured Categories
           </h2>
