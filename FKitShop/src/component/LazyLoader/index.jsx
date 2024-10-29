@@ -22,7 +22,7 @@ const LazyLoader = ({ children }) => {
                     </div>
                 </>
             }> 
-            <div style={{minHeight: '100%'}}>
+            <div style={{width: '100%',minHeight: '100%'}}>
                 {children}
             </div>
                 

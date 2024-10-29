@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Button } from 'antd';
 import { formatCurrency } from "../../../util/CurrencyUnit";
 
-const OrderList = ({ filteredOrders, showOrderDetails, pageSize }) => {
+const OrderList = ({ filteredOrders, showOrderDetails, showFeedbackDetails, pageSize }) => {
 
   const columns = [
     {
@@ -41,9 +41,9 @@ const OrderList = ({ filteredOrders, showOrderDetails, pageSize }) => {
             View
           </Button>
 
-          <Button 
-          style={{marginLeft: '5px'}}
-          onClick={() => showOrderDetails(record.orders.ordersID)}>
+          <Button
+            style={{ marginLeft: '5px' }}
+            onClick={() => showFeedbackDetails(record.orders.ordersID)}>
             Feedback
           </Button>
         </div>

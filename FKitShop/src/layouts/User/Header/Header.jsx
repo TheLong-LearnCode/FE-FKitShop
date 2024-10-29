@@ -148,7 +148,10 @@ export default function Header() {
                             {searchTerm && suggestedProducts.length > 0 && (
                                 <div className="suggestions">
                                     {suggestedProducts.map((product) => (
-                                        <Link key={product.productID} to={`/detail/${product.productID}`} className="suggestion-item" style={{ textDecoration: 'none' }}>
+                                        <Link key={product.productID} to={`/detail/${product.productID}`} 
+                                        className="suggestion-item" style={{ textDecoration: 'none' }}
+                                        onClick={() => setSearchTerm(null)}
+                                        >
                                             <img src={product.images[0].url} alt={product.name} className="suggestion-image" />
                                             <div className="suggestion-details">
                                                 <span className="suggestion-name">{product.name}</span>
