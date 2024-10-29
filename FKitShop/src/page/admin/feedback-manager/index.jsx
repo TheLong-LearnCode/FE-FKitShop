@@ -51,9 +51,15 @@ const FeedbackManager = () => {
       // const response = await createFeedback(values);
       message.success(response.message);
     } else if (modalMode === "edit") {
+      const updateFormData = {
+        accountID: values.accountID,
+        description: values.description,
+        rate: values.rate,
+      }
+      
       const response = await updateFeedback(
         selectedFeedback.feedbackID,
-        values
+        updateFormData
       );
       message.success(response.message);
     }

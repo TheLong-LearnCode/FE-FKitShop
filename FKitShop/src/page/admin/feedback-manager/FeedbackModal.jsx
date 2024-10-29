@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, InputNumber } from "antd";
+import { Modal, Form, Input, InputNumber, Rate } from "antd";
 
 const FeedbackModal = ({ visible, mode, feedback, onCancel, onOk }) => {
   const [form] = Form.useForm();
@@ -49,13 +49,16 @@ const FeedbackModal = ({ visible, mode, feedback, onCancel, onOk }) => {
           <Input disabled />
         </Form.Item>
         <Form.Item name="accountID" label="AccountID">
-          <Input disabled={mode === "view"} />
+          <Input disabled />
+        </Form.Item>
+        <Form.Item name="customerName" label="Customer Name">
+          <Input disabled/>
         </Form.Item>
         <Form.Item name="productID" label="Product ID">
-          <Input disabled={mode === "view"} />
+          <Input disabled />
         </Form.Item>
         <Form.Item name="productName" label="Product Name">
-          <Input disabled={mode === "view"} />
+          <Input disabled />
         </Form.Item>
         <Form.Item
           name="description"
@@ -67,9 +70,10 @@ const FeedbackModal = ({ visible, mode, feedback, onCancel, onOk }) => {
         <Form.Item
           name="rate"
           label="Rate"
+          step={1}
           rules={[{ required: true, message: "Please enter a rate" }]}
         >
-          <InputNumber disabled={mode === "view"} min={1} max={5} />
+          <Rate />
         </Form.Item>
         <Form.Item
           name="createDate"

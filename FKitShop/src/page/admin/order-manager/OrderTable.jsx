@@ -15,13 +15,14 @@ export default function OrderTable({
   onPageChange,
   activeTab,
   setActiveTab,
+  handleExport
 }) {
   const statusOptions = [
     "pending",
     "in-progress",
     "delivering",
     "delivered",
-    "cancel",
+    //"cancel",
   ];
 
   const columns = [
@@ -141,7 +142,24 @@ export default function OrderTable({
 
   return (
     <div className="order-container">
-      <div className="order-header">
+      <div
+        //className="order-header"
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+        }}
+      >
+        {/* Button aligned to the left */}
+        <Button size="large" onClick={handleExport}>
+          <img
+            src={"/img/icons8-microsoft-excel-96.png"}
+            alt="Your Icon"
+            style={{ width: 50, height: 50, marginRight: 8 }}
+          />
+        </Button>
+
+        {/* Tabs aligned to the right */}
         <Tabs
           activeKey={activeTab}
           onChange={setActiveTab}

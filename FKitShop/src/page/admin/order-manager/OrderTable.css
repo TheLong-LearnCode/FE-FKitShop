@@ -5,10 +5,15 @@
 
 .order-header {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+  /* margin-bottom: 16px; */
 }
 
 .custom-tabs {
   width: 100%;
+}
+
+.export-btn {
+  margin-bottom: 10px;
 }

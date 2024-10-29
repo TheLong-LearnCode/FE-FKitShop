@@ -1,5 +1,5 @@
 import api from "../config/axios";
-import { DELETE, GET, POST } from "../constants/httpMethod";
+import { DELETE, GET, POST, PUT } from "../constants/httpMethod";
 
 export const deleteFeedback = async (id) => {
   try {
@@ -10,9 +10,9 @@ export const deleteFeedback = async (id) => {
   }
 }
 
-export const updateFeedback = async () => {
+export const updateFeedback = async (id, data) => {
     try {
-      const response = await api[PUT]("/feedbacks");
+      const response = await api[PUT](`/feedbacks/${id}`, data);
       return response.data;
     } catch (error) {
       throw (error);
