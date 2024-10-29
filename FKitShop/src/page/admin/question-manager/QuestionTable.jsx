@@ -1,6 +1,11 @@
 import React from "react";
 import { Table, Button, Dropdown, Menu } from "antd";
-import { DeleteOutlined, DownOutlined, EyeOutlined, ToolOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  DownOutlined,
+  EyeOutlined,
+  ToolOutlined,
+} from "@ant-design/icons";
 
 export default function QuestionTable({
   questions,
@@ -60,15 +65,25 @@ export default function QuestionTable({
       title: "Date Posted",
       dataIndex: "postDate",
       key: "postDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) => new Date(a.datePosted) - new Date(b.datePosted),
+      render: (date) =>
+        new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(new Date(date)),
+      sorter: (a, b) => new Date(a.createDate) - new Date(b.createDate),
     },
     {
       title: "Response Date",
       dataIndex: "responseDate",
       key: "responseDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) => new Date(a.datePosted) - new Date(b.datePosted),
+      render: (date) =>
+        new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(new Date(date)),
+      sorter: (a, b) => new Date(a.createDate) - new Date(b.createDate),
     },
     {
       title: "Actions",

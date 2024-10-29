@@ -7,6 +7,7 @@ import {
   getAllQuestions,
   updateResponse,
   getQuestionByID,
+  deleteQuestion,
 } from "../../../service/questionService";
 import "./index.css";
 import { message } from "antd";
@@ -74,9 +75,9 @@ export default function QuestionManager() {
   const handleDelete = async (question) => {
     try {
       // Implement the actual API call here
-      // await deleteQuestion(question.questionID);
+      const response = await deleteQuestion(question.questionID);
       fetchAllQuestions();
-      Notification("Question deleted successfully", "", 4, "success");
+      Notification(response.message, "", 4, "success");
     } catch (error) {
       console.error("Error deleting question:", error);
       Notification("Error deleting question", "", 4, "warning");

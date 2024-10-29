@@ -11,12 +11,18 @@ export default function OrderTable({
   ordersPerPage,
   handleViewOrderDetails,
   handleUpdateOrderStatus,
-  handleDelete,
+  handleCancel,
   onPageChange,
   activeTab,
   setActiveTab,
 }) {
-  const statusOptions = ["pending", "in-progress", "delivering", "delivered", "canceled"];
+  const statusOptions = [
+    "pending",
+    "in-progress",
+    "delivering",
+    "delivered",
+    "cancel",
+  ];
 
   const columns = [
     {
@@ -46,15 +52,24 @@ export default function OrderTable({
       title: "Order Date",
       dataIndex: "orderDate",
       key: "orderDate",
-      render: (date) => new Date(date).toLocaleDateString(),
-      sorter: (a, b) => new Date(a.orderDate) - new Date(b.orderDate),
+      render: (date) =>
+        new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }).format(new Date(date)),
+      sorter: (a, b) => new Date(a.createDate) - new Date(b.createDate),
     },
     {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
         <>
-          <Button type="primary" onClick={() => handleViewOrderDetails(record)} style={{ marginRight: 8 }}>
+          <Button
+            type="primary"
+            onClick={() => handleViewOrderDetails(record)}
+            style={{ marginRight: 8 }}
+          >
             View
           </Button>
           <Dropdown
@@ -76,7 +91,12 @@ export default function OrderTable({
               Set Status <DownOutlined />
             </Button>
           </Dropdown>
-          <Button danger onClick={() => handleDelete(record)} disabled={record.status === "canceled"} style={{ marginLeft: 8 }}>
+          <Button
+            danger
+            onClick={() => handleCancel(record)}
+            disabled={record.status === "cancel"}
+            style={{ marginLeft: 8 }}
+          >
             Cancel
           </Button>
         </>
@@ -101,21 +121,21 @@ export default function OrderTable({
       "in-progress": 0,
       delivering: 0,
       delivered: 0,
-      canceled: 0,
+      cancel: 0,
     };
-    
+
     orders.forEach((order) => {
       if (counts.hasOwnProperty(order.status)) {
         counts[order.status]++;
       }
     });
-    
+
     return counts;
   }, [orders]);
 
   const renderTabTitle = (title, count) => (
     <span>
-      {title} <Badge count={count} style={{ backgroundColor: '#52c41a' }} />
+      {title} <Badge count={count} style={{ backgroundColor: "#52c41a" }} />
     </span>
   );
 
@@ -128,11 +148,26 @@ export default function OrderTable({
           className="custom-tabs"
         >
           <TabPane tab={renderTabTitle("All", statusCounts.all)} key="all" />
-          <TabPane tab={renderTabTitle("Pending", statusCounts.pending)} key="pending" />
-          <TabPane tab={renderTabTitle("In Progress", statusCounts["in-progress"])} key="in-progress" />
-          <TabPane tab={renderTabTitle("Delivering", statusCounts.delivering)} key="delivering" />
-          <TabPane tab={renderTabTitle("Delivered", statusCounts.delivered)} key="delivered" />
-          <TabPane tab={renderTabTitle("Canceled", statusCounts.canceled)} key="canceled" />
+          <TabPane
+            tab={renderTabTitle("Pending", statusCounts.pending)}
+            key="pending"
+          />
+          <TabPane
+            tab={renderTabTitle("In Progress", statusCounts["in-progress"])}
+            key="in-progress"
+          />
+          <TabPane
+            tab={renderTabTitle("Delivering", statusCounts.delivering)}
+            key="delivering"
+          />
+          <TabPane
+            tab={renderTabTitle("Delivered", statusCounts.delivered)}
+            key="delivered"
+          />
+          <TabPane
+            tab={renderTabTitle("Cancel", statusCounts.cancel)}
+            key="cancel"
+          />
         </Tabs>
       </div>
       <Table

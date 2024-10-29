@@ -122,14 +122,13 @@ export default function Support({ userInfo }) {
     };
     fetchData();
   }, [userInfo]);
-
+  const fetchProductDetails = async () => {
+    if (selectedLab) {
+      const productResponse = await getProductById(selectedLab.lab.productID);
+      setSelectedProduct(productResponse.data);
+    }
+  };
   useEffect(() => {
-    const fetchProductDetails = async () => {
-      if (selectedLab) {
-        const productResponse = await getProductById(selectedLab.lab.productID);
-        setSelectedProduct(productResponse.data);
-      }
-    };
     fetchProductDetails();
   }, [selectedLab]);
 
@@ -163,7 +162,7 @@ export default function Support({ userInfo }) {
       );
       setSelectedLab(selectedLab);
       // Fetch product details for the selected lab
-      fetchProductDetails(selectedLab);
+      // fetchProductDetails(selectedLab);
     } else {
       setSelectedLab(null);
       setSelectedProduct(null);
@@ -177,6 +176,8 @@ export default function Support({ userInfo }) {
         return;
       }
       try {
+        console.log("abc: ", selectedLab.lab.labID);
+
         await createSupport({
           accountID: userInfo.accountID,
           labID: selectedLab.lab.labID,
@@ -224,13 +225,20 @@ export default function Support({ userInfo }) {
       dataIndex: "labName",
       key: "labName",
     },
+    // {
+    //   title: "Support Times",
+    //   dataIndex: ["maxSupTimes", "supporting", "countSupport"],
+    //   key: "countSupport",
+    //   render: (maxSupTimes, countSupport, record) => {
+    //     return `#${countSupport}/${maxSupTimes}`;
+    //   },
+    // },
     {
       title: "Support Times",
-      dataIndex: ["supporting", "countSupport"],
+      dataIndex: "supporting",
       key: "countSupport",
-      render: (countSupport, record) => {
-        return `#${5 - countSupport}`;
-      },
+      render: (supporting, record) =>
+        `#${supporting.countSupport}/${record.maxSupTimes}`,
     },
     {
       title: "Request Date",
@@ -460,24 +468,28 @@ export default function Support({ userInfo }) {
                   {item.lab.labID} - {item.lab.name}
                 </Option>
               ))} */}
-              {Array.from(new Set(userLabs.map(item => item.lab.labID))).map((labID) => {
-                const lab = userLabs.find(item => item.lab.labID === labID);
-                return (
-                  <Option
-                    key={labID}
-                    value={labID}
-                    style={{ padding: "10px", height: "auto" }}
-                  >
-                    {labID} - {lab.lab.name}
-                  </Option>
-                );
-              })}
+              {Array.from(new Set(userLabs.map((item) => item.lab.labID))).map(
+                (labID) => {
+                  const lab = userLabs.find((item) => item.lab.labID === labID);
+                  return (
+                    <Option
+                      key={labID}
+                      value={labID}
+                      style={{ padding: "10px", height: "auto" }}
+                    >
+                      {labID} - {lab.lab.name}
+                    </Option>
+                  );
+                }
+              )}
             </Select>
             {selectedProduct && (
               <div style={{ marginBottom: "16px" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Image
-                    src={selectedProduct.images[0]?.url || "default-image-url.jpg"}
+                    src={
+                      selectedProduct.images[0]?.url || "default-image-url.jpg"
+                    }
                     alt={selectedProduct.name}
                     style={{
                       width: 40,

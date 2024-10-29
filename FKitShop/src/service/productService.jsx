@@ -44,6 +44,16 @@ export const updateProduct = async (productID, formData) => {
 };
 
 // -------------------------------GET------------------------------------
+export const getActiveProduct = async () => {
+  try {
+    const response = await api[GET]("/product/aproducts");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching active product:", error);
+    throw error;
+  }
+};
+
 export const getAllProducts = async () => {
   try {
     const response = await api[GET]("/product/products");
