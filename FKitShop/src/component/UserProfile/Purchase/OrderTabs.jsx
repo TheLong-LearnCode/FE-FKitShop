@@ -13,8 +13,7 @@ const OrderTabs = ({ activeTab, tabCounts, onTabChange }) => {
       <TabPane tab={<Badge count={tabCounts.processing} offset={[10, 0]}><span>Processing</span></Badge>} key="in-progress" />
       <TabPane tab={<Badge count={tabCounts.delivering} offset={[10, 0]}><span>Delivering</span></Badge>} key="delivering" />
       <TabPane tab={<Badge count={tabCounts.delivered} offset={[10, 0]}><span>Delivered</span></Badge>} key="delivered" />
-      <TabPane tab={<Badge count={tabCounts.canceled} offset={[10, 0]}><span>Canceled</span></Badge>} key="canceled" />
-      {/* hide tab */}
+      <TabPane tab={<Badge count={tabCounts.cancel} offset={[10, 0]}><span>Cancel</span></Badge>} key="cancel" />
       <TabPane />
     </Tabs>
   );

@@ -1,7 +1,17 @@
-import React, { startTransition } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, startTransition, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Layout, Input, Space, Badge, Dropdown, Menu } from "antd";
+import {
+  Layout,
+  Input,
+  Space,
+  Badge,
+  Dropdown,
+  Menu,
+  Modal,
+  Drawer,
+  message,
+} from "antd";
 import {
   SearchOutlined,
   BellOutlined,
@@ -11,7 +21,8 @@ import {
 } from "@ant-design/icons";
 import { logout } from "../../../redux/slices/authSlice";
 import "./index.css"; // Tạo file CSS mới cho header
-import { Notification } from '../../../component/UserProfile/UpdateAccount/Notification';
+import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
+import { verifyToken } from "../../../service/authUser";
 
 const { Header } = Layout;
 const { Search } = Input;
@@ -19,19 +30,38 @@ const { Search } = Input;
 export default function HeaderLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const user = useSelector((state) => state.auth);
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+      const response = await verifyToken(user); // Pass the user's token here
+      setUserInfo(response.data);
+    }
+    fetchUserInfo();
+    // if (userInfo === undefined || userInfo === null) {
+    //   message.info("Your session has expired!! Please login again");
+    //   navigate("/login");
+    // }
+  }, [user]);
 
   const handleLogout = () => {
     startTransition(() => {
       dispatch(logout());
       navigate("/");
-      Notification("Notification", "LOG OUT SUCCESSFULLY", 3, "success")
+      Notification("Notification", "LOG OUT SUCCESSFULLY", 3, "success");
     });
   };
 
   const handleViewProfile = () => {
-    // Implement view profile logic here
-    
-    console.log("View profile clicked");
+    console.log("User INFO: ", userInfo);
+
+    setIsDrawerVisible(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerVisible(false);
   };
 
   const menu = (
@@ -78,7 +108,11 @@ export default function HeaderLayout() {
             <Badge dot>
               <BellOutlined className="header-icon" style={{ fontSize: 20 }} />
             </Badge>
-            <Dropdown overlay={menu} placement="bottomRight" trigger={["click"]}>
+            <Dropdown
+              overlay={menu}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
               <SettingOutlined
                 className="header-icon"
                 style={{ fontSize: 20 }}
@@ -87,6 +121,22 @@ export default function HeaderLayout() {
           </Space>
         </div>
       </Header>
+
+      {/* Drawer hiển thị thông tin người dùng */}
+      <Drawer
+        title="User Profile"
+        placement="right"
+        closable={true}
+        onClose={closeDrawer}
+        visible={isDrawerVisible}
+        width={"30%"}
+      >
+        {/* Thông tin người dùng */}
+        <p>Name: {userInfo?.fullName}</p>
+        <p>Email: {userInfo?.email}</p>
+        <p>Role: {userInfo?.role}</p>
+        {/* Thêm các thông tin khác nếu cần */}
+      </Drawer>
     </div>
   );
 }

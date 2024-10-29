@@ -56,14 +56,14 @@ const AdminMenu = () => {
         className="dark-submenu"
       >
         <Menu.Item key="6" icon={<ProjectOutlined />}>
-          <Link to="/admin/product-manager/">All</Link>
+          <Link to="/admin/product-manager/">Kit & Item</Link>
         </Menu.Item>
-        <Menu.Item key="7" icon={<RobotOutlined />}>
+        {/* <Menu.Item key="7" icon={<RobotOutlined />}>
           <Link to="/admin/product-manager/kit-manager">Kit</Link>
         </Menu.Item>
         <Menu.Item key="8" icon={<ToolOutlined />}>
           <Link to="/admin/product-manager/item-manager">Item</Link>
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item key="9" icon={<FilePdfOutlined />}>
           <Link to="/admin/product-manager/lab-manager">Lab</Link>
         </Menu.Item>
@@ -80,9 +80,9 @@ const AdminMenu = () => {
       <Menu.Item key="13" icon={<FileTextOutlined />}>
         <Link to="/admin/blog-manager">Blog</Link>
       </Menu.Item>
-      <Menu.Item key="14" icon={<CarOutlined />}>
+      {/* <Menu.Item key="14" icon={<CarOutlined />}>
         <Link to="/admin/delivery-manager">Delivery</Link>
-      </Menu.Item>
+      </Menu.Item> */}
 
       <Menu.Item key="15" icon={<CommentOutlined />}>
         <Link to="/admin/feedback-manager">Feedback</Link>

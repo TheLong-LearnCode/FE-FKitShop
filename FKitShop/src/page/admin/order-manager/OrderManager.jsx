@@ -9,6 +9,7 @@ import {
 import OrderTable from "./OrderTable";
 import OrderFormModal from "./OrderFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
+import { Modal } from "antd";
 //import { getUserByAccountID } from "../../../service/userService";
 
 export default function OrderManager() {
@@ -63,14 +64,29 @@ export default function OrderManager() {
 
   const handleUpdateOrderStatus = async (order, status) => {
     try {
-      const response = await updateOrderStatus(order.ordersID, status);
-      console.log("RESPONSE", response);
-      Notification(response.message, "", 4, "success");
-      fetchAllOrders();
-    } catch (error) {
-      console.log("ERROR", error);
-      Notification(error.response.data.message, "", 4, "warning");
-    }
+      Modal.confirm({
+        title: "Confirm Update Order's Status",
+        content: (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: `The order status is currently <strong style="color: green;">${order.status}</strong>,  
+              the next one needs to be updated and is being <strong style="color: red;"> ${status}</strong> !!`,
+            }}
+          />
+        ),
+        onOk: async () => {
+          try {
+            const response = await updateOrderStatus(order.ordersID, status);
+            console.log("RESPONSE", response);
+            Notification(response.message, "", 4, "success");
+            fetchAllOrders();
+          } catch (error) {
+            console.log("ERROR", error);
+            Notification(error.response.data.message, "", 4, "warning");
+          }
+        },
+      });
+    } catch (error) {}
   };
 
   const handleViewOrderDetails = (order, orderDetails) => {
@@ -91,20 +107,36 @@ export default function OrderManager() {
     setShowModal(true);
   };
 
-  const handleDelete = async (order) => {
-    try {
-      await cancelOrder(order.ordersID);
-      fetchAllOrders(); // Refresh the order list after cancellation
-      Notification("Order canceled successfully", "", 4, "success");
-    } catch (error) {
-      console.error("Error canceling order:", error);
-      Notification("Error canceling order", "", 4, "warning");
-    }
+  const handleCancel = async (order) => {
+    Modal.confirm({
+      title: "Confirm Cancel Order",
+      content: (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `Once you cancel order <strong style="color: red;">${order.ordersID}</strong>, it can no longer be used.`,
+          }}
+        />
+      ),
+      onOk: async () => {
+        try {
+          await updateOrderStatus(order.ordersID, "cancel");
+          fetchAllOrders(); // Refresh the order list after cancellation
+          Notification("Order canceled successfully", "", 4, "success");
+        } catch (error) {
+          Notification(error.response.data.message, "", 4, "warning");
+        }
+      },
+    });
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  const handleExport = async() => {
+    const response = await exportExcel();
+
+  }
 
   return (
     <Container fluid>
@@ -122,12 +154,13 @@ export default function OrderManager() {
         ordersPerPage={ordersPerPage}
         handleViewOrderDetails={handleViewOrderDetails}
         handleUpdateOrderStatus={handleUpdateOrderStatus}
-        handleDelete={handleDelete}
+        handleCancel={handleCancel}
         handleNext={handleNext}
         handlePrevious={handlePrevious}
         onPageChange={handlePageChange}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        handleExport={handleExport}
       />
 
       <OrderFormModal

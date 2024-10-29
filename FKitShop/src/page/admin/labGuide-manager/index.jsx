@@ -199,6 +199,7 @@ const LabGuideManager = () => {
       const data = { ...values, content };
       if (editingGuideId) {
         // API call to update lab guide
+        console.log("content: ", data.content);
         try {
           const response = await updateLabGuide(editingGuideId, data);
           message.success(response.message);
@@ -208,6 +209,8 @@ const LabGuideManager = () => {
         }
       } else {
         try {
+          console.log("content: ", data.content);
+          
           const response = await createLabGuide(data);
           message.success(response.message);
           fetchLabGuides(selectedLabID);

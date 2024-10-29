@@ -341,7 +341,7 @@ export default function BlogModal({
         tagID: blog.tags?.map((tag) => tag.tagID) || [], // Lấy tagID của từng tag từ blog
       });
       //set riêng field content
-      setContent(blog.content); 
+      setContent(blog.content);
     } else {
       form.resetFields();
     }
@@ -363,7 +363,11 @@ export default function BlogModal({
       const formData = new FormData();
       Object.keys(updatedValues).forEach((key) => {
         if (key === "toDelete") {
-          formData.append(key, Number(updatedValues[key]));
+          // if (mode === "add") {
+          //   formData.append(key, 1);
+          // } else {
+            formData.append(key, Number(updatedValues[key]));
+          // }
         } else {
           if (key !== "blogID") {
             formData.append(key, updatedValues[key]);
@@ -391,14 +395,19 @@ export default function BlogModal({
       }
       onCancel={onCancel}
       onOk={handleOk}
-      okText={mode === "view" ? "Close" : "Save"}
+      okText={mode === "view" ? null : "Save"}
       cancelText={mode === "view" ? null : "Cancel"}
+      width={"70%"}
     >
       <Form form={form} layout="vertical">
         <Form.Item name="blogID" label="Blog ID" hidden={mode === "add"}>
           <Input disabled />
         </Form.Item>
-        <Form.Item name="blogName" label="Blog Name" rules={[{ required: true}]}>
+        <Form.Item
+          name="blogName"
+          label="Blog Name"
+          rules={[{ required: true }]}
+        >
           <Input disabled={mode === "view"} />
         </Form.Item>
         <Form.Item name="content" label="Content">
@@ -416,7 +425,7 @@ export default function BlogModal({
                 config={editorConfig}
                 ref={editorRef}
                 extraPlugins={uploadPlugin}
-                disabled={mode==="view"}
+                disabled={mode === "view"}
                 rules={[{ required: true }]}
               />
             )}
@@ -440,7 +449,8 @@ export default function BlogModal({
         <Form.Item
           name="toDelete"
           label="Availability"
-          rules={[{ required: true }]}
+          rules={mode !== "add" ? [{ required: true }] : []}
+          hidden={mode === "add"}
         >
           <Radio.Group disabled={mode === "view"}>
             <Radio value={1}>Yes</Radio>
