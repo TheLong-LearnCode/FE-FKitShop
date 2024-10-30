@@ -74,6 +74,16 @@ export const getProductById = async (productId) => {
   }
 };
 
+export const getProductByType = async (productType) => {
+  try {
+    const response = await api[GET](`/product/type/${productType}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching products by type:", error);
+    throw error;
+  }
+};
+
 export const saleReport = async () => {
   try {
     const response = await api[GET]("/product/report/sales", {
