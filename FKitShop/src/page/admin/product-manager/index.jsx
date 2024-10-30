@@ -8,6 +8,7 @@ import {
   deleteProduct,
   getProductById,
   deleteImages,
+  saleReport,
 } from "../../../service/productService";
 import "./index.css";
 import ProductTable from "./ProductTable";
@@ -132,26 +133,70 @@ const ProductManager = () => {
     setIsImagesModalVisible(true);
   };
 
+  const handleExport = async () => {
+    try {
+      const fileData = await saleReport();
+      const blob = new Blob([fileData], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const downloadUrl = URL.createObjectURL(blob);
+
+      // Create a temporary link to trigger the download
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "sale_report"; // Set the filename
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Clean up
+
+      URL.revokeObjectURL(downloadUrl); // Release memory
+    } catch (error) {
+      console.error("Error exporting Excel file:", error);
+      Notification("Failed to export Excel file", "", 4, "error");
+    }
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <div style={{ marginBottom: "20px" }}>
-        <Select
-          value={filterType}
-          onChange={handleTypeChange}
-          style={{ width: 200 }}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          <Option value="all">All</Option>
-          <Option value="kit">Kit</Option>
-          <Option value="item">Item</Option>
-        </Select>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => showModal("add", null, categories)}
-          style={{ marginBottom: "20px" }}
-        >
-          Add New Product
-        </Button>
+          <div>
+            <Button onClick={handleExport}>
+              <img
+                src={"/img/icons8-microsoft-excel-96.png"}
+                alt="Your Icon"
+                style={{ width: 40, height: 40 }}
+              />
+              Sale Report
+            </Button>
+          </div>
+          <div>
+            <Select
+              value={filterType}
+              onChange={handleTypeChange}
+              style={{ width: 200 }}
+            >
+              <Option value="all">All</Option>
+              <Option value="kit">Kit</Option>
+              <Option value="item">Item</Option>
+            </Select>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => showModal("add", null, categories)}
+              style={{ marginBottom: "20px" }}
+              className="ml-1"
+            >
+              Add New Product
+            </Button>
+          </div>
+        </div>
         <ProductTable
           products={filteredProducts}
           onView={(product) => showModal("view", product)}

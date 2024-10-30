@@ -74,6 +74,18 @@ export const getProductById = async (productId) => {
   }
 };
 
+export const saleReport = async () => {
+  try {
+    const response = await api[GET]("/product/report/sales", {
+      responseType: "blob", // Set response type to blob for file data
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching sales report:", error);
+    throw error;
+  }
+};
+
 // -------------------------------POST------------------------------------
 
 export const addProduct = async (formData) => {

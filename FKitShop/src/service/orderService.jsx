@@ -2,12 +2,14 @@ import api from "../config/axios";
 
 import { GET, PUT, POST } from "../constants/httpMethod";
 
-export const exportExcel = async () => {
+export const exportExcel = async (time) => {
   try {
-    const response = await api[GET]("/orders/report/week");
-    return response.data;
+    const response = await api[GET](`/orders/report/${time}`, {
+      responseType: "blob", // Set response type to blob for file data
+    });
+    return response.data; // Return the file data directly
   } catch (error) {
-    console.error("Error in exportExcel:", error);
+    console.error(`Error in exportExcel for ${time}:`, error);
     throw error;
   }
 };

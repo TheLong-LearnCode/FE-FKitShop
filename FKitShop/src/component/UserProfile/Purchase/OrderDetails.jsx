@@ -14,49 +14,6 @@ const OrderDetails = ({
   pageSize,
   handleTableChange,
 }) => {
-  //------------------------------------------------------------
-  const [addressDetails, setAddressDetails] = useState({
-    province: "",
-    district: "",
-    ward: "",
-  });
-
-  useEffect(() => {
-    const fetchAddressDetails = async () => {
-      try {
-        const provinces = await getProvinces();
-        const province = provinces.find(
-          (p) => p.ProvinceID == selectedOrder.orders.province
-        );
-
-        if (province) {
-          const districts = await getDistricts(province.ProvinceID);
-          const district = districts.find(
-            (d) => d.DistrictID == selectedOrder.orders.district
-          );
-
-          if (district) {
-            const wards = await getWards(district.DistrictID);
-            const ward = wards.find(
-              (w) => w.WardCode == selectedOrder.orders.ward
-            );
-
-            setAddressDetails({
-              province: province.ProvinceName,
-              district: district.DistrictName,
-              ward: ward ? ward.WardName : selectedOrder.orders.ward,
-            });
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching address details:", error);
-      }
-    };
-
-    fetchAddressDetails();
-  }, [selectedOrder]);
-  ///----------------------------------------------------------
-
   const detailColumns = [
     {
       title: "Product",
@@ -140,8 +97,8 @@ const OrderDetails = ({
                 </p>
                 <p>
                   <strong>Address:</strong> {selectedOrder.orders.address},{" "}
-                  {addressDetails.ward}, {addressDetails.district},{" "}
-                  {addressDetails.province}
+                  {selectedOrder.orders.ward}, {selectedOrder.orders.district},{" "}
+                  {selectedOrder.orders.province}
                 </p>
               </Col>
             </Row>

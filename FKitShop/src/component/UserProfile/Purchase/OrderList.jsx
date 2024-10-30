@@ -43,7 +43,9 @@ const OrderList = ({ filteredOrders, showOrderDetails, showFeedbackDetails, page
 
           <Button
             style={{ marginLeft: '5px' }}
-            onClick={() => showFeedbackDetails(record.orders.ordersID)}>
+            onClick={() => showFeedbackDetails(record.orders.ordersID)}
+            disabled={record.orders.status !== "delivered"}
+          >
             Feedback
           </Button>
         </div>

@@ -6,11 +6,13 @@ import {
   getAllAccounts,
   updateAccount,
   deleteAccount,
-  activateAccount
+  activateAccount,
 } from "../../../service/userService";
 import AccountTable from "./AccountTable";
 import AccountFormModal from "./AccountFormModal";
 import { Notification } from "../../../util/Notification";
+import { useSelector } from "react-redux";
+import { verifyToken } from "../../../service/authUser";
 
 export default function AccountManager() {
   const [users, setUsers] = useState([]);
@@ -23,6 +25,8 @@ export default function AccountManager() {
   const [showActivateModal, setShowActivateModal] = useState(false); // Control modal visibility for activate
   const [userToDelete, setUserToDelete] = useState(null); // Store user to be deleted
   const [userToActivate, setUserToActivate] = useState(null); // Store user to be activated
+  const user = useSelector((state) => state.auth);
+  const [userInfo, setUserInfo] = useState(null); // Store user
   const usersPerPage = 5;
 
   useEffect(() => {
@@ -34,8 +38,17 @@ export default function AccountManager() {
         console.error("Error fetching users:", error);
       }
     };
+    const fetchUserInfo = async () => {
+      try {
+        const response = await verifyToken(user);
+        setUserInfo(response.data);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
     fetchAllAccounts();
-  }, []);
+    fetchUserInfo();
+  }, [user]);
 
   const fetchAdmins = async () => {
     try {
@@ -82,7 +95,7 @@ export default function AccountManager() {
   };
 
   // Hàm này sẽ mở modal xác nhận xóa
-  
+
   const handleDelete = (user) => {
     setUserToDelete(user); // Lưu thông tin user cần xóa
     setShowDeleteModal(true); // Hiển thị modal xác nhận
@@ -153,7 +166,7 @@ export default function AccountManager() {
       role: e.target.formRole.value,
       status: e.target.formStatus.value,
       adminID: e.target.formAdminID.value,
-    };   
+    };
 
     try {
       if (mode === "add") {
@@ -163,7 +176,7 @@ export default function AccountManager() {
         //let formData2;
         const { password, ...formData2 } = formData;
         console.log("formData2: ", formData2);
-        
+
         const response = await updateAccount(formData2, selectedUser.accountID);
         Notification(response.message, "", 4, "success");
       }
@@ -189,9 +202,10 @@ export default function AccountManager() {
       </h2>
       <Row className="mb-3">
         <Col className="d-flex justify-content-end">
-          <Button variant="outline-success" className="mr-1">
+          {/* <Button variant="outline-success" className="mr-1">
             <box-icon name="export"></box-icon> Export
-          </Button>
+          </Button> */}
+          
           <Button variant="outline-info" onClick={handleAddNew}>
             <box-icon name="plus"></box-icon> Add New
           </Button>
@@ -200,6 +214,7 @@ export default function AccountManager() {
 
       <AccountTable
         users={users}
+        userInfo={userInfo}
         currentPage={currentPage}
         usersPerPage={usersPerPage}
         handleView={handleView}

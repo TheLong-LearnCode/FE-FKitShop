@@ -1,20 +1,20 @@
 // ProfileInformation.js
 import React, { useEffect, useState, useCallback } from "react";
 import { message, Modal } from "antd";
-import { useNavigate, useParams } from 'react-router-dom';
-import './index.css';
+import { useNavigate, useParams } from "react-router-dom";
+import "./index.css";
 import {
   getOrdersByAccountID,
   getOrderDetailsByOrderID,
 } from "../../../service/orderService";
 import { getProductById } from "../../../service/productService";
-import { createFeedback} from "../../../service/feedbackService";
+import { createFeedback } from "../../../service/feedbackService";
 import { getLabByAccountID } from "../../../service/labService";
-import OrderTabs from './OrderTabs';
-import OrderList from './OrderList';
-import OrderDetails from './OrderDetails';
+import OrderTabs from "./OrderTabs";
+import OrderList from "./OrderList";
+import OrderDetails from "./OrderDetails";
 import FeedbackDetail from "./FeedbackDetail";
-import SupportModal from './SupportModal';
+import SupportModal from "./SupportModal";
 
 export default function Purchase({ userInfo }) {
   const [allOrders, setAllOrders] = useState([]);
@@ -28,7 +28,7 @@ export default function Purchase({ userInfo }) {
     processing: 0,
     delivering: 0,
     delivered: 0,
-    cancel: 0
+    cancel: 0,
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFeedBackModal, setisFeedBackModal] = useState(false);
@@ -51,13 +51,16 @@ export default function Purchase({ userInfo }) {
         processing: 0,
         delivering: 0,
         delivered: 0,
-        cancel: 0
+        cancel: 0,
       };
 
-      response.data.forEach(order => {
+      response.data.forEach((order) => {
         const status = order.orders.status.toLowerCase();
         if (counts.hasOwnProperty(status)) {
           counts[status]++;
+        }
+        if (status === "in-progress") {
+          counts.processing++;
         }
       });
 
@@ -71,7 +74,7 @@ export default function Purchase({ userInfo }) {
 
   useEffect(() => {
     if (id) {
-      const orderId = id.split('=')[1];
+      const orderId = id.split("=")[1];
       showOrderDetails(orderId);
       showFeedbackDetails(orderId);
     }
@@ -79,10 +82,12 @@ export default function Purchase({ userInfo }) {
 
   const handleTabChange = (key) => {
     setActiveTab(key);
-    if (key === 'all') {
+    if (key === "all") {
       setFilteredOrders(allOrders);
     } else {
-      const filtered = allOrders.filter(order => order.orders.status.toLowerCase() === key);
+      const filtered = allOrders.filter(
+        (order) => order.orders.status.toLowerCase() === key
+      );
       setFilteredOrders(filtered);
     }
   };
@@ -100,32 +105,36 @@ export default function Purchase({ userInfo }) {
       })
     );
     setOrderDetails(detailsWithImages);
-    setisFeedBackModal(true)
+    setisFeedBackModal(true);
+  };
 
-  }
-
-  const showOrderDetails = useCallback(async (orderId) => {
-    const details = await getOrderDetailsByOrderID(orderId);
-    const detailsWithImages = await Promise.all(
-      details.data.map(async (detail) => {
-        const product = await getProductById(detail.productID);
-        return {
-          ...detail,
-          image: product.data.images[0]?.url,
-          productName: product.data.name,
-        };
-      })
-    );
-    setOrderDetails(detailsWithImages);
-    setSelectedOrder(allOrders.find(order => order.orders.ordersID === orderId));
-    setIsModalVisible(true);
-  }, [allOrders, navigate]);
+  const showOrderDetails = useCallback(
+    async (orderId) => {
+      const details = await getOrderDetailsByOrderID(orderId);
+      const detailsWithImages = await Promise.all(
+        details.data.map(async (detail) => {
+          const product = await getProductById(detail.productID);
+          return {
+            ...detail,
+            image: product.data.images[0]?.url,
+            productName: product.data.name,
+          };
+        })
+      );
+      setOrderDetails(detailsWithImages);
+      setSelectedOrder(
+        allOrders.find((order) => order.orders.ordersID === orderId)
+      );
+      setIsModalVisible(true);
+    },
+    [allOrders, navigate]
+  );
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
     setSelectedOrder(null);
     setOrderDetails([]);
-    navigate('/user/purchase', { replace: true });
+    navigate("/user/purchase", { replace: true });
   };
 
   const handleFeedbackCancel = () => {
@@ -133,7 +142,7 @@ export default function Purchase({ userInfo }) {
     setSelectedProductID(null);
     setModalContent("");
     setRating(0);
-  }
+  };
 
   const handleFeedbackOk = async () => {
     try {
@@ -143,17 +152,16 @@ export default function Purchase({ userInfo }) {
         description: modalContent,
         rate: rating,
       });
-      message.success('Feedback submitted successfully!');
+      message.success("Feedback submitted successfully!");
       setisFeedBackModal(false);
       setSelectedProductID(null);
       setModalContent("");
       setRating(0);
     } catch (error) {
-      console.error('Failed to submit feedback:', error);
-      message.error('Failed to submit feedback!');
+      console.error("Failed to submit feedback:", error);
+      message.error("Failed to submit feedback!");
     }
-  }
-
+  };
 
   // const showSupportModal = (type, productId) => {
   //   setModalType(type);
@@ -161,16 +169,24 @@ export default function Purchase({ userInfo }) {
   //   setIsSupportModalVisible(true);
   // };
 
-
-
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
 
   return (
     <div style={{ marginTop: "-10px" }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <OrderTabs activeTab={activeTab} tabCounts={tabCounts} onTabChange={handleTabChange} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "16px",
+        }}
+      >
+        <OrderTabs
+          activeTab={activeTab}
+          tabCounts={tabCounts}
+          onTabChange={handleTabChange}
+        />
       </div>
 
       <OrderList
@@ -180,7 +196,7 @@ export default function Purchase({ userInfo }) {
         pageSize={5}
       />
       <Modal
-        title='Feedback'
+        title="Feedback"
         open={isFeedBackModal}
         onCancel={handleFeedbackCancel}
         onOk={handleFeedbackOk}
@@ -204,7 +220,6 @@ export default function Purchase({ userInfo }) {
         footer={null}
         style={{ marginTop: "3%" }}
       >
-
         {selectedOrder && (
           <OrderDetails
             selectedOrder={selectedOrder}

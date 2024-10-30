@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import {
   cancelOrder,
+  exportExcel,
   getAllOrders,
   getOrderDetailsByOrderID,
   updateOrderStatus,
@@ -22,6 +23,7 @@ export default function OrderManager() {
   const [showModal, setShowModal] = useState(false);
   const ordersPerPage = 5;
   const [activeTab, setActiveTab] = useState("all");
+  const [exportTimeframe, setExportTimeframe] = useState("week");
 
   useEffect(() => {
     fetchAllOrders();
@@ -133,10 +135,28 @@ export default function OrderManager() {
     setCurrentPage(newPage);
   };
 
-  const handleExport = async() => {
-    const response = await exportExcel();
+  const handleExport = async () => {
+    try {
+      const fileData = await exportExcel(exportTimeframe);
+      const blob = new Blob([fileData], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const downloadUrl = URL.createObjectURL(blob);
 
-  }
+      // Create a temporary link to trigger the download
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `${exportTimeframe}_order_report`; // Set the filename
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); // Clean up
+
+      URL.revokeObjectURL(downloadUrl); // Release memory
+    } catch (error) {
+      console.error("Error exporting Excel file:", error);
+      Notification("Failed to export Excel file", "", 4, "error");
+    }
+  };
 
   return (
     <Container fluid>
@@ -161,6 +181,8 @@ export default function OrderManager() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         handleExport={handleExport}
+        exportTimeframe={exportTimeframe}
+        setExportTimeframe={setExportTimeframe}
       />
 
       <OrderFormModal

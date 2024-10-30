@@ -4,6 +4,7 @@ import Pagination from "../../../util/Pagination";
 
 export default function AccountTable({
   users,
+  userInfo,
   currentPage,
   usersPerPage,
   handleView,
@@ -82,7 +83,11 @@ export default function AccountTable({
                   Edit
                 </Button>
                 {user.status === 1 ? (
-                  <Button variant="outline-danger" onClick={() => handleDelete(user)}>
+                  <Button 
+                    variant="outline-danger" 
+                    onClick={() => handleDelete(user)}
+                    disabled={user.accountID === userInfo.accountID}
+                  >
                     Delete
                   </Button>
                 ) : (

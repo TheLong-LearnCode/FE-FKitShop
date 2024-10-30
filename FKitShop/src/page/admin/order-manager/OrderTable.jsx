@@ -15,15 +15,11 @@ export default function OrderTable({
   onPageChange,
   activeTab,
   setActiveTab,
-  handleExport
+  handleExport,
+  exportTimeframe,
+  setExportTimeframe,
 }) {
-  const statusOptions = [
-    "pending",
-    "in-progress",
-    "delivering",
-    "delivered",
-    //"cancel",
-  ];
+  const statusOptions = ["pending", "in-progress", "delivering", "delivered"];
 
   const columns = [
     {
@@ -140,53 +136,67 @@ export default function OrderTable({
     </span>
   );
 
+  const exportMenu = (
+    <Menu onClick={(e) => setExportTimeframe(e.key)} itemIcon>
+      <Menu.Item key="week">Week</Menu.Item>
+      <Menu.Item key="month">Month</Menu.Item>
+      <Menu.Item key="quarter">Quarter</Menu.Item>
+    </Menu>
+  );
+
   return (
     <div className="order-container">
       <div
-        //className="order-header"
         style={{
           display: "flex",
-          alignItems: "flex-end",
           justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        {/* Button aligned to the left */}
-        <Button size="large" onClick={handleExport}>
-          <img
-            src={"/img/icons8-microsoft-excel-96.png"}
-            alt="Your Icon"
-            style={{ width: 50, height: 50, marginRight: 8 }}
-          />
-        </Button>
-
-        {/* Tabs aligned to the right */}
-        <Tabs
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          className="custom-tabs"
-        >
-          <TabPane tab={renderTabTitle("All", statusCounts.all)} key="all" />
-          <TabPane
-            tab={renderTabTitle("Pending", statusCounts.pending)}
-            key="pending"
-          />
-          <TabPane
-            tab={renderTabTitle("In Progress", statusCounts["in-progress"])}
-            key="in-progress"
-          />
-          <TabPane
-            tab={renderTabTitle("Delivering", statusCounts.delivering)}
-            key="delivering"
-          />
-          <TabPane
-            tab={renderTabTitle("Delivered", statusCounts.delivered)}
-            key="delivered"
-          />
-          <TabPane
-            tab={renderTabTitle("Cancel", statusCounts.cancel)}
-            key="cancel"
-          />
-        </Tabs>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Dropdown.Button
+            overlay={exportMenu}
+            placement="bottomLeft"
+            onClick={handleExport}
+            icon={<DownOutlined />}
+          >
+            <img
+              src={"/img/icons8-microsoft-excel-96.png"}
+              alt="Your Icon"
+              style={{ width: 40, height: 40 }}
+            />
+            Export by: <strong>{exportTimeframe}</strong>
+          </Dropdown.Button>
+        </div>
+        <div>
+          <Tabs
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            className="custom-tabs"
+          >
+            <TabPane tab={renderTabTitle("All", statusCounts.all)} key="all" />
+            <TabPane
+              tab={renderTabTitle("Pending", statusCounts.pending)}
+              key="pending"
+            />
+            <TabPane
+              tab={renderTabTitle("In Progress", statusCounts["in-progress"])}
+              key="in-progress"
+            />
+            <TabPane
+              tab={renderTabTitle("Delivering", statusCounts.delivering)}
+              key="delivering"
+            />
+            <TabPane
+              tab={renderTabTitle("Delivered", statusCounts.delivered)}
+              key="delivered"
+            />
+            <TabPane
+              tab={renderTabTitle("Cancel", statusCounts.cancel)}
+              key="cancel"
+            />
+          </Tabs>
+        </div>
       </div>
       <Table
         columns={columns}
