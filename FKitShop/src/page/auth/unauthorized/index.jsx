@@ -19,7 +19,7 @@ const UnauthorizedPage = () => {
           <h1 className="unauthorized-title">401 - Unauthorized</h1>
           <p className="unauthorized-text">
             Sorry, <strong>{userInfo?.fullName || "user"}</strong>,
-            your role is ${userInfo.role}, you don't have permission to access this page.
+            your role is <strong>{userInfo?.role}</strong>, you don't have permission to access this page.
           </p>
           <Link to="/">
             <Button variant="primary" size="lg" className="mt-3">

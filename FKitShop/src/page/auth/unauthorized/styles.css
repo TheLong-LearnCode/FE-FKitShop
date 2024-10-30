@@ -182,3 +182,7 @@
         padding-top: 25%;
     }
 }
+
+p strong {
+    color: red;
+}
