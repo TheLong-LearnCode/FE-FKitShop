@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Form,
@@ -24,6 +24,7 @@ const ProductModal = ({
   mode,
   product,
   categories,
+  items,
   onCancel,
   onOk,
   fileList,
@@ -36,6 +37,8 @@ const ProductModal = ({
   setDeletedImages,
 }) => {
   const [form] = Form.useForm();
+  const [type, setType] = useState(product?.type || "item");
+  const [totalPrice, setTotalPrice] = useState(0);
   useEffect(() => {
     if (product && (mode === "edit" || mode === "view")) {
       const dimension = product?.dimension?.replace("cm", "") || "0x0x0"; // Remove 'cm' and default to "0x0x0"
@@ -52,6 +55,11 @@ const ProductModal = ({
           height: height || 0,
         },
         categoryID: product.categories?.map((cat) => cat.categoryID) || [],
+        components:
+          product.components?.map((comp) => ({
+            productID: comp.componentID,
+            quantity: comp.quantity,
+          })) || [],
       });
 
       setFileList(
@@ -62,12 +70,36 @@ const ProductModal = ({
           url: img.url,
         })) || []
       );
+      setType(product.type);
     } else {
       form.resetFields();
       setFileList([]);
+      setType("item");
+      console.log("items: ", items);
     }
+    calculateTotal();
   }, [product, mode, form, setFileList]);
 
+  const calculateTotal = () => {
+    const total = form.getFieldValue("components")?.reduce((acc, comp) => {
+      const selectedComponent = items.find(
+        (item) => item.productID === comp.productID
+      );
+      return (
+        acc +
+        (selectedComponent ? selectedComponent.price * (comp.quantity || 1) : 0)
+      );
+    }, 0);
+    setTotalPrice(total || 0);
+  };
+  const handleQuantityChange = () => {
+    // Call calculateTotal whenever the quantity changes
+    calculateTotal();
+  };
+
+  const handleTypeChange = (e) => {
+    setType(e.target.value);
+  };
   const handleOk = () => {
     if (mode === "view") {
       onCancel();
@@ -76,9 +108,16 @@ const ProductModal = ({
     form.validateFields().then(async (values) => {
       const formData = new FormData();
 
+      const formattedComponents =
+        values.components
+          ?.map((comp) => `${comp.productID}:${comp.quantity}`)
+          .join(",") || "";
+
       // Append all form values to FormData
       Object.keys(values).forEach((key) => {
-        if (key === "categoryID") {
+        if (key === "components") {
+          formData.append("components", formattedComponents);
+        } else if (key === "categoryID") {
           formData.append(key, values[key]);
         } else if (key === "dimension") {
           formData.append(
@@ -251,12 +290,6 @@ const ProductModal = ({
                   } // Chặn ký tự không phải số
                 />
               </Form.Item>
-            </Card>
-          </Col>
-
-          {/* Section 4 */}
-          <Col span={11}>
-            <Card title="Status & Classification" bordered={false}>
               <Form.Item
                 name="quantity"
                 label="Stock"
@@ -274,7 +307,12 @@ const ProductModal = ({
                   }
                 />
               </Form.Item>
+            </Card>
+          </Col>
 
+          {/* Section 4 */}
+          <Col span={11}>
+            <Card title="Status & Classification" bordered={false}>
               <Form.Item
                 name="status"
                 label="Status"
@@ -286,12 +324,89 @@ const ProductModal = ({
                 </Radio.Group>
               </Form.Item>
 
-              <Form.Item name="type" label="Type" rules={[{ required: true }]}>
+              <Form.Item
+                name="type"
+                label="Type"
+                onChange={handleTypeChange}
+                value={type}
+                rules={[{ required: true }]}
+              >
                 <Radio.Group disabled={mode === "view"}>
                   <Radio value="kit">Kit</Radio>
                   <Radio value="item">Item</Radio>
                 </Radio.Group>
               </Form.Item>
+
+              {type === "kit" && (
+                <Form.Item label="Total Item's Price Expected">
+                  <span>{totalPrice} VNĐ</span>
+                </Form.Item>
+              )}
+              {type === "kit" && (
+                <Form.Item name="components" label="Items belong to kit">
+                  <Form.List name="components">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map(({ key, name, fieldKey, ...restField }) => (
+                          <Row key={key} gutter={16}>
+                            <Col span={12}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, "productID"]}
+                                fieldKey={[fieldKey, "productID"]}
+                                label="Product ID"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Select a product",
+                                  },
+                                ]}
+                              >
+                                <Select placeholder="Select Product">
+                                  {items?.map((item) => (
+                                    <Option
+                                      key={item.productID}
+                                      value={item.productID}
+                                    >
+                                      {item.name}
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, "quantity"]}
+                                fieldKey={[fieldKey, "quantity"]}
+                                label="Quantity"
+                                rules={[
+                                  { required: true, message: "Enter quantity" },
+                                ]}
+                              >
+                                <InputNumber
+                                  min={1}
+                                  onChange={handleQuantityChange}
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col span={4}>
+                              <Button type="link" onClick={() => remove(name)}>
+                                Remove
+                              </Button>
+                            </Col>
+                          </Row>
+                        ))}
+                        <Form.Item>
+                          <Button type="dashed" onClick={() => add()} block>
+                            Add Items
+                          </Button>
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
+                </Form.Item>
+              )}
 
               <Form.Item
                 name="categoryID"

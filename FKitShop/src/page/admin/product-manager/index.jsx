@@ -9,6 +9,7 @@ import {
   getProductById,
   deleteImages,
   saleReport,
+  getProductByType,
 } from "../../../service/productService";
 import "./index.css";
 import ProductTable from "./ProductTable";
@@ -30,11 +31,13 @@ const ProductManager = () => {
   const [deletedImages, setDeletedImages] = useState([]);
   const [updatedImages, setUpdatedImages] = useState([]);
   const [filterType, setFilterType] = useState("all");
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     fetchAllCategories();
     fetchAllProducts();
     fetchProductById(selectedProduct?.productID);
+    fetchAllItems();
   }, []);
 
   const fetchAllCategories = async () => {
@@ -56,6 +59,10 @@ const ProductManager = () => {
       message.error("Failed to fetch products");
     }
   };
+  const fetchAllItems = async () => {
+    const response = await getProductByType("item");
+    setItems(response.data);
+  }
   const handleTypeChange = (value) => {
     setFilterType(value);
   };
@@ -171,7 +178,7 @@ const ProductManager = () => {
               <img
                 src={"/img/icons8-microsoft-excel-96.png"}
                 alt="Your Icon"
-                style={{ width: 40, height: 40 }}
+                style={{ width: 30, height: 30 }}
               />
               Sale Report
             </Button>
@@ -209,6 +216,7 @@ const ProductManager = () => {
           mode={modalMode}
           product={selectedProduct}
           categories={categories}
+          items={items}
           onCancel={handleModalCancel}
           onOk={handleModalOk}
           fileList={fileList}

@@ -4,7 +4,7 @@ import 'boxicons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../redux/slices/authSlice';
-import { verifyToken } from '../../../service/authUser';
+import { logoutService, verifyToken } from '../../../service/authUser';
 import { IDLE } from '../../../redux/constants/status';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Notification } from '../../../component/UserProfile/UpdateAccount/Notification';
@@ -66,6 +66,10 @@ export default function Header() {
 
     const handleLogout = () => {
         startTransition(() => {
+            console.log("userInfo123: ", user.data);
+            const response = logoutService(user.data);
+            console.log("rrr: ", response);
+            
             dispatch(logout()); // Xóa token và cập nhật trạng thái đăng xuất
             Notification("Notification", "LOG OUT SUCCESSFULLY", 3, "success")
             navigate('/login')  // Điều hướng về trang đăng nhập

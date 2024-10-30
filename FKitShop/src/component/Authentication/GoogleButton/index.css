@@ -11,8 +11,8 @@
   }
 
   .btn-google img {
-    width: 20px; /* Kích thước icon Google */
-    height: 20px;
+    width: 20px !important; /* Kích thước icon Google */
+    height: 20px !important;
     margin-right: 10px; /* Khoảng cách giữa icon và text */
   }
 

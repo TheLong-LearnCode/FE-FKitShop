@@ -70,8 +70,11 @@ export const loadUserFromCookie = createAsyncThunk(
   }
 );
 
-export const logOut = () => {
-  api[POST]("auth/logout", {
-    token: ""
-  });
+export const logoutService = (token) => {
+  try {
+  const response = api[POST]("auth/logout", token);
+  return response.data;
+  } catch(error){
+    throw error;
+  }
 }
