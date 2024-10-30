@@ -163,7 +163,7 @@ export default function OrderTable({
             <img
               src={"/img/icons8-microsoft-excel-96.png"}
               alt="Your Icon"
-              style={{ width: 40, height: 40 }}
+              style={{ width: 30, height: 30 }}
             />
             Export by: <strong>{exportTimeframe}</strong>
           </Dropdown.Button>

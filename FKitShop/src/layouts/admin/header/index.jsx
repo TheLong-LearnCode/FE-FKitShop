@@ -11,6 +11,9 @@ import {
   Modal,
   Drawer,
   message,
+  Row,
+  Col,
+  Card,
 } from "antd";
 import {
   SearchOutlined,
@@ -131,10 +134,26 @@ export default function HeaderLayout() {
         visible={isDrawerVisible}
         width={"30%"}
       >
-        {/* Thông tin người dùng */}
-        <p>Name: {userInfo?.fullName}</p>
-        <p>Email: {userInfo?.email}</p>
-        <p>Role: {userInfo?.role}</p>
+        {/* Thông tin người dùng trong Card */}
+        <Row justify="center">
+          <Col span={24}>
+            <Card style={{ textAlign: "center" }}>
+              <img
+                src={userInfo?.image ? userInfo.image : "/img/user.png"}
+                alt="Profile"
+                className="profile-avatar mb-3"
+                style={{
+                  height: "100px",
+                  width: "100px",
+                  borderRadius: "100%",
+                }}
+              />
+              <p>Name: {userInfo?.fullName}</p>
+              <p>Email: {userInfo?.email}</p>
+              <p>Role: {userInfo?.role}</p>
+            </Card>
+          </Col>
+        </Row>
         {/* Thêm các thông tin khác nếu cần */}
       </Drawer>
     </div>

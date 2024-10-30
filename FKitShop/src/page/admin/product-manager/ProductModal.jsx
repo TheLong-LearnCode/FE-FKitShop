@@ -354,7 +354,7 @@ const ProductModal = ({
                                 {...restField}
                                 name={[name, "productID"]}
                                 fieldKey={[fieldKey, "productID"]}
-                                label="Product ID"
+                                label="Product Name"
                                 rules={[
                                   {
                                     required: true,
