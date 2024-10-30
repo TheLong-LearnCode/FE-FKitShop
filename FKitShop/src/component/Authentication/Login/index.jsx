@@ -79,8 +79,8 @@ function SignInSignUp() {
               const userResponse = resultVerify.data;
               console.log("USERRESPONSE: ", userResponse);
               message.success(`Login successfully! 
-                                Welcome ${userResponse.role} ${userResponse.fullName}`);
-              switch (userResponse.role) {
+                                Welcome ${userResponse?.role} ${userResponse?.fullName}`);
+              switch (userResponse?.role) {
                 case ROLE_ADMIN:
                 case ROLE_MANAGER:
                 case ROLE_STAFF:
