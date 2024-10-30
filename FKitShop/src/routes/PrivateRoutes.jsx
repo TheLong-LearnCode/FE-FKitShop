@@ -1,10 +1,16 @@
 import React, { Suspense } from "react";
 import UserLayout from "../layouts/User/UserLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
-// import { ROLE_ADMIN } from "../constants/role";
-const OrderSuccessPage = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
-const OrderViewPage = React.lazy(() => import("../page/user/order/OrderView.jsx"));
-const HandleVNPPage = React.lazy(() => import("../page/user/order/HandleVNP.jsx"));
+import { ROLE_ADMIN, ROLE_MANAGER, ROLE_STAFF, ROLE_USER } from "../constants/role";
+const OrderSuccessPage = React.lazy(() =>
+  import("../page/user/order/OrderSuccess.jsx")
+);
+const OrderViewPage = React.lazy(() =>
+  import("../page/user/order/OrderView.jsx")
+);
+const HandleVNPPage = React.lazy(() =>
+  import("../page/user/order/HandleVNP.jsx")
+);
 
 const AdminLayOut = React.lazy(() => import("../layouts/admin/AdminLayOut"));
 const DashboardPage = React.lazy(() => import("../page/admin/dashboard"));
@@ -15,7 +21,6 @@ const AccountPage = React.lazy(() =>
 const OrderPage = React.lazy(() =>
   import("../page/admin/order-manager/OrderManager.jsx")
 );
-const OrderSuccess = React.lazy(() => import("../page/user/order/OrderSuccess.jsx"));
 
 const KitPage = React.lazy(() => import("../page/admin/kit-manager"));
 const ItemPage = React.lazy(() => import("../page/admin/item-manager"));
@@ -31,7 +36,9 @@ const SupportPage = React.lazy(() =>
 );
 const LabGuidePage = React.lazy(() => import("../page/admin/labGuide-manager"));
 const FeedbackPage = React.lazy(() => import("../page/admin/feedback-manager"));
-const QuestionPage = React.lazy(() => import("../page/admin/question-manager/QuestionManager.jsx"));
+const QuestionPage = React.lazy(() =>
+  import("../page/admin/question-manager/QuestionManager.jsx")
+);
 const UserProfilePage = React.lazy(() => import("../page/user/profile"));
 
 const PrivateRoutes = [
@@ -39,9 +46,9 @@ const PrivateRoutes = [
     path: "/admin",
     element: (
       <Suspense fallback={null}>
-        {/* <ProtectedRoutes allowedRoles={ROLE_ADMIN}> */}
-        <AdminLayOut />
-        {/* </ProtectedRoutes> */}
+        <ProtectedRoutes allowedRoles={[ROLE_ADMIN, ROLE_MANAGER, ROLE_STAFF]}>
+          <AdminLayOut />
+        </ProtectedRoutes>
       </Suspense>
     ),
     children: [
@@ -92,7 +99,7 @@ const PrivateRoutes = [
             path: "kit-manager",
             element: (
               <Suspense fallback={null}>
-                <KitPage /> 
+                <KitPage />
               </Suspense>
             ),
           },
@@ -190,7 +197,9 @@ const PrivateRoutes = [
     path: "/user",
     element: (
       <Suspense fallback={null}>
-        <UserLayout />
+        <ProtectedRoutes allowedRoles={[ROLE_ADMIN, ROLE_MANAGER, ROLE_STAFF, ROLE_USER]}>
+          <UserLayout />
+        </ProtectedRoutes>
       </Suspense>
     ),
     children: [

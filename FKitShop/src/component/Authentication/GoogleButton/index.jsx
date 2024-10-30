@@ -51,10 +51,6 @@ function GoogleButton() {
         loginGoggle(userData.email, userData.name, userData.picture);
     }, [userData])
 
-
-
-
-
     return (
         <>
             <div className="mt-3">

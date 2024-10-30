@@ -1,22 +1,26 @@
-import { Navigate } from 'react-router-dom';
-import useAuthen from '../hooks/useAuthen';
+import { Navigate, useNavigate } from "react-router-dom";
+import useAuthen from "../hooks/useAuthen";
+import Loading from "../component/Loading/Loading";
+import { message } from "antd";
 
+const ProtectedRoutes = ({ allowedRoles, children }) => {
+  const navigate = useNavigate();
+  const { userInfo, userRole, loading } = useAuthen(); 
+  if (loading) {
+    return (
+      <Loading />
+    );
+  }
 
-const ProtectedRoutes = ({ children, allowedRoles }) => {
-    const { userRole, loading } = useAuthen(); 
-    console.log("userRole: " + userRole);
-    console.log("loading: " + loading);
-    
-    
-  
-    if (loading) {
-      return <div>Loading...</div>; // Hiển thị trong lúc đang xác thực token
-    }
-  
-    if (!userRole) {
-      return <Navigate to="/login" />; // Nếu không có role, chuyển hướng đến trang đăng nhập
-    }
-  
-    return allowedRoles.includes(userRole) ? children : <Navigate to="/unauthorized" />;
-  };
-export default ProtectedRoutes;  
+  if (!userRole) {
+    message.warning("Please login to continue!!");
+    return <Navigate to="/login" />; // Nếu không có role, chuyển hướng đến trang đăng nhập
+  }
+
+  return allowedRoles.includes(userRole) ? (
+    children
+  ) : (
+    <Navigate to="/unauthorized" state={{ userInfo }} />
+  );
+};
+export default ProtectedRoutes;
