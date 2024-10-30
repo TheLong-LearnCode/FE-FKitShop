@@ -4,6 +4,7 @@ import LazyLoader from "../component/LazyLoader/index.jsx";
 
 const HomePage = React.lazy(() => import("../page/user/home/HomePage.jsx"));
 const AboutPage = React.lazy(() => import("../page/user/about"));
+const AllProductsPage = React.lazy(() => import("../page/user/product/list/AllProduct.jsx"));
 const ContactPage = React.lazy(() =>
   import("../page/user/contact/Contact.jsx")
 );
@@ -68,6 +69,10 @@ const PublicRoutes = [
       },
 
       //product
+      {
+        path: "all-products",
+        element: <LazyLoader children={<AllProductsPage />} />,
+      },
       {
         path: "products/:categoryID",
         element: <LazyLoader children={<ProductListPage />} />,

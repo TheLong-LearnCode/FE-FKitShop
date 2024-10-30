@@ -1,6 +1,7 @@
 .blog-details-container {
     padding: 20px;
     border-bottom: 2px solid #000F8F;
+    overflow: hidden;
 }
 
 .blog-title {
