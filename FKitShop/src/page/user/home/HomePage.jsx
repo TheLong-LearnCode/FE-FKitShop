@@ -162,12 +162,12 @@ export default function HomePage() {
             >
               🔥 Hot product
             </button>
-            <button
+            {/* <button
               className={`btn ${activeButton === 'highlyRated' ? 'active' : ''}`}
               onClick={() => handleButtonClick('highlyRated')}
             >
               🌟 Highly rated
-            </button>
+            </button> */}
           </div>
 
           <div className="row">

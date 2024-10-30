@@ -282,6 +282,7 @@ export default function Header() {
                 onMouseLeave={() => setShowProductMenu(false)}
               >
                 <Link
+                  to={'/all-products'}
                   className={`nav-menu-link ${
                     activeLink === "Product" ? "active" : ""
                   }`}

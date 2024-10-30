@@ -27,12 +27,11 @@ export default function BlogDetails() {
     return (
         <div className='fixed-header blog-details-container'>
             <div className='text-center' style={{ color: '#000F8F' }}>
-                <h3 className="blog-title">{blog?.blogName}</h3>
+                <h3 className="blog-title">{blog?.blog.blogName}</h3>
             </div>
             <div className="container blog-details">
-                <img className="blog-image" src={blog?.image} alt={blog?.blogName} />
-                <p className="blog-content">{blog?.content}</p>
-                <p className="blog-date">Post at: {blog?.createDate}</p>
+                <p className="blog-content" dangerouslySetInnerHTML={{ __html: blog?.blog.content }}></p>
+                <p className="blog-date">Post at: {blog?.blog.createDate}</p>
             </div>
         </div>
     )

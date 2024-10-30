@@ -258,6 +258,15 @@ export default function ProductDetail() {
                         <p><strong>Weight:</strong> {product.weight}</p>
                         <p><strong>Dimension:</strong> {product.dimension}</p>
                         <p><strong>Material:</strong> {product.material}</p>
+                        {product.components.length > 0 ? (
+                            <p>
+                                <strong>Components:</strong>
+                                {product.components.map(component => (
+                                    <span key={component.componentID}> {component.componentName} <span style={{color: 'green', fontWeight:'500'}}>x {component.quantity} </span></span>
+                                )).reduce((prev, curr) => [prev, ', ', curr])}
+                            </p>
+                        ) : null}
+
                         <div className="row mt-4 pb-4">
                             {product.images.slice(2).map((image, index) => (
                                 <div className="col-3 pr-0" key={index}>
