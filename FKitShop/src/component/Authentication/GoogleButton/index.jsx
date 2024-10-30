@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { loadUserFromCookie, verifyToken } from "../../../service/authUser.jsx";
 import { getUserByAccountID } from "../../../service/userService.jsx";
+import { message } from "antd";
 
 function GoogleButton() {
   const [userData, setUserData] = useState([]);
@@ -50,10 +51,11 @@ function GoogleButton() {
         const responseToken = await verifyToken(token);
         console.log("responseToken: ", responseToken);
         if (responseToken.data.role === "admin") {
-          navigate("/admin");
+            navigate("/admin");
         } else {
-          navigate("/user/information");
+            navigate("/user/information");
         }
+        message.success(`Welcome ${responseToken.data.fullName}`)
       } catch (err) {
         console.error("Error fetching lab details: ", err);
       }
