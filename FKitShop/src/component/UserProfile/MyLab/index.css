@@ -1,0 +1,11 @@
+.lab-table{
+    margin-top: 20px;
+}
+
+/* table{
+    width: 100%;
+} */
+
+.lab-thead{
+    background-color: var(--primary-color);
+}

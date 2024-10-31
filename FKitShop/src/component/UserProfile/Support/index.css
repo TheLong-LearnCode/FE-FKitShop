@@ -1,0 +1,24 @@
+.custom-tabs .ant-tabs-nav::before {
+  display: none;
+}
+
+.custom-tabs .ant-tabs-nav-list {
+  border-bottom: none;
+}
+
+.support-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.support-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

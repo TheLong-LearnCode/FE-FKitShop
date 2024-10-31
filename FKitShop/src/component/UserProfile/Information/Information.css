@@ -1,0 +1,28 @@
+.profile-card {
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.ant-descriptions-item-label {
+  font-weight: bold;
+}
+
+.ant-descriptions-item-content {
+  font-size: 16px;
+}
+
+.ant-card-body {
+  padding: 24px;
+}
+
+.ant-typography {
+  margin-bottom: 0;
+}
