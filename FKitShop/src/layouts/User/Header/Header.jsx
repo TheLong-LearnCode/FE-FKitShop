@@ -224,7 +224,6 @@ export default function Header() {
                             marginTop: "15px", // Add some space between the image and text
                           }}
                         />
-                        <span>{userInfo?.data?.fullName}</span>
                       </>
                     )}
                   </a>

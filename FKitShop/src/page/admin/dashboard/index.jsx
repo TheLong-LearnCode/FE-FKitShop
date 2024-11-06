@@ -196,10 +196,10 @@ export default function Dashboard() {
           {lastTwoMonths.length === 2 && (
             <div className="mt-3 text-center">
               <p>
-                Different Percent: {' '}
+                Profits: {' '}
                 <span className={lastTwoMonths[1].status === 1 ? 'text-success' : 'text-danger'}>
                   {lastTwoMonths[1].differencePercent > 0 ? '+' : '-'}
-                  {(lastTwoMonths[1].differencePercent * 100).toFixed(2)}%
+                  {(lastTwoMonths[1].differencePercent).toFixed(2)} times
                 </span>
               </p>
             </div>
