@@ -55,6 +55,7 @@ export default function ProfileInformation({ userInfo }) {
             </div>
           </Upload>
         </div>
+
         <Title level={2}>{fullName}</Title>
       </div>
       <Descriptions bordered column={1}>

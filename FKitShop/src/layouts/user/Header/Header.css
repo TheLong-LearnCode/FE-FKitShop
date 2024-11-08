@@ -15,18 +15,28 @@ ul {
 .sticky-header{
     background-color: var(--primary-color);
     width: 100%;
-    height: 110px;
+    height: 80px;
+    padding: 2px 0;
+    min-height: 80px;
 }
 
 .upper-nav {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: var(--primary-color);
 }
 
 .upper-nav-logo {
     padding-top: 10px;
     height: 90px;
+}
+
+.searh-smart{
+    width: 100%;
+    max-width: 600px;
+    margin: 0 50px;
+    position: relative;
 }
 
 .upper-nav-search-form {
@@ -35,10 +45,6 @@ ul {
     background-color: white;
     border-radius: 5px;
     overflow: hidden;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 50px;
-    position: relative;
 }
 
 .upper-nav-search-form input {
@@ -196,14 +202,12 @@ ul {
 
 .suggestions {
     position: absolute;
-    top: 62%;
-    left: 29.2%;
-    right: 0;
+    margin-top: 2px;
     background-color: white;
     border: 1px solid #ddd;
     border-top: none;
     max-height: 200px;
-    width: 40%;
+    width: 100%;
     overflow-y: auto;
     z-index: 1000;
 }
@@ -240,3 +244,200 @@ ul {
 .suggestion-price {
     color: var(--secondary-color);
 }
+/* iPad Mini */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .upper-nav {
+        justify-content: space-between;
+        margin: 0 10px;
+        background-color: var(--primary-color);
+    }
+
+    .searh-smart {
+        max-width: 500px;
+    }
+
+    .lower-nav-menu {
+        padding: 10px 0;
+    }
+
+    .lower-nav-menu li {
+        margin: 0 10px;
+    }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 576px) {
+    .sticky-header {
+        height: auto;
+        padding: 2px 0;
+        min-height: 80px;
+    }
+
+    .upper-nav {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 5px;
+        padding: 2px 8px;
+    }
+
+    .upper-nav-logo {
+        height: 30px;
+        padding-top: 0;
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .upper-nav-user-actions {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .upper-nav-user-actions .upper-nav-item box-icon {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    .searh-smart {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        margin: 0;
+        max-width: none;
+    }
+
+    .upper-nav-search-form input {
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+
+    .upper-nav-search-form button {
+        height: 32px;
+        padding: 5px 10px;
+    }
+
+    .upper-nav-user-actions .upper-nav-item span {
+        display: none;
+    }
+
+    .upper-nav-user-actions .upper-nav-item {
+        margin-left: 3px;
+    }
+
+
+    .lower-nav-menu {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        padding: 3px;
+        gap: 5px;
+        margin: 0;
+    }
+
+    .lower-nav-menu li {
+        margin: 0;
+        text-align: center;
+        padding: 2px;
+    }
+
+    .lower-nav-menu a {
+        font-size: 11px;
+        padding: 3px;
+        display: block;
+    }
+
+    .profile-avatar {
+        height: 25px !important;
+        width: 25px !important;
+    }
+
+    .product-submenu {
+        position: fixed;
+        top: auto;
+        left: 0;
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .categories-list {
+        position: static;
+        margin-left: 20px;
+        box-shadow: none;
+    }
+}
+
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 768px) {
+    .sticky-header {
+        height: auto;
+    }
+
+    .upper-nav {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 0 10px;
+    }
+
+    .upper-nav-logo {
+        height: 50px;
+        padding-top: 5px;
+    }
+
+    .searh-smart {
+        width: 80%;
+    }
+
+    .upper-nav-search-form {
+        width: 100%;
+    }
+
+    .upper-nav-user-actions {
+        justify-content: flex-end;
+    }
+
+    .upper-nav-user-actions .upper-nav-item {
+        margin-left: 10px;
+        font-size: 12px;
+    }
+
+    .lower-nav-menu {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        padding: 10px;
+        gap: 5px;
+        margin: 0;
+    }
+
+    .lower-nav-menu li {
+        margin: 0;
+        text-align: center;
+    }
+
+    .lower-nav-menu a {
+        font-size: 14px;
+        padding: 5px;
+        display: block;
+    }
+
+    /* Điều chỉnh dropdown menu */
+    .product-submenu {
+        position: fixed;
+        top: auto;
+        left: 0;
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .categories-list {
+        position: static;
+        margin-left: 20px;
+        box-shadow: none;
+    }
+}
+
+

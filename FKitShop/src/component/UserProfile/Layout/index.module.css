@@ -32,3 +32,19 @@
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   }
   
+  /* Điện thoại nhỏ */
+@media (max-width: 576px) {
+    .ht {
+        padding-top: 120px;
+        height: auto;
+        min-height: 100vh;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+    .ht {
+        margin-top: 140px;
+        height: auto;
+        min-height: 100vh;
+    }
+}

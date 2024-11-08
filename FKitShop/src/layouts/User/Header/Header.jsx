@@ -141,7 +141,9 @@ export default function Header() {
                   alt="shop logo"
                 />
               </Link>
-              <form
+
+              <div className="searh-smart">
+                <form
                 className="upper-nav-search-form"
                 onSubmit={handleSearchSubmit}
               >
@@ -183,6 +185,8 @@ export default function Header() {
                   ))}
                 </div>
               )}
+              </div>
+              
 
               <div className="upper-nav-user-actions">
                 <Link to={"/cart"} className="upper-nav-item">
@@ -192,7 +196,6 @@ export default function Header() {
 
                 <div
                   className="dropdown"
-                  //style={{ display: "flex", alignItems: "baseline"}}
                 >
                   <a
                     className="dropdown-toggle upper-nav-item"
