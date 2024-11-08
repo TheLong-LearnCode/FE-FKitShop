@@ -118,6 +118,7 @@ export default function Purchase({ userInfo }) {
             ...detail,
             image: product.data.images[0]?.url,
             productName: product.data.name,
+            productType: product.data.type
           };
         })
       );
