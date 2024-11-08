@@ -4,7 +4,7 @@ import { RollbackOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { formatCurrency } from "../../../util/CurrencyUnit";
 import { getProvinces, getDistricts, getWards } from "../../../service/ghnApi";
 import { Link } from "react-router-dom";
-
+import './OrderDetails.css'
 const OrderDetails = ({
   selectedOrder,
   orderDetails,

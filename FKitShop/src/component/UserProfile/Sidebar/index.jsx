@@ -16,7 +16,7 @@ export default function ProfileSidebar({ activeTab, setActiveTab, userInfo }) {
       <img
         src= {userInfo?.image ? userInfo.image : "/img/user.png"} // Replace this with your avatar image path
         alt="Profile"
-        className="profile-avatar mb-3"
+        className="mb-3"
         style={{height: "100px", width: "100px", borderRadius: "100%"}}
       />
       <button

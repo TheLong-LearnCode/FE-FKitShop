@@ -156,7 +156,7 @@ export default function ProductDetail() {
                         <img style={{ objectFit: 'contain', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', borderRadius: '10px', height: '300px', width: '100%' }} src={selectedImage} alt={product.name} className="img-fluid" />
                         <div className="row mt-4">
                             {product.images.map((image, index) => (
-                                <div className="col-3 pr-0 mb-2 product-detail-subimg" key={index}>
+                                <div className="col-lg-3 col-md-4 pr-0 mb-2 product-detail-subimg" key={index}>
                                     <img src={image.url} alt={`Image ${index + 1}`} className="img-fluid" style={{ objectFit: 'contain', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', borderRadius: '10px', height: '150px', width: '100%' }} onClick={() => setSelectedImage(image.url)} />
                                 </div>
                             ))}
@@ -279,7 +279,7 @@ export default function ProductDetail() {
 
                 {activeButton === 'lab' &&
                     <div className="product-detail-content py-2">
-                        {labDetails.map((lab) => (
+                        {labDetails?.map((lab) => (
                             lab.fileNamePDF !== null
                                 ? <div key={lab.labID} style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)' }}>
                                     <div style={{ margin: '20px' }}>

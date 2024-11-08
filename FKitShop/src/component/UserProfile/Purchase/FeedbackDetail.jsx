@@ -2,6 +2,7 @@ import { Modal, Rate, Select } from "antd";
 import { useEffect, useState } from "react";
 import { getProductById } from "../../../service/productService";
 import TextArea from "antd/es/input/TextArea";
+import './FeedbackDetail.css'
 
 export default function FeedbackDetail({ orderDetails, selectedProductID, setSelectedProductID, modalContent, setModalContent, rating, setRating}) {
 
