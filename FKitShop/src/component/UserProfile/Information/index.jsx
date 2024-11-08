@@ -43,7 +43,6 @@ export default function ProfileInformation({ userInfo }) {
             )
           }
           alt="Profile"
-          className="profile-avatar"
           style={{height: "100px", width: "100px", borderRadius: "100%"}}
         />
         <Title level={2}>{fullName}</Title>
