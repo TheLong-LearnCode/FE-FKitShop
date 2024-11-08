@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Modal, Button, Table, Row, Col } from "antd";
+import { Modal, Button, Table, Row, Col, Image } from "antd";
 import { formatCurrency } from "../../../util/CurrencyUnit";
 import { getModalHeaderMode } from "../../../util/GetModalHeaderMode";
+import { Link } from "react-router-dom";
+import { Card } from "react-bootstrap";
 
 export default function OrderFormModal({
   mode,
@@ -30,6 +32,7 @@ export default function OrderFormModal({
     status,
     orderDate,
     note,
+    user,
   } = selectedOrder;
 
   const onPageChange = (page) => {
@@ -49,9 +52,30 @@ export default function OrderFormModal({
       key: "orderDetailsID",
     },
     {
-      title: "Product ID",
+      title: "Product",
+      dataIndex: "image",
+      key: "image",
+      render: (image) => <Image src={image} width={50} />,
+    },
+    {
+      title: "Product Name", // Thay "Product ID" thành "Product Name"
       dataIndex: "productID",
       key: "productID",
+      render: (_, record) => (
+        <Link
+          to={`/detail/${record.productID}`}
+          style={{ textDecoration: "none" }}
+        >
+          {record.productName.length > 25
+            ? `${record.productName.substring(0, 25)}...`
+            : record.productName}
+        </Link>
+      ),
+    },
+    {
+      title: "Type",
+      dataIndex: "productType",
+      key: "productType",
     },
     {
       title: "Quantity",
@@ -59,7 +83,7 @@ export default function OrderFormModal({
       key: "quantity",
     },
     {
-      title: "Price",
+      title: "Price / Item",
       dataIndex: "price",
       key: "price",
       render: (price) => formatCurrency(price),
@@ -69,39 +93,92 @@ export default function OrderFormModal({
       key: "total",
       render: (_, record) => formatCurrency(record.price * record.quantity),
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-    },
   ];
 
   return (
     <Modal
       open={showModal}
       onCancel={handleCloseModal}
-      width="50%"
+      width="70%"
       title={<h4></h4>}
       footer={null}
     >
       <Row gutter={16}>
-        <Col span={12}>
-          <p><strong>Order ID:</strong> {ordersID}</p>
-          <p><strong>Order Date:</strong> {new Date(orderDate).toLocaleString()}</p>
-          <p><strong>Status:</strong> {status}</p>
-          <p><strong>Payment Method:</strong> {payingMethod}</p>
-          <p><strong>Shipping Price:</strong> {formatCurrency(shippingPrice)}</p>
-          <p><strong>Total Price:</strong> {formatCurrency(totalPrice)}</p>
-          <p><strong>Address:</strong> {`${address}, ${ward}, ${district}, ${province}`}</p>
-          <p><strong>Note:</strong> {note}</p>
-        </Col>
-        <Col span={12}>
-          <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-            <img src="/img/user.png" alt="Customer Avatar" style={{ width: "100px", height: "100px" }}/>
-          </div>
-          <p><strong>Customer ID:</strong> {accountID}</p>
-          <p><strong>Name:</strong> {name}</p>
-          <p><strong>Phone Number:</strong> {phoneNumber}</p>
+        <Col span={24}>
+          <Card
+            //title={<strong>Order Details</strong>}
+            style={{ margin: "10px 20px", padding: "15px" }}
+          >
+            <Row
+              gutter={16}
+              // </Card>style={{paddingTop: "30px"}}
+            >
+              <Col span={10}>
+                <Card
+                  title={<strong>Customer</strong>}
+                  style={{ margin: "20px 20px", padding: "20px 20px" }}
+                  hoverable={true}
+                >
+                  <div style={{ textAlign: "center" }}>
+                    <img
+                      src={user?.image || "/img/user.png"}
+                      alt="Customer Avatar"
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  </div>
+                  <p>
+                    <strong>Customer ID:</strong> {accountID}
+                  </p>
+                  <p>
+                    <strong>Name:</strong> {name}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {phoneNumber}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {user?.email || "N/A"}
+                  </p>
+                </Card>
+              </Col>
+
+              <Col span={14} style={{ paddingTop: "20px" }}>
+                <p>
+                  <strong>Order ID:</strong> {ordersID}
+                </p>
+                <p>
+                  <strong>Order Date:</strong>{" "}
+                  {new Date(orderDate).toLocaleString()}
+                </p>
+                <p>
+                  <strong>Status: </strong>
+                  {status.toLowerCase() === "processing"
+                    ? "In Progress"
+                    : status}
+                </p>
+                <p>
+                  <strong>Payment Method:</strong> {payingMethod}
+                </p>
+                <p>
+                  <strong>Shipping Price:</strong>{" "}
+                  {formatCurrency(shippingPrice)}
+                </p>
+                <p>
+                  <strong>Total Price:</strong> {formatCurrency(totalPrice)}
+                </p>
+                <p>
+                  <strong>Address:</strong>
+                  {`${address}, ${ward}, ${district}, ${province}`}
+                </p>
+                <p>
+                  <strong>Note:</strong> {note}
+                </p>
+              </Col>
+            </Row>
+          </Card>
         </Col>
       </Row>
 
