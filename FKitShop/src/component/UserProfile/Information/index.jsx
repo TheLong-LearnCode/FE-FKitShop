@@ -1,14 +1,14 @@
-// ProfileInformation.js
 import React, { useState } from "react";
-import { Alert, Card, Avatar, Typography, Descriptions } from "antd";
+import { Alert, Card, Typography, Descriptions, Upload } from "antd";
 import {
   UserOutlined,
   PhoneOutlined,
   MailOutlined,
   CalendarOutlined,
   LinuxOutlined,
+  CameraOutlined,
 } from "@ant-design/icons";
-import "./Information.css"; // Chúng ta sẽ tạo file CSS riêng cho component này
+import "./Information.css";
 
 const { Title } = Typography;
 
@@ -31,68 +31,46 @@ export default function ProfileInformation({ userInfo }) {
   const { fullName, dob, phoneNumber, email, createDate, role } = userInfo;
   const age = new Date().getFullYear() - new Date(dob).getFullYear();
 
+  // Handle image upload function
+  const handleImageUpload = (info) => {
+    // Handle image upload here, e.g., send to API
+    console.log("Uploaded image:", info.file);
+  };
+
   return (
     <Card className="profile-card">
       <div className="profile-header">
-        <img
-          src={
-            userInfo.image ? (
-              userInfo.image
-            ) : (
-              "/img/user.png"
-            )
-          }
-          alt="Profile"
-          className="profile-avatar"
-          style={{height: "100px", width: "100px", borderRadius: "100%"}}
-        />
+        <div className="profile-avatar-container">
+          <img
+            src={userInfo.image || "/img/user.png"}
+            alt="Profile"
+            className="profile-avatar"
+          />
+          <Upload
+            showUploadList={false}
+            onChange={handleImageUpload}
+          >
+            <div className="camera-icon-overlay">
+              <CameraOutlined style={{ fontSize: 24 }} />
+            </div>
+          </Upload>
+        </div>
         <Title level={2}>{fullName}</Title>
       </div>
       <Descriptions bordered column={1}>
-        <Descriptions.Item
-          label={
-            <>
-              {" "}
-              <UserOutlined /> Role
-            </>
-          }
-        >
+        <Descriptions.Item label={<><UserOutlined /> Role</>}>
           {role}
         </Descriptions.Item>
-        <Descriptions.Item
-          label={
-            <>
-              <LinuxOutlined /> Age
-            </>
-          }
-        >
+        <Descriptions.Item label={<><LinuxOutlined /> Age</>}>
           {age}
         </Descriptions.Item>
-        <Descriptions.Item
-          label={
-            <>
-              <PhoneOutlined /> Phone Number
-            </>
-          }
-        >
+        <Descriptions.Item label={<><PhoneOutlined /> Phone Number</>}>
           {phoneNumber}
         </Descriptions.Item>
-        <Descriptions.Item
-          label={
-            <>
-              <MailOutlined /> Email
-            </>
-          }
-        >
+        <Descriptions.Item label={<><MailOutlined /> Email</>}>
           {email}
         </Descriptions.Item>
-        <Descriptions.Item
-          label={
-            <>
-              <CalendarOutlined /> Participant Date
-            </>
-          }
-        >
+        <Descriptions.Item label={<><CalendarOutlined /> Participant Date</>}>
           {createDate}
         </Descriptions.Item>
       </Descriptions>
