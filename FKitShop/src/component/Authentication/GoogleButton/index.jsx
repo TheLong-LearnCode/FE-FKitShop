@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadUserFromCookie, verifyToken } from "../../../service/authUser.jsx";
 import { getUserByAccountID } from "../../../service/userService.jsx";
 import { message } from "antd";
+import { ROLE_ADMIN, ROLE_MANAGER, ROLE_STAFF } from "../../../constants/role.js";
 
 function GoogleButton() {
   const [userData, setUserData] = useState([]);
@@ -50,7 +51,7 @@ function GoogleButton() {
         console.log("USERDATAAA: ", userData);
         const responseToken = await verifyToken(token);
         console.log("responseToken: ", responseToken);
-        if (responseToken.data.role === "admin") {
+        if (responseToken.data.role === ROLE_ADMIN || responseToken.data.role === ROLE_MANAGER || responseToken.data.role === ROLE_STAFF) {
             navigate("/admin");
         } else {
             navigate("/user/information");

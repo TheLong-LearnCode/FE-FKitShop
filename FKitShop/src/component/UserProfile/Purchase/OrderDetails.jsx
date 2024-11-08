@@ -37,6 +37,11 @@ const OrderDetails = ({
       ),
     },
     {
+      title: "Type",
+      dataIndex: "productType",
+      key: "productType",
+    },
+    {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",

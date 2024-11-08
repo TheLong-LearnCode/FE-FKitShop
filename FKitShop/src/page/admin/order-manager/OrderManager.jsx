@@ -7,10 +7,12 @@ import {
   getOrderDetailsByOrderID,
   updateOrderStatus,
 } from "../../../service/orderService";
+import { getProductById } from "../../../service/productService";
 import OrderTable from "./OrderTable";
 import OrderFormModal from "./OrderFormModal";
 import { Notification } from "../../../component/UserProfile/UpdateAccount/Notification";
 import { Modal } from "antd";
+import { getUserByAccountID } from "../../../service/userService";
 //import { getUserByAccountID } from "../../../service/userService";
 
 export default function OrderManager() {
@@ -32,15 +34,33 @@ export default function OrderManager() {
   const fetchAllOrders = async () => {
     try {
       const response = await getAllOrders();
-      // Check if response.data is an object with orders property
+  
+      let ordersData = [];
+      // Check if response.data has the orders array or if it's directly an array
       if (response.data && response.data.orders) {
-        setOrders(Object.values(response.data.orders));
+        ordersData = Object.values(response.data.orders);
       } else if (Array.isArray(response.data)) {
-        setOrders(response.data);
+        ordersData = response.data;
       } else {
         console.error("Unexpected data structure:", response.data);
         setOrders([]);
+        return;
       }
+  
+      // Fetch user data for each order by accountID
+      const ordersWithUserDetails = await Promise.all(
+        ordersData.map(async (order) => {
+          try {
+            const userResponse = await getUserByAccountID(order.accountID);
+            return { ...order, user: userResponse.data }; // Add user data to each order
+          } catch (error) {
+            console.error(`Error fetching user for accountID ${order.accountID}:`, error);
+            return { ...order, user: null }; // Return order with null user if error occurs
+          }
+        })
+      );
+  
+      setOrders(ordersWithUserDetails);
     } catch (error) {
       console.error("Error fetching orders:", error);
       Notification("Error fetching orders", "", 4, "error");
@@ -96,9 +116,19 @@ export default function OrderManager() {
     const fetchOrderDetails = async () => {
       try {
         //BY ORDER ID
-        const response = await getOrderDetailsByOrderID(order.ordersID);
-        orderDetails = response.data;
-        setSelectedOrderDetails(orderDetails);
+        const details = await getOrderDetailsByOrderID(order.ordersID);
+        const detailsWithImages = await Promise.all(
+          details.data.map(async (detail) => {
+            const product = await getProductById(detail.productID);
+            return {
+              ...detail,
+              image: product.data.images[0]?.url,
+              productName: product.data.name,
+              productType: product.data.type
+            };
+          })
+        );
+        setSelectedOrderDetails(detailsWithImages);
         setSelectedOrder(order);
       } catch (error) {
         console.error("Error fetching order details:", error);

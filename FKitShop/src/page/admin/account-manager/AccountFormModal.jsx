@@ -119,11 +119,14 @@ export default function AccountFormModal({
             </Form.Group>
             <Form.Group controlId="formImage">
               <Form.Label>Image</Form.Label>
-              <Form.Control
-                type="file"
-                defaultValue={selectedUser?.image}
-                readOnly={mode === "view"}
-              />
+              {selectedUser?.image && (
+                <img
+                  src={selectedUser.image}
+                  alt="User Image"
+                  style={{ width: "100px", height: "100px" }}
+                />
+              )}
+              <Form.Control type="file" readOnly={mode === "view"} />
             </Form.Group>
             <Form.Group controlId="formRole">
               <Form.Label>Role</Form.Label>

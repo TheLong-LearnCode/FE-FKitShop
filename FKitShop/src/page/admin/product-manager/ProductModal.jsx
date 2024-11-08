@@ -39,6 +39,7 @@ const ProductModal = ({
   const [form] = Form.useForm();
   const [type, setType] = useState(product?.type || "item");
   const [totalPrice, setTotalPrice] = useState(0);
+  const [selectedStock, setSelectedStock] = useState(null);
   useEffect(() => {
     if (product && (mode === "edit" || mode === "view")) {
       const dimension = product?.dimension?.replace("cm", "") || "0x0x0"; // Remove 'cm' and default to "0x0x0"
@@ -99,6 +100,10 @@ const ProductModal = ({
 
   const handleTypeChange = (e) => {
     setType(e.target.value);
+  };
+  const handleProductSelect = (productID) => {
+    const selectedProduct = items.find((item) => item.productID === productID);
+    setSelectedStock(selectedProduct ? selectedProduct.quantity : 0);
   };
   const handleOk = () => {
     if (mode === "view") {
@@ -211,7 +216,7 @@ const ProductModal = ({
       <Form form={form} layout="vertical">
         <Row gutter={[16, 16]}>
           {/* Section 1 */}
-          <Col span={13}>
+          <Col span={12}>
             <Card title="Product Details" bordered={false}>
               <Form.Item
                 name="images"
@@ -311,7 +316,7 @@ const ProductModal = ({
           </Col>
 
           {/* Section 4 */}
-          <Col span={11}>
+          <Col span={12}>
             <Card title="Status & Classification" bordered={false}>
               <Form.Item
                 name="status"
@@ -336,13 +341,7 @@ const ProductModal = ({
                   <Radio value="item">Item</Radio>
                 </Radio.Group>
               </Form.Item>
-
-              {type === "kit" && (
-                <Form.Item label="Total Item's Price Expected">
-                  <span>{totalPrice} VNĐ</span>
-                </Form.Item>
-              )}
-              {type === "kit" && (
+              {/* {type === "kit" && (
                 <Form.Item name="components" label="Items belong to kit">
                   <Form.List name="components">
                     {(fields, { add, remove }) => (
@@ -406,6 +405,101 @@ const ProductModal = ({
                     )}
                   </Form.List>
                 </Form.Item>
+              )} */}
+              {type === "kit" && (
+                <Col>
+                  <Card title="Components in Kit" bordered={false}>
+                    <Form.List name="components">
+                      {(fields, { add, remove }) => (
+                        <>
+                          {fields.map(
+                            ({ key, name, fieldKey, ...restField }) => (
+                              <Row key={key} gutter={16}>
+                                <Col span={12}>
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "productID"]}
+                                    fieldKey={[fieldKey, "productID"]}
+                                    label="Product Name"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Select a product",
+                                      },
+                                    ]}
+                                  >
+                                    <Select
+                                      placeholder="Select Product"
+                                      onChange={(value) =>
+                                        handleProductSelect(value)
+                                      }
+                                    >
+                                      {items.map((item) => (
+                                        <Option
+                                          key={item.productID}
+                                          value={item.productID}
+                                        >
+                                          {item.name}
+                                        </Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "quantity"]}
+                                    fieldKey={[fieldKey, "quantity"]}
+                                    label="Quantity"
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: "Enter quantity",
+                                      },
+                                    ]}
+                                  >
+                                    <InputNumber
+                                      min={1}
+                                      onChange={handleQuantityChange}
+                                    />
+                                  </Form.Item>
+                                </Col>
+                                <Col span={4}>
+                                  <Button
+                                    type="link"
+                                    onClick={() => {
+                                      remove(name);
+                                      setSelectedStock(0);
+                                      setTotalPrice(0);
+                                    }}
+                                  >
+                                    Remove
+                                  </Button>
+                                </Col>
+                              </Row>
+                            )
+                          )}
+                          <Form.Item>
+                            <Button type="dashed" onClick={() => add()} block>
+                              Add Items
+                            </Button>
+                          </Form.Item>
+                        </>
+                      )}
+                    </Form.List>
+                    {/* Display selected stock outside the Select component */}
+                    <p>
+                      Stock Available:{" "}
+                      <span style={{ color: "green" }}>
+                        {selectedStock || 0}
+                      </span>
+                    </p>
+                    <span>
+                      Total Item's Price Expected:{" "}
+                      <span style={{ color: "red" }}>{totalPrice} VNĐ</span>
+                    </span>
+                  </Card>
+                </Col>
               )}
 
               <Form.Item
@@ -432,7 +526,7 @@ const ProductModal = ({
           </Col>
 
           {/* Section 2 */}
-          <Col span={13}>
+          <Col span={12}>
             <Card title="Additional Information" bordered={false}>
               <Form.Item name="publisher" label="Publisher">
                 <Input disabled={mode === "view"} />
@@ -443,7 +537,7 @@ const ProductModal = ({
             </Card>
           </Col>
           {/* Section 3 */}
-          <Col span={11}>
+          <Col span={12}>
             <Card title="Product Specifications" bordered={false}>
               <Form.Item
                 label={
