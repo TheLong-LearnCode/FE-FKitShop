@@ -107,6 +107,7 @@ const ProductModal = ({
   };
   const handleOk = () => {
     if (mode === "view") {
+      setTotalPrice(0);
       onCancel();
       return;
     }
@@ -496,7 +497,12 @@ const ProductModal = ({
                     </p>
                     <span>
                       Total Item's Price Expected:{" "}
-                      <span style={{ color: "red" }}>{totalPrice} VNĐ</span>
+                      <span style={{ color: "red" }}>
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(totalPrice)}
+                      </span>
                     </span>
                   </Card>
                 </Col>
