@@ -16,7 +16,6 @@ import "./index.css";
 import ProductTable from "./ProductTable";
 import ProductModal from "./ProductModal";
 import { getAllCategories } from "../../../service/categoryService";
-import { ProductUploadImage } from "../../../service/productService";
 import Search from "antd/es/input/Search";
 
 const ProductManager = () => {
