@@ -46,6 +46,15 @@ export default function ProfileInformation({ userInfo }) {
     }
   };
 
+  const formatDate = (createDate) => {
+    const date = new Date(createDate);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  }
+
   return (
     <Card className="profile-card">
       <div className="profile-header">
@@ -53,7 +62,7 @@ export default function ProfileInformation({ userInfo }) {
           <img
             src={userInfo.image}
             alt="Profile"
-            className="profile-avatar"
+            className="profileAvatar"
           />
           <Upload showUploadList={false} onChange={handleImageUpload}>
             <div className="camera-icon-overlay">
@@ -101,14 +110,10 @@ export default function ProfileInformation({ userInfo }) {
         >
           {email}
         </Descriptions.Item>
-        <Descriptions.Item
-          label={
-            <>
-              <CalendarOutlined /> Participant Date
-            </>
-          }
-        >
-          {createDate}
+
+        <Descriptions.Item label={<><CalendarOutlined /> Participant Date</>}>
+          {formatDate(createDate)}
+
         </Descriptions.Item>
       </Descriptions>
     </Card>

@@ -192,8 +192,8 @@ const ProductModal = ({
         mode === "add"
           ? "* Add New Product *"
           : mode === "edit"
-          ? "* Edit Product *"
-          : "* View Product *"
+            ? "* Edit Product *"
+            : "* View Product *"
       }
       onCancel={onCancel}
       onOk={handleOk}
@@ -231,8 +231,8 @@ const ProductModal = ({
                       fileList.length > 0
                         ? Promise.resolve()
                         : Promise.reject(
-                            new Error("Please upload at least one image")
-                          ),
+                          new Error("Please upload at least one image")
+                        ),
                   },
                 ]}
               >
@@ -472,8 +472,11 @@ const ProductModal = ({
                                     type="link"
                                     onClick={() => {
                                       remove(name);
+                                      calculateTotal();
                                       setSelectedStock(0);
-                                      setTotalPrice(0);
+                                      if (items.length == 0) {
+                                        setTotalPrice(0);
+                                      }
                                     }}
                                   >
                                     Remove
