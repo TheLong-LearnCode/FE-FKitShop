@@ -151,6 +151,8 @@ const ProductModal = ({
       for (const { uid, file } of updatedImages) {
         const formData = new FormData();
         formData.append("images", file); // Add new image file
+        console.log("FILE:" , file);
+        
         for (let [key, value] of formData.entries()) {
           console.log(key, value, typeof value);
         }
