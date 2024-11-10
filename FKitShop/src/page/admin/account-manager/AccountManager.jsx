@@ -156,22 +156,17 @@ export default function AccountManager() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Ngăn việc reload lại trang khi submit form
-    console.log("AA: ", e.target.formImage.value);
     
     const formData = {
       fullName: e.target.formFullName.value,
       email: e.target.formEmail.value,
       password: e.target.formPassword?.value,
       dob: e.target.formDateOfBirth.value,
-      image: e.target.formImage.value,
       phoneNumber: e.target.formPhonenumber.value,
       role: e.target.formRole.value,
       status: e.target.formStatus.value,
       adminID: e.target.formAdminID.value,
     };
-    const form = new FormData();
-    form.append("image", e.target.formImage.value);
-
     try {
       if (mode === "add") {
         const response = await createAccount(formData);
@@ -182,7 +177,6 @@ export default function AccountManager() {
         console.log("formData2: ", formData2);
 
         const response = await updateAccount(formData2, selectedUser.accountID);
-        const avatar = await uploadAvater(selectedUser.accountID,form);
         Notification(response.message, "", 4, "success");
       }
       setShowModal(false); // Close modal after success

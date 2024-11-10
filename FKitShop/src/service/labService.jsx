@@ -133,4 +133,14 @@ export const getLabByLabID = async (labID) => {
   }
 };
 
+export const downloadLAB = async (labID) => {
+  try {
+    const response = await api[GET](`/lab/${labID}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching lab by labID:", error);
+    throw error;
+  }
+}
+
 //-----------------------GET-----------------------

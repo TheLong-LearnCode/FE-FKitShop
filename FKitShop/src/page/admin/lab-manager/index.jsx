@@ -7,6 +7,7 @@ import {
   deleteLab,
   mergeLabGuide,
   getLabByStatus,
+  downloadLAB,
 } from "../../../service/labService";
 import { getAllProducts } from "../../../service/productService";
 import LabTable from "./LabTable";
@@ -148,9 +149,10 @@ const LabManager = () => {
     });
   };
 
-  const handleDownloadPDF = async (fileName) => {
-    console.log(`Downloading ${fileName}`);
+  const handleDownloadPDF = async (id) => {
+    console.log(`Downloading ${id}`);
     // Implement PDF download logic
+    const rs = await downloadLAB(id);
   };
 
   const handleFileChange = (info) => {
