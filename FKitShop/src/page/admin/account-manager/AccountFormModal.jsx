@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { getModalHeaderMode } from "../../../util/GetModalHeaderMode";
-import './AccountFormModal.css'
+import "./AccountFormModal.css";
 export default function AccountFormModal({
   mode,
   selectedUser,
@@ -20,7 +20,7 @@ export default function AccountFormModal({
   return (
     <>
       {/* Modal Form */}
-      <Modal show={showModal} onHide={handleCloseModal} size="lg">
+      <Modal show={showModal} onHide={handleCloseModal} size="xm">
         <Modal.Header className={getModalHeaderMode(mode)}>
           <Modal.Title>
             {mode === "view"
@@ -36,6 +36,20 @@ export default function AccountFormModal({
         <Form onSubmit={handleSubmit}>
           <Modal.Body>
             {/* Form fields... */}
+            <Form.Group controlId="formImage">
+              {selectedUser?.image && (
+                <img
+                  src={selectedUser.image}
+                  alt="User Image"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "100%",
+                    alignItems: "center"
+                  }}
+                />
+              )}
+            </Form.Group>
             <Form.Group controlId="formID">
               <Form.Label>Customer ID</Form.Label>
               <Form.Control
@@ -117,17 +131,7 @@ export default function AccountFormModal({
                 readOnly={mode === "view"}
               />
             </Form.Group>
-            {/* <Form.Group controlId="formImage">
-              <Form.Label>Image</Form.Label>
-              {selectedUser?.image && (
-                <img
-                  src={selectedUser.image}
-                  alt="User Image"
-                  style={{ width: "100px", height: "100px" }}
-                />
-              )}
-              <Form.Control type="file" readOnly={mode === "view"} />
-            </Form.Group> */}
+
             <Form.Group controlId="formRole">
               <Form.Label>Role</Form.Label>
               <Form.Control
