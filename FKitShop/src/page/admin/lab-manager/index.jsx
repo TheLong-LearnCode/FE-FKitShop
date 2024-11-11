@@ -149,10 +149,21 @@ const LabManager = () => {
     });
   };
 
-  const handleDownloadPDF = async (id) => {
-    console.log(`Downloading ${id}`);
+  const handleDownloadPDF = async (fileName) => {
+    console.log(`Downloading ${fileName}`);
     // Implement PDF download logic
-    const rs = await downloadLAB(id);
+    try {
+      const url = await downloadLAB(fileName);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName); // Set the file name for download
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading lab:", error);
+      message.error(error.response?.data?.message || "Error downloading lab");
+    }
   };
 
   const handleFileChange = (info) => {
