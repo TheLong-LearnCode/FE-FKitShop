@@ -1,6 +1,6 @@
 import api from "../config/axios";
 import { GET, POST, PUT, DELETE } from "../constants/httpMethod";
-import axios from 'axios';
+import axios from "axios";
 
 //----------------------DELETE----------------------
 export const deleteLab = async (id) => {
@@ -19,8 +19,7 @@ export const deleteLab = async (id) => {
 
 export const updateLab = async (formData, labID) => {
   try {
-    const response = await api[PUT](`/lab/${labID}`, 
-      formData);
+    const response = await api[PUT](`/lab/${labID}`, formData);
     return response.data;
   } catch (error) {
     console.error("Error updating lab:", error);
@@ -73,8 +72,11 @@ export const downloadLab = async (info) => {
 export const mergeLabGuide = async (labID, labGuideID) => {
   try {
     console.log("LAB GUIDE ID: ", labGuideID);
-    
-    const response = await api[POST](`/lab/pdf/create/${labID}`, JSON.stringify(labGuideID));
+
+    const response = await api[POST](
+      `/lab/pdf/create/${labID}`,
+      JSON.stringify(labGuideID)
+    );
     return response.data;
   } catch (error) {
     console.error("Error merging lab guide:", error);
@@ -133,14 +135,21 @@ export const getLabByLabID = async (labID) => {
   }
 };
 
-export const downloadLAB = async (labID) => {
+export const downloadLAB = async (fileName) => {
   try {
-    const response = await api[GET](`/lab/${labID}`);
-    return response.data;
+    const response = await api[GET](
+      `/lab/download-admin?fileName=${fileName}`,
+      {
+        responseType: "blob", // Set response type to blob for file data
+      }
+    );
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    console.log("Download URL: ", url);
+    return url;
   } catch (error) {
     console.error("Error fetching lab by labID:", error);
     throw error;
   }
-}
+};
 
 //-----------------------GET-----------------------
