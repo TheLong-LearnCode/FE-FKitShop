@@ -52,7 +52,7 @@ const LabTable = ({ labs, onEdit, onDelete, onView, onDownloadPDF }) => {
             <span>{(fileName.length > 10) ? fileName.slice(0, 10) + "..." : fileName}</span>
             <Button
               icon={<DownloadOutlined />}
-              onClick={() => onDownloadPDF(record.labID)}
+              onClick={() => onDownloadPDF(fileName)}
               size="small"
             >
               {/* Download */}
